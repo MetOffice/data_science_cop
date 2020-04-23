@@ -8,7 +8,7 @@ There are several ways to set up an environment to run the code in this reposito
 ### Custom conda environment
 
 * Create environment ``conda create -n ds_cop_env -c conda-forge --file requirements.txt``
-* Activate ``onda activate  ds_cop_env``
+* Activate ``conda activate  ds_cop_env``
 * run ``jupyter lab``
 
 ### Met Office IT - Scitools 
