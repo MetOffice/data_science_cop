@@ -1,4 +1,4 @@
-# Data Science Community ofPractice
+# Data Science Community of Practice
 This is the repository for  example and tutorial matieral created through the Met Office Data Science Community of Practice.
 
 
