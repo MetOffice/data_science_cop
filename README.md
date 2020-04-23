@@ -3,19 +3,18 @@ This is the repository for  example and tutorial matieral created through the Me
 
 
 ## Running the code
-There are several ways to set up an environment to run the code in this repository
+There are several ways to set up an environment to run the code in this repository. The following instruction assume that you have 
 
 ### Custom conda environment
 
-* Create environment "conda create -n ds_cop_env -c conda-forge --file requirements.txt"
-* Activate "conda activate  ds_cop_env"
-* run "jupyter lab"
+* Create environment ``conda create -n ds_cop_env -c conda-forge --file requirements.txt``
+* Activate ``onda activate  ds_cop_env``
+* run ``jupyter lab``
 
 ### Met Office IT - Scitools 
 
 * In a terminal, load the scitools environment using "module load scitools". 
-* Navigate to the local repository directory
-* run "jupyter lab"
+* run ``jupyter lab``
 * navigate to the relevant notebook and run.
 
 ### Pangeo
