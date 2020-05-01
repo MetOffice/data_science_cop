@@ -3,19 +3,30 @@ This is the repository for  example and tutorial matieral created through the Me
 
 
 ## Running the code
-There are several ways to set up an environment to run the code in this repository. The following instruction assume that you have 
+There are several ways to set up an environment to run the code in this repository:
 
-### Custom conda environment
+### Conda environment -> (click [here](https://docs.conda.io/en/latest/miniconda.html) for miniconda installation instructions)
 
-* Create environment ``conda create -n ds_cop_env -c conda-forge --file requirements.txt``
-* Activate ``conda activate  ds_cop_env``
-* run ``jupyter lab``
+* In a terminal, create an environment from the `requirements.yml` supplied with this repository <br>
+``conda env create --file requirements.yml``
+
+* Activate the environment <br>
+``source activate data-science-cop``
+
+* Run Jupyter Lab <br>
+``jupyter lab``
+
+* Navigate to the relevant notebook and run it.
 
 ### Met Office IT - Scitools 
 
-* In a terminal, load the scitools environment using "module load scitools". 
-* run ``jupyter lab``
-* navigate to the relevant notebook and run.
+* In a terminal, load the scitools environment <br>
+``module load scitools``
+
+* Run Jupyter Lab <br>
+``jupyter lab``
+
+* Navigate to the relevant notebook and run it.
 
 ### Pangeo
 `` Under construction ``
@@ -24,9 +35,13 @@ There are several ways to set up an environment to run the code in this reposito
 
 Instructions:
 
-* Go to https://colab.research.google.com/
-* to run this code in Colab, clone the repository into your Google Drive then mount the drive in Colab
-* run the notebook, the required libraries will be installed when required.
+* Go to https://colab.research.google.com/. You may need to login with a Google account.
+
+* Open a new notebook from GitHub, using the URL for the repository:<br>
+``https://github.com/MetOffice/data_science_cop`` <br>
+<img src="images/google_colab_open.png" width="800"/>
+
+* When you run the notebook, the required libraries will be installed when required.
 
 
 
