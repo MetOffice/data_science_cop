@@ -29,8 +29,11 @@ There are several ways to set up an environment to run the code in this reposito
 
 ### Met Office IT - Scitools 
 
-* In a terminal, load the scitools environment <br>
-``module load scitools``
+* In a terminal, navigate to the repository<br>
+``cd data-science-cop/``
+
+* Load the `experimental-current` scitools environment <br>
+``module load scitools/experimental-current``
 
 * Run Jupyter Lab <br>
 ``jupyter lab``
