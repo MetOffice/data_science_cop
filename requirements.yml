@@ -16,6 +16,7 @@ dependencies:
   - netcdftime
   - matplotlib
   - cartopy
+  - holoviews
   - bokeh
   - scikit-learn
   - pip
