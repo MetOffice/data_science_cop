@@ -1,5 +1,5 @@
 # Data Science Community of Practice
-This is the repository for  example and tutorial matieral created through the Met Office Data Science Community of Practice.
+This is the repository for example and tutorial material created through the Met Office Data Science Community of Practice.
 
 
 ## Running the code
