@@ -1,0 +1,19 @@
+name: data-science-cop-tf
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.8
+  - jupyterlab
+  - ipywidgets
+  - ipykernel
+  - dask-labextension
+  - dask-ml
+  - mlflow
+  - pandas
+  - xarray
+  - iris
+  - cartopy
+  - scikit-learn
+  - tensorflow
+
