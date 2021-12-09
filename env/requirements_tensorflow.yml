@@ -16,4 +16,5 @@ dependencies:
   - cartopy
   - scikit-learn
   - tensorflow
-
+  - tensorboard
+  - tf2onnx

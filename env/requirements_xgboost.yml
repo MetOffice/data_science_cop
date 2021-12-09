@@ -1,4 +1,4 @@
-name: data-science-cop-sklearn
+name: data-science-cop-xgboost
 channels:
   - defaults
   - conda-forge
@@ -15,4 +15,4 @@ dependencies:
   - iris=3.0
   - cartopy
   - scikit-learn=0.24
-  - skl2onnx
+  - xgboost
