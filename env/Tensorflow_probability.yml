@@ -30,4 +30,3 @@ dependencies:
   - gpflow
   - pysr
   - tensorflow-datasets
-prefix: /home/h06/ncreaser/.conda/envs/Tensorflow
