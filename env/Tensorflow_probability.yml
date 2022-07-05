@@ -7,26 +7,26 @@ channels:
 dependencies:
   - python=3.7
   - tensorflow-probability=0.12
-  - ipykernel
+  - ipykernel=6.4
   - tensorboard=2.4
-  - notebook
-  - matplotlib
-  - keras-applications
-  - pydot
-  - graphviz
-  - cf_units
+  - notebook=6.4
+  - matplotlib=3.4
+  - keras-applications=1.0
+  - pydot=1.2
+  - graphviz=2.42
+  - cf_units=2.1
   - cf-units=3.0
   - iris=3.1
-  - dask
-  - seaborn
-  - scikit-learn
-  - jupyterlab
+  - dask=2021.10
+  - seaborn=0.11
+  - scikit-learn=1.0
+  - jupyterlab=3.2
   - xarray=0.18
-  - ipympl
-  - ipywidgets
-  - nodejs
-  - numpy==1.19
-  - line_profiler
-  - gpflow
-  - pysr
-  - tensorflow-datasets
+  - ipympl=0.7
+  - ipywidgets=7.6
+  - nodejs=6.11
+  - numpy=1.19
+  - line_profiler=3.3
+  - gpflow=2.4
+  - pysr=0.8
+  - tensorflow-datasets=1.2
