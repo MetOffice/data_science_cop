@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python==3.8.13
+  - python=3.8
   - jupyterlab=3.3
   - ipywidgets=7.6
   - ipykernel=6.9
