@@ -1,6 +1,5 @@
 name: data-science-cop-torch
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - python=3.8
