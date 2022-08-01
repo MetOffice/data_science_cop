@@ -1,6 +1,5 @@
 name: data-science-cop-tf
 channels:
-  - defaults
   - conda-forge
 dependencies:
   - python=3.8
@@ -18,3 +17,4 @@ dependencies:
   - tensorflow
   - tensorboard
   - tf2onnx
+
