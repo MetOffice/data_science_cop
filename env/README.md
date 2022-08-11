@@ -6,9 +6,9 @@ To create an environment from any of the *.yml* files, run the following command
 ```bash
 conda env create --file requirement.yml
 ```
-where you replace `requirements.yml` with the particular requirements file in the folder required for the part of PRD you want to run. There sveevral different environments as different packages are required for different activities or demonstrations, some of which are mutually incompatible or make for slow/difficult to resolve installations, so we have tried to keep each environment as simple as possible to improve performance.
+where you replace `requirements.yml` with the particular requirements file in the folder required for the files you want to run. There several different environments as different packages are required for different activities or demonstrations, some of which are mutually incompatible or make for slow/difficult to resolve installations, so we have tried to keep each environment as simple as possible to improve performance, as well as fixing compatible major and minor package versions to help environment solving.
 
-The installation of environments with the yml files can take a significant amount of memory, for this reason we present two methods to overcome this issue: Use mamba to install yml files, or Install the provided lock files which are system dependant.
+**The installation of environments with the yml files can take a significant amount of memory, for this reason we present two methods to overcome this issue: Use mamba to install yml files, or Install the provided lock files which are system dependant.**
 
 #### Installing environments via mamba
 
