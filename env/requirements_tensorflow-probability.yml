@@ -11,7 +11,7 @@ dependencies:
   - keras-applications=1.0
   - pydot=1.2
   - graphviz=2.42
-  - cf-units>2.0
+  - cf-units=3.0
   - iris=3.1
   - dask=2021.10
   - seaborn=0.11
