@@ -1,4 +1,4 @@
-# Setting up environments for precip rediagnosis scipts/notebooks
+# Setting up environments for The Data Science Community of Practice scipts/notebooks
 
 The environments for code found in this repository, either in scripts or in notebooks, depending on the platform and type of work you are doing, are all primarily provided by conda environments.
 
