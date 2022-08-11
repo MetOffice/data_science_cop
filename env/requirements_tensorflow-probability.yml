@@ -1,9 +1,6 @@
-name: Tensorflow
+name: data-science-cop-tfprob
 channels:
-  - conda-main
-  - conda-mo-internal
   - conda-forge
-  - conda-r
 dependencies:
   - python=3.7
   - tensorflow-probability=0.12
