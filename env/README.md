@@ -12,7 +12,7 @@ where you replace `requirements.yml` with the particular requirements file in th
 
 #### Installing environments via mamba
 
-To create an environment using mamba, run the following set of commands: </br>
+To create an environment using mamba, run the following set of commands: <br>
 First, using the desktop conda, create an environment that contains mamba:
 ```bash
 conda create --name mamba --channel conda-forge mamba
@@ -32,6 +32,7 @@ To create an environment from any of the *.lock* files, run the following comman
 ```bash
 conda create --name myenv --file requirements.lock
 ```
+Generation of the lock files was performed in the Met Office VDI, and will fail to install on systems that are significantly different<br>
 environment name suggestions can be found at the top of all .yml files
 
 ## Use on Met Office systems
