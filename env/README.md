@@ -13,7 +13,7 @@ There several different environments as different packages are required for diff
 
 **The installation of environments with the yml files in conda can take a significant amount of memory, for this reason we present two methods to overcome this issue: Install the provided lock files which are system dependant, or Use mamba to install yml files.
 <br><br>
-If you are using a system supported by the existing lock files, this is the recommended method of install. Lock files specify versions and builds for all included libraries so completely avoids solving the evironment**
+If you are using a system supported by the existing lock files, this is the recommended method of install. Lock files specify versions and builds for all included libraries which completely avoid solving the evironment**
 
 ## Installing environments via provided lock files
 
