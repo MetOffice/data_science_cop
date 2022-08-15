@@ -2,15 +2,30 @@
 
 The environments for code found in this repository, either in scripts or in notebooks, depending on the platform and type of work you are doing, are all primarily provided by conda environments.
 
-To create an environment from any of the *.yml* files, run the following command
+These files provide pre-checked base environments that are a starting point for project environments into which other more project specific libraries can be added.
+
+To create an environment from any of the *.yml* files, run the following command.
 ```bash
 conda env create --file requirement.yml
 ```
 where you replace `requirements.yml` with the particular requirements file in the folder required for the files you want to run. There several different environments as different packages are required for different activities or demonstrations, some of which are mutually incompatible or make for slow/difficult to resolve installations, so we have tried to keep each environment as simple as possible to improve performance, as well as fixing compatible major and minor package versions to help environment solving.
 
-**The installation of environments with the yml files can take a significant amount of memory, for this reason we present two methods to overcome this issue: Use mamba to install yml files, or Install the provided lock files which are system dependant.**
+**The installation of environments with the yml files in conda can take a significant amount of memory, for this reason we present two methods to overcome this issue: Install the provided lock files which are system dependant, or Use mamba to install yml files.
+<br>
+If you are using a system supported by the existing lock files, this is the recommended method of install. Lock files specify versions and builds for all included libraries so completely avoids solving the evironment**
 
-#### Installing environments via mamba
+## Installing environments via provided lock files
+
+To create an environment from any of the *.lock* files, run the following command which also requires a name for the environment to be specified
+```bash
+conda create --name myenv --file requirements.lock
+```
+
+Lock file are generated on and for specific systems, and will fail to install on systems that are significantly different from the target. Each lock file includes a reference to the target system as follows:
+\*\_mo\_linux.lock - Met Office internal linux "desktop" systems. A significantly different system in this case would be a system not using both the Linux-64 architecture and the Met Office conda channels. Generation of the lock files was performed in the Met Office VDI.<br>
+Environment name suggestions can be found at the top of all .yml files
+
+## Installing environments via mamba
 
 To create an environment using mamba, run the following set of commands: <br>
 First, using the desktop conda, create an environment that contains mamba:
@@ -26,20 +41,14 @@ Now create your data science environment:
 mamba env create --file requirements.yml
 ```
 
-#### Installing environments via provided lock files
-
-To create an environment from any of the *.lock* files, run the following command which also requires a name for the environment to be specified
-```bash
-conda create --name myenv --file requirements.lock
-```
-Generation of the lock files was performed in the Met Office VDI, and will fail to install on systems that are significantly different<br>
-environment name suggestions can be found at the top of all .yml files
-
 ## Use on Met Office systems
 
 ### Use on VDI
 
-To use on VDI, just create the conda environment as above, activate and then either run the script required, or start a jupyter lab server.
+To use on VDI, just create the conda environment as above, activate and then either run the script required, or start a jupyter lab server. Eg: 
+```bash 
+jupyter lab 
+```
 
 ### SPICE
 
