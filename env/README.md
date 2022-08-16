@@ -1,4 +1,4 @@
-# Setting up environments for The Data Science Community of Practice scipts/notebooks
+# Setting up environments for The Data Science Community of Practice scripts/notebooks
 
 The environments for code found in this repository, either in scripts or in notebooks, depending on the platform and type of work you are doing, are all primarily provided by conda environments.
 
@@ -42,6 +42,13 @@ Now create your data science environment
 ```bash
 mamba env create --file requirements.yml
 ```
+
+## Relevant Environment Links
++ `requirements_pytorch.yml`: [Pytorch](https://pytorch.org/)
++ `requirements_sklearn.yml`: [Scikit Learn](https://scikit-learn.org/)
++ `requirements_tensorflow-probability.yml`: [Tensorflow's Probability](https://www.tensorflow.org/probability/)
++ `requirements_tensorflow.yml`: [Tensorflow](https://www.tensorflow.org/)
++ `requirements_xgboost.yml`: [XGBoost](https://xgboost.ai/)
 
 ## Use on Met Office systems
 
