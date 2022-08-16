@@ -44,6 +44,7 @@ mamba env create --file requirements.yml
 ```
 
 ## Relevant Environment Links
+Each environment has a focus on a particular technology, below lists the existing environments and links to the relevant page for each technology.
 + `requirements_pytorch.yml`: [Pytorch](https://pytorch.org/)
 + `requirements_sklearn.yml`: [Scikit Learn](https://scikit-learn.org/)
 + `requirements_tensorflow-probability.yml`: [Tensorflow's Probability](https://www.tensorflow.org/probability/)
