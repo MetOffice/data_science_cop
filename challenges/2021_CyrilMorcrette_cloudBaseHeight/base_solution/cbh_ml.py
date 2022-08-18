@@ -15,18 +15,8 @@ from netCDF4 import Dataset
 
 import tensorflow as tf
 import os
-from tensorflow import keras
+from tensorflow import keras 
 from tensorflow.keras import layers
-
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.layers import LeakyReLU
-from keras.optimizers import SGD
-from keras.optimizers import Adam
-from keras.metrics import RootMeanSquaredError
-from keras.metrics import CategoricalCrossentropy
-from keras.layers import Dropout
-from keras.constraints import maxnorm
 
 import warnings
 
@@ -41,16 +31,16 @@ def main():
     warnings.filterwarnings("ignore",".*HybridHeightFactory*.")
     # Define the deep neural network
     n_nodes=256
-    model = Sequential()
-    model.add(Dense(n_nodes, input_dim=210, activation='relu')) # This defines the input layer AND the first hidden layer
-    model.add(Dense(n_nodes, activation='relu'))                # This is a hidden layer
-    model.add(Dense(n_nodes, activation='relu'))                # This is a hidden layer
-    model.add(Dense(n_nodes, activation='relu'))                # This is a hidden layer
-    model.add(Dense(n_nodes, activation='relu'))                # This is a hidden layer
-    model.add(Dense(     70, activation='softmax'))             # This is the output layer 
+    model = keras.models.Sequential()
+    model.add(keras.layers.Dense(n_nodes, input_dim=210, activation='relu')) # This defines the input layer AND the first hidden layer
+    model.add(keras.layers.Dense(n_nodes, activation='relu'))                # This is a hidden layer
+    model.add(keras.layers.Dense(n_nodes, activation='relu'))                # This is a hidden layer
+    model.add(keras.layers.Dense(n_nodes, activation='relu'))                # This is a hidden layer
+    model.add(keras.layers.Dense(n_nodes, activation='relu'))                # This is a hidden layer
+    model.add(keras.layers.Dense(     70, activation='softmax'))             # This is the output layer 
                                                                 # A softmax is used in output layer as we want the final 
                                                                 # output to be intepretable as a probability.
-    opt = Adam(learning_rate=1.0e-4)
+    opt = keras.optimizers.Adam(learning_rate=1.0e-4)
     # In above lines, you can: add more layers
     #                          change number of nodes
     #                          change activation functions
