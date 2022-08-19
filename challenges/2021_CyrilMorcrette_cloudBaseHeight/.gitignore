@@ -1,3 +1,7 @@
 mlruns
 lightning_logs
 DUPLICATE_*
+*.txt
+*.json
+__pycache__
+*.h5
