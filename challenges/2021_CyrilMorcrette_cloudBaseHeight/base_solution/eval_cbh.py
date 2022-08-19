@@ -18,11 +18,14 @@ from cjm_functions import load_in_one_file_for_cbh_ml
 from keras.models import model_from_json
 import iris.quickplot as qplt
 
+import os; os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' # hide tensorflow log message about performance limitations
+
 def main():
 
     #Point to the file that we are using for independent test (i.e. data NOT used in training!)
     pp_file='/data/nwp1/frme/ML_minichallenge/dev/20170701T0000Z_glm_pa010.pp'
     result = make_stash_string(0,266)
+    print("in load")
     bcf = iris.load_cube(pp_file,iris.AttributeConstraint(STASH=result['stashstr_iris']))
 
     nz,ny,nx=bcf.shape
@@ -41,7 +44,7 @@ def main():
             for k in np.arange(0,nz,1):
                 if found==0 and bcf.data[k,j,i]>thresh:
                     true_cbh_3d.data[k,j,i]=1
-                    true_cbh_2d.data[0,j,i]=np.float(k)
+                    true_cbh_2d.data[0,j,i]= np.float64(k)
                     found=1
             if found==0:
                 true_cbh_2d.data[0,j,i]=69.0
@@ -51,13 +54,13 @@ def main():
 
     # Read in the details of the machine learning model (i.e. number of layer and nodes etc).
     # This was written out by cbh_ml.py
-    json_file=open('/project/causes/ML_minichallenge_part2/benchmark/cbh_ml_model.json', 'r')
+    json_file=open('./cbh_ml_model.json', 'r')
     loaded_model_json=json_file.read()
     json_file.close()
     model=model_from_json(loaded_model_json)
 
     # Now read in the most recent weights saved when training that model.
-    model.load_weights('/project/causes/ML_minichallenge_part2/benchmark/train_a/cbh_ml_latest_saved_weights.h5')
+    model.load_weights('./cbh_ml_latest_saved_weights.h5')
 
     big_data=np.transpose(result['data'])
     X=big_data[:,  0:210]
@@ -83,7 +86,7 @@ def main():
         for i in np.arange(0,nx,1):
             tmp=predicted_cbh_3d[:,j,i]
             ind=np.where(tmp==np.amax(tmp))
-            ind=np.float(ind[0])
+            ind=np.float64(ind[0])
             predicted_cbh_2d.data[0,j,i]=ind
 
     # Maps
@@ -161,7 +164,7 @@ def main():
     im=axs[0,3].set_ylabel('Level')
     tmp=predicted_cbh_3d[:,nj,ni]
     ind=np.where(tmp==np.amax(tmp))
-    ind=np.float(ind[0])
+    ind=np.float64(ind[0])
     im=axs[0,3].plot([-0.1,0],[ind,ind],'g-')
     nj=400
     ni=200
@@ -181,7 +184,7 @@ def main():
     im=axs[1,3].set_ylabel('Level')
     tmp=predicted_cbh_3d[:,nj,ni]
     ind=np.where(tmp==np.amax(tmp))
-    ind=np.float(ind[0])
+    ind=np.float64(ind[0])
     im=axs[1,3].plot([-0.1,0],[ind,ind],'g-')
     nj=60
     ni=400
@@ -201,7 +204,7 @@ def main():
     im=axs[2,3].set_ylabel('Level')
     tmp=predicted_cbh_3d[:,nj,ni]
     ind=np.where(tmp==np.amax(tmp))
-    ind=np.float(ind[0])
+    ind=np.float64(ind[0])
     im=axs[2,3].plot([-0.1,0],[ind,ind],'g-')
     nj=360
     ni=550
@@ -221,7 +224,7 @@ def main():
     im=axs[3,3].set_ylabel('Level')
     tmp=predicted_cbh_3d[:,nj,ni]
     ind=np.where(tmp==np.amax(tmp))
-    ind=np.float(ind[0])
+    ind=np.float64(ind[0])
     im=axs[3,3].plot([-0.1,0],[ind,ind],'g-')
     plt.show()
     #fileout='cbh_ml_profiles.png'
@@ -232,6 +235,9 @@ def main():
     true=np.reshape(true_cbh_2d.data[0,:,:],(1,480*640))
     pred=np.reshape(predicted_cbh_2d.data[0,:,:],(1,480*640))
 
+    print(true.shape)
+    print(pred.shape)
+    
     store_seds=0
     store_sedi=0
     [tmp, nn]=true.shape
@@ -244,13 +250,13 @@ def main():
         d=0.0
         for i in np.arange(0,nn):
             # Is the cloud-base at this level or below.
-            if   true[0,i]<=np.float(k) and pred[0,i] <=np.float(k):
+            if   true[0,i]<=np.float64(k) and pred[0,i] <=np.float64(k):
                 # Hit
                 a=a+1.0
-            elif true[0,i]> np.float(k) and pred[0,i] <=np.float(k):
+            elif true[0,i]> np.float64(k) and pred[0,i] <=np.float64(k):
                 # False alarm
                 b=b+1.0
-            elif true[0,i]<=np.float(k) and pred[0,i] > np.float(k):
+            elif true[0,i]<=np.float64(k) and pred[0,i] > np.float64(k):
                 # Miss
                 c=c+1.0
             else:
@@ -260,6 +266,7 @@ def main():
             a += 1 
             b += 1
         n=a+b+c+d
+        print("n",n)
         ar=((a+b)*(a+c))/n;
         # Symmetric Extreme Dependency Score (SEDS) has advantage that it is 1.0 for perfect forecast
         # and 0.0 for no better than climatology 
