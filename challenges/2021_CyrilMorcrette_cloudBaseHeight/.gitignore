@@ -5,3 +5,5 @@ DUPLICATE_*
 *.json
 __pycache__
 *.h5
+*.nc
+*.pth
