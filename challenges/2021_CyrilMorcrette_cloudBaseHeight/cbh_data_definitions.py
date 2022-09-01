@@ -126,7 +126,7 @@ class CBH_Dataset_in_memory(torch.utils.data.Dataset):
     def __init__(self, data_x, data_y, cloud_base_label):
         
         data_x = data_x.compute()
-        # data_y = data_y.compute()
+        data_y = data_y.compute()
         cloud_base_label = cloud_base_label.compute()
         
         self.temp_humidity_pressure = data_x
@@ -144,8 +144,8 @@ class CBH_Dataset_in_memory(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         
         input_features = torch.from_numpy(self.temp_humidity_pressure[idx])
-        output_target = [1] # torch.from_numpy(self.temp_humidity_pressure[idx])
-        cbh_lab = torch.from_numpy(np.array([self.cbh_label[idx]]))
+        output_target = torch.from_numpy(self.cloudbase_target[idx])
+        cbh_lab = self.cbh_label[idx]
         
         height_vec = torch.from_numpy(np.arange(self.height_layer_number))
         
