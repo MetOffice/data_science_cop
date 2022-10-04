@@ -52,8 +52,8 @@ def load_data_from_zarr(path):
     x = dask.array.from_zarr(zarr_group['humidity_temp_pressure_x.zarr'])
     x.rechunk(zarr_group['humidity_temp_pressure_x.zarr'].chunks)
     
-    y_lab = dask.array.from_zarr(zarr_group['onehot_cloud_base_height_y.zarr'])
-    y_lab.rechunk(zarr_group['onehot_cloud_base_height_y.zarr'].chunks)
+    y_lab = dask.array.from_zarr(zarr_group['cloud_base_label_y.zarr'])
+    y_lab.rechunk(zarr_group['cloud_base_label_y.zarr'].chunks)
     
     y_cont = dask.array.from_zarr(zarr_group['cloud_volume_fraction_y.zarr'])
     y_cont.rechunk(zarr_group['cloud_volume_fraction_y.zarr'].chunks)
@@ -123,15 +123,17 @@ def collate_helper_send_dict_elements_to_tensor(batch):
     raise TypeError(default_collate_err_msg_format.format(elem_type))
 
 class CBH_Dataset_in_memory(torch.utils.data.Dataset):
-    def __init__(self, data_x, data_y, cloud_base_label):
-        
+    def __init__(self, data_x, data_y, cloud_base_label, verbose=True):
+        if verbose: print("Computing x...")
         data_x = data_x.compute()
+        if verbose: print("Computing y...")
         data_y = data_y.compute()
+        if verbose: print("Computing lab...")
         cloud_base_label = cloud_base_label.compute()
         
         self.temp_humidity_pressure = data_x
         self.cloudbase_target = data_y
-        self.cbh_label = np.argmax(cloud_base_label, axis=1) ############################################TEMP############################################
+        self.cbh_label = cloud_base_label ############################################TEMP############################################
         # print("init cbh label, size:",self.cbh_label.shape)
         
         self.height_layer_number = data_x.shape[1] # take the shape at index 1 as data_x of format sample, height, feature
