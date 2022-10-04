@@ -4,13 +4,13 @@ import pytorch_lightning as pl
 
 # define RNN
 class CloudBaseLSTM(pl.LightningModule):
-    def __init__(self, inputSize, lstmLayers, lstmHiddenSize, output_size, height_dimension, embed_size, BILSTM=True, batch_first=False, lr=2e-3, do_base_label_fit=True, do_vol_fit=False):
+    def __init__(self, input_size, lstm_layers, lstm_hidden_size, output_size, height_dimension, embed_size, BILSTM=True, batch_first=False, lr=2e-3, do_base_label_fit=True, do_vol_fit=False):
         super().__init__()
         
         self.LSTM = torch.nn.LSTM(
-                                  inputSize+embed_size, 
-                                  lstmHiddenSize, 
-                                  lstmLayers, 
+                                  input_size+embed_size, 
+                                  lstm_hidden_size, 
+                                  lstm_layers, 
                                   batch_first=batch_first, 
                                   bidirectional=BILSTM, 
                                   proj_size=output_size
