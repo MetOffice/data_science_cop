@@ -50,7 +50,7 @@ def main():
     #                          change the learning rate
     model.summary()
     # Writes out a summary of the network architecture
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy', "categorical_crossentropy"])
     # Try playing with loss= changing how the loss is quantified.    
     #
     # Write things out to file (for reading back in later to make predictions).
