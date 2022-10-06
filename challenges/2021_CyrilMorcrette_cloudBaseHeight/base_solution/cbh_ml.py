@@ -17,7 +17,7 @@ import tensorflow as tf
 import os
 from tensorflow import keras 
 from tensorflow.keras import layers
-
+import pathlib
 import warnings
 
 # cjm_functions can be found in the same repository as this file.
@@ -60,7 +60,7 @@ def main():
         json_file.close()
     #
     # Define directory where training data is stored.
-    directory_str='/data/nwp1/frme/ML_minichallenge/train/'
+    directory_str= os.environ["SCRATCH"] + "/cbh_data/train_individual_files/"
     directory = os.fsencode(directory_str)
     #
     # Set up arrays to store the accuracy as one loops through multiple sets of multiples epochs.
