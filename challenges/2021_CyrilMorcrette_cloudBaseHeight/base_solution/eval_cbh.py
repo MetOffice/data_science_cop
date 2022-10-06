@@ -19,13 +19,13 @@ from keras.models import model_from_json
 import iris.quickplot as qplt
 
 import os; os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' # hide tensorflow log message about performance limitations
-
+import warnings
+warnings.filterwarnings("ignore")
 def main():
 
     #Point to the file that we are using for independent test (i.e. data NOT used in training!)
     pp_file='/data/nwp1/frme/ML_minichallenge/dev/20170701T0000Z_glm_pa010.pp'
     result = make_stash_string(0,266)
-    print("in load")
     bcf = iris.load_cube(pp_file,iris.AttributeConstraint(STASH=result['stashstr_iris']))
 
     nz,ny,nx=bcf.shape
@@ -99,9 +99,9 @@ def main():
     diff=predicted_cbh_2d[0,:,:]-true_cbh_2d[0,:,:]
     qplt.pcolormesh(diff,vmin=-20, vmax=20)
     plt.show()
-    #fileout='cbh_ml_maps.png'
-    #plt.savefig(fileout)
-    #plt.close()
+    fileout='cbh_ml_maps.png'
+    plt.savefig(fileout)
+    plt.close()
     iris.save(true_cbh_2d[0,:,:], 'map_true_cbh.nc')
     iris.save(predicted_cbh_2d[0,:,:], 'map_predicted_cbh.nc')
 
@@ -120,9 +120,9 @@ def main():
     diff=predicted_cbh_3d[:,:,0]-true_cbh_3d.data[:,:,0]
     plt.pcolormesh(diff,vmin=-1, vmax=1)
     plt.show()
-    #fileout='cbh_ml_crosssection.png'
-    #plt.savefig(fileout)
-    #plt.close()
+    fileout='cbh_ml_crosssection.png'
+    plt.savefig(fileout)
+    plt.close()
     iris.save(true_cbh_3d, 'true_cbh.nc')
     iris.save(predicted_cbh_3d_CUBE, 'predicted_cbh.nc')
 
@@ -227,17 +227,14 @@ def main():
     ind=np.float64(ind[0])
     im=axs[3,3].plot([-0.1,0],[ind,ind],'g-')
     plt.show()
-    #fileout='cbh_ml_profiles.png'
-    #plt.savefig(fileout)
-    #plt.close()
+    fileout='cbh_ml_profiles.png'
+    plt.savefig(fileout)
+    plt.close()
 
     # Prepare to calculate some skill scores.
     true=np.reshape(true_cbh_2d.data[0,:,:],(1,480*640))
     pred=np.reshape(predicted_cbh_2d.data[0,:,:],(1,480*640))
 
-    print(true.shape)
-    print(pred.shape)
-    
     store_seds=0
     store_sedi=0
     [tmp, nn]=true.shape
@@ -266,7 +263,6 @@ def main():
             a += 1 
             b += 1
         n=a+b+c+d
-        print("n",n)
         ar=((a+b)*(a+c))/n;
         # Symmetric Extreme Dependency Score (SEDS) has advantage that it is 1.0 for perfect forecast
         # and 0.0 for no better than climatology 
