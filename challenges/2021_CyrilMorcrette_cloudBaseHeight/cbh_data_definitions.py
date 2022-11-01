@@ -3,16 +3,30 @@ import numpy as np
 import zarr
 import dask
 import dask.array
+from concurrent.futures import ThreadPoolExecutor
+from dask.diagnostics import Profiler, ResourceProfiler, CacheProfiler, visualize
 
+def register_cache():
+    from dask.cache import Cache
+    cache = Cache(1e9)  # Leverage one gigabytes of memory (around 2 chunks)
+    cache.register()
+
+# settings attempting to reduce unwanted mp
+# from numcodecs import blosc
+# blosc.use_threads = False
+# dask.config.set(scheduler='synchronous')
+
+THREAD_COUNT_FOR_DASK = 4
 # define torch dataloader
 class CBH_Dataset(torch.utils.data.Dataset):
-    def __init__(self, data_x, data_y, cloud_base_label):
+    def __init__(self, data_x, cloud_base_label, thread_count_for_dask):
         
         # print('begin init')
         
         self.temp_humidity_pressure = data_x
-        self.cloudbase_target = data_y
         self.cbh_label = cloud_base_label
+        global THREAD_COUNT_FOR_DASK
+        THREAD_COUNT_FOR_DASK = thread_count_for_dask
         
         self.height_layer_number = data_x.shape[1] # take the shape at index 1 as data_x of format sample, height, feature
         
@@ -21,6 +35,7 @@ class CBH_Dataset(torch.utils.data.Dataset):
         # print('end init')
         
     def __len__(self):
+        # number of samples, is length of the input as input is shaped [sample,height,feat]
         return len(self.temp_humidity_pressure)
 
     def __getitem__(self, idx):
@@ -30,23 +45,16 @@ class CBH_Dataset(torch.utils.data.Dataset):
         # torch.from_numpy(x.compute())
         
         input_features = self.temp_humidity_pressure[idx]
-        output_target = self.cloudbase_target[idx]
-        # print(output_target.dtype)
-        # output_target = output_target.type(torch.FloatTensor)
         cbh_lab = self.cbh_label[idx]
         
         # print('CALL ON GETITEM')
-        
-        height_vec = torch.from_numpy(np.arange(self.height_layer_number))
-        
-        item_in_dataset = {'x':input_features, 'cloud_volume_target':output_target, 'cloud_base_target':cbh_lab, 'height_vector':height_vec}
-        return item_in_dataset
+        return input_features, cbh_lab
     
 # load in the data from zarr, ensure correct chunk sizes
 def load_data_from_zarr(path):
     
     store = zarr.DirectoryStore(path)
-    zarr_group = zarr.group(store=store)
+    zarr_group = zarr.group(store=store, synchronizer=zarr.sync.ThreadSynchronizer())
     print('Loaded zarr, file information:\n', zarr_group.info, '\n')
     
     x = dask.array.from_zarr(zarr_group['humidity_temp_pressure_x.zarr'])
@@ -63,73 +71,44 @@ def load_data_from_zarr(path):
 def define_data_get_loader(
                            inp, 
                            labels, 
-                           vol_output,
                            batch_size, 
                            shuffle=False, 
                            num_workers = 0, 
-                           collate_fn = None
+                           collate_fn = None,
+                           pin_memory=False,
+                           thread_count_for_dask=4
                           ):
-    dataset = CBH_Dataset(inp, labels, vol_output)
-    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=collate_fn)
+    dataset = CBH_Dataset(inp, labels, thread_count_for_dask)
+    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=collate_fn, pin_memory=pin_memory)
     return loader
 
 # # define dask specific collate function for dataloader, collate is the step where the dataloader combines all the samples into a singular batch to be enumerated on, 
 # # after getting all items 
 def dataloader_collate_with_dask(batch):
     # print("call main collate")
-    elem = batch[0]
-    elem_type = type(elem)
     
-    # assert torch.utils.data.get_worker_info() is None # if this assertion fails, there are issues in code and this case needs to be handled see pytorch source of default collate fn
+    collated = tuple(dask.array.stack(groups) for groups in zip(*batch))
+    input_batch, output_batch = collated
+    global THREAD_COUNT_FOR_DASK
+    with dask.config.set(pool=ThreadPoolExecutor(THREAD_COUNT_FOR_DASK)):#, Profiler() as prof, ResourceProfiler(dt=0.25) as rprof, CacheProfiler() as cprof:
+        input_numpy = input_batch.compute()
+        output_numpy = output_batch.compute()
+    #print(visualize([prof, rprof, cprof], filename='profile.html', save=True))
+    input_tensor = torch.from_numpy(input_numpy)
+    output_tensor = torch.from_numpy(output_numpy)
+    return input_tensor, output_tensor
 
-    try:
-        return elem_type({key: collate_helper_send_dict_elements_to_tensor([d[key] for d in batch]) for key in elem})
-        
-    except TypeError:
-        # print('Should not have reached here')
-        # raise TypeError()
-        return {key: collate_helper_send_dict_elements_to_tensor([d[key] for d in batch]) for key in elem}
-    
-    raise TypeError(default_collate_err_msg_format.format(elem_type))
-
-    
-def collate_helper_send_dict_elements_to_tensor(batch):
-    # assert torch.utils.data.get_worker_info() is None
-    
-    elem = batch[0]
-    elem_type = type(elem)
-    
-    if elem_type is dask.array.core.Array:
-        new_batch = np.stack(batch, 0) # emulate torch stack
-        # print("Start compute", len(batch))
-        new_batch = new_batch.compute()
-        # print("End compute")
-        return torch.from_numpy(new_batch)
-        
-    # elif isinstance(elem, torch.Tensor):
-    #     out = None
-    #     if torch.utils.data.get_worker_info() is not None:
-    #         # If we're in a background process, concatenate directly into a
-    #         # shared memory tensor to avoid an extra copy
-    #         numel = sum(x.numel() for x in batch)
-    #         storage = elem.storage()._new_shared(numel)
-    #         out = elem.new(storage).resize_(len(batch), *list(elem.size()))
-    #     return torch.stack(batch, 0, out=out)
-    
-    
-    else:
-        return torch.stack(batch, 0)
-    
-    raise TypeError(default_collate_err_msg_format.format(elem_type))
 
 class CBH_Dataset_in_memory(torch.utils.data.Dataset):
-    def __init__(self, data_x, data_y, cloud_base_label, verbose=True):
+    def __init__(self, data_x, data_y, cloud_base_label, thread_count_for_dask, verbose=True):
         if verbose: print("Computing x...")
         data_x = data_x.compute()
         if verbose: print("Computing y...")
         data_y = data_y.compute()
         if verbose: print("Computing lab...")
         cloud_base_label = cloud_base_label.compute()
+        global THREAD_COUNT_FOR_DASK
+        THREAD_COUNT_FOR_DASK = thread_count_for_dask
         
         self.temp_humidity_pressure = data_x
         self.cloudbase_target = data_y
@@ -163,8 +142,32 @@ def define_data_get_loader_into_memory(
                            batch_size, 
                            shuffle=False, 
                            num_workers = 0, 
-                           collate_fn = None
+                           collate_fn = None,
+                           thread_count_for_dask=4
                           ):
-    dataset = CBH_Dataset_in_memory(inp, labels, vol_output)
+    dataset = CBH_Dataset_in_memory(inp, labels, vol_output, thread_count_for_dask)
     loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=None)
     return loader
+
+
+# class Cbh_DataModule(pl.LightningDataModule):
+#     def __init__(self):
+#         super().__init__()
+#     def prepare_data(self):
+#         # download, split, etc...
+#         # only called on 1 GPU/TPU in distributed
+#     def setup(self, stage):
+#         # make assignments here (val/train/test split)
+#         # called on every process in DDP
+#     def train_dataloader(self):
+#         train_split = Dataset(...)
+#         return DataLoader(train_split)
+#     def val_dataloader(self):
+#         val_split = Dataset(...)
+#         return DataLoader(val_split)
+#     def test_dataloader(self):
+#         test_split = Dataset(...)
+#         return DataLoader(test_split)
+#     def teardown(self):
+#         # clean up after fit or test
+#         # called on every process in DDP

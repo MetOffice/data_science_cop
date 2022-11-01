@@ -1,0 +1,16 @@
+name: py-lightning
+channels:
+  - conda-forge
+dependencies:
+  - pytorch-lightning>=1.0.5,<=1.7.7
+  - pytorch
+  - python
+  - jupyterlab
+  - mlflow
+  - dask
+  - pandas
+  - zarr
+  - numpy
+  - rich>=10.2.2
+
+  

@@ -10,7 +10,7 @@ class CloudBaseMLP(pl.LightningModule):
         self.input_size = input_size
         self.ff_nodes = ff_nodes
         self.output_size = output_size
-
+        self.layer_norm = torch.nn.LayerNorm(input_size)
         self.sequential_layers = torch.nn.Sequential(
             torch.nn.Linear(self.input_size, self.ff_nodes),
             torch.nn.ReLU(),
@@ -33,9 +33,10 @@ class CloudBaseMLP(pl.LightningModule):
 
     def forward(self, x):
         
-        # flatten the per height level feats to be a single sample of feats
+        # layernorm
+        norm_x = self.layer_norm(x)
 
-        out = self.sequential_layers(x)  # apply the sequential layers to the input
+        out = self.sequential_layers(norm_x)  # apply the sequential layers to the input
 
         final_prediction = out  # do no more with the output
 
@@ -45,10 +46,29 @@ class CloudBaseMLP(pl.LightningModule):
 
         return self.normalize_outputs(predictions)
 
-    def generic_model_step(self, batch, batch_idx, str_of_step_name):
+    def training_step(self, batch, batch_idx):
 
-        inputs = batch['x']
-        targets = batch['cloud_base_target']
+        inputs = batch[0]
+        targets = batch[1]
+        
+        # print(inputs.shape)
+        inputs = torch.flatten(inputs, start_dim=1)
+
+        predictions = self(inputs)
+
+        loss = self.crossentropy_loss(predictions, targets)
+        
+        # log to mlflow
+        self.logger.log_metrics({"Train loss" : loss}, step=self.global_step)
+        # log to pl for checkpointing
+        self.log('Train loss', loss)
+
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+
+        inputs = batch[0]
+        targets = batch[1]
         
         # print(inputs.shape)
         inputs = torch.flatten(inputs, start_dim=1)
@@ -57,22 +77,30 @@ class CloudBaseMLP(pl.LightningModule):
 
         loss = self.crossentropy_loss(predictions, targets)
 
-        # log to tensorboard
-        self.log((str_of_step_name + " loss"), loss)
+        # log to mlflow
+        self.logger.log_metrics({"Val loss" : loss}, step=self.global_step)
+        # log to pl for checkpointing
+        self.log('Val loss', loss)
 
         return loss
 
-    def training_step(self, batch, batch_idx):
-
-        return self.generic_model_step(batch, batch_idx, "training")
-
-    def validation_step(self, batch, batch_idx):
-
-        return self.generic_model_step(batch, batch_idx, "validation")
-
     def test_step(self, batch, batch_idx):
 
-        return self.generic_model_step(batch, batch_idx, "test")
+        inputs = batch[0]
+        targets = batch[1]
+        
+        # print(inputs.shape)
+        inputs = torch.flatten(inputs, start_dim=1)
+
+        predictions = self(inputs)
+
+        loss = self.crossentropy_loss(predictions, targets)
+
+        # log
+        self.logger.log_metrics({"Test loss" : loss}, step=self.global_step)
+        # log to pl for checkpointing
+        self.log('Test loss', loss)
+        return loss
 
     def configure_optimizers(self):
 

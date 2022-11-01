@@ -1,6 +1,7 @@
 mlruns
 lightning_logs
 DUPLICATE_*
+testing*
 *.txt
 *.json
 __pycache__
@@ -9,3 +10,6 @@ __pycache__
 *.pth
 *.ckpt
 *.png
+*.db
+*.html
+
