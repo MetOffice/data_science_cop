@@ -1,4 +1,5 @@
 mlruns
+mlflow_artifacts
 lightning_logs
 DUPLICATE_*
 testing*

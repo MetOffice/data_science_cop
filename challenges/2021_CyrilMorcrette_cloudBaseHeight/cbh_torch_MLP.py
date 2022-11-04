@@ -6,11 +6,11 @@ import torch
 class CloudBaseMLP(pl.LightningModule):
     def __init__(self, input_size, ff_nodes, output_size, lr=2e-3):
         super().__init__()
-
+            
         self.input_size = input_size
         self.ff_nodes = ff_nodes
         self.output_size = output_size
-        self.layer_norm = torch.nn.LayerNorm(input_size)
+        self.layer_norm = torch.nn.LayerNorm((input_size))
         self.sequential_layers = torch.nn.Sequential(
             torch.nn.Linear(self.input_size, self.ff_nodes),
             torch.nn.ReLU(),
@@ -35,7 +35,7 @@ class CloudBaseMLP(pl.LightningModule):
         
         # layernorm
         norm_x = self.layer_norm(x)
-
+        
         out = self.sequential_layers(norm_x)  # apply the sequential layers to the input
 
         final_prediction = out  # do no more with the output
@@ -107,3 +107,9 @@ class CloudBaseMLP(pl.LightningModule):
         optim = torch.optim.Adam(self.parameters(), self.lr)
 
         return optim
+
+    def on_train_end(self) -> None:
+        """
+        Called after training ends
+        """
+        self.logger.after_save_checkpoint()
