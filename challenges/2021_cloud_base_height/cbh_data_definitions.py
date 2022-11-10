@@ -50,38 +50,6 @@ class CBH_Dataset(torch.utils.data.Dataset):
         
         # print('CALL ON GETITEM')
         return input_features, cbh_lab
-    
-# load in the data from zarr, ensure correct chunk sizes
-def load_data_from_zarr(path):
-    
-    store = zarr.DirectoryStore(path)
-    zarr_group = zarr.group(store=store, synchronizer=zarr.sync.ThreadSynchronizer())
-    print('Loaded zarr, file information:\n', zarr_group.info, '\n')
-    
-    x = dask.array.from_zarr(zarr_group['humidity_temp_pressure_x.zarr'])
-    x.rechunk(zarr_group['humidity_temp_pressure_x.zarr'].chunks)
-    
-    y_lab = dask.array.from_zarr(zarr_group['cloud_base_label_y.zarr'])
-    y_lab.rechunk(zarr_group['cloud_base_label_y.zarr'].chunks)
-    
-    y_cont = dask.array.from_zarr(zarr_group['cloud_volume_fraction_y.zarr'])
-    y_cont.rechunk(zarr_group['cloud_volume_fraction_y.zarr'].chunks)
-    
-    return x, y_lab, y_cont
-
-def define_data_get_loader(
-                           inp, 
-                           labels, 
-                           batch_size, 
-                           shuffle=False, 
-                           num_workers = 0, 
-                           collate_fn = None,
-                           pin_memory=False,
-                           thread_count_for_dask=4
-                          ):
-    dataset = CBH_Dataset(inp, labels, thread_count_for_dask)
-    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=collate_fn, pin_memory=pin_memory)
-    return loader
 
 # # define dask specific collate function for dataloader, collate is the step where the dataloader combines all the samples into a singular batch to be enumerated on, 
 # # after getting all items 
@@ -134,47 +102,61 @@ class CBH_Dataset_in_memory(torch.utils.data.Dataset):
         item_in_dataset = {'x':input_features, 'cloud_volume_target':output_target, 'cloud_base_target':cbh_lab, 'height_vector':height_vec}
         return item_in_dataset
 
-
-
-def define_data_get_loader_into_memory(
-                           inp, 
-                           labels, 
-                           vol_output,
-                           batch_size, 
-                           shuffle=False, 
-                           num_workers = 0, 
-                           collate_fn = None,
-                           thread_count_for_dask=4
-                          ):
-    dataset = CBH_Dataset_in_memory(inp, labels, vol_output, thread_count_for_dask)
-    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=None)
-    return loader
-
-
-# class Cbh_DataModule(pl.LightningDataModule):
-#     def __init__(self):
-#         super().__init__()
-#     def prepare_data(self):
-#         # download, split, etc...
-#         # only called on 1 GPU/TPU in distributed
-#     def setup(self, stage):
-#         # make assignments here (val/train/test split)
-#         # called on every process in DDP
-#     def train_dataloader(self):
-#         train_split = Dataset(...)
-#         return DataLoader(train_split)
-#     def val_dataloader(self):
-#         val_split = Dataset(...)
-#         return DataLoader(val_split)
-#     def test_dataloader(self):
-#         test_split = Dataset(...)
-#         return DataLoader(test_split)
-#     def teardown(self):
-#         # clean up after fit or test
-#         # called on every process in DDP
+class CBH_DataModule(pl.LightningDataModule):
+    
+    def __init__(self, 
+                 tr_data_x, tr_cloud_base_label, 
+                 val_data_x, val_cloud_base_label, 
+                 thread_count_for_dask,
+                 batch_size,
+                 num_workers = 0,
+                 collate_fn = None,
+                 shuffle = False,
+                 randomize_chunkwise = False,
+                 method='1chunk',
+                ):
+        super().__init__()
+        
+        self.method=method
+        
+        global THREAD_COUNT_FOR_DASK
+        THREAD_COUNT_FOR_DASK = thread_count_for_dask
+        self.dataloader_workers = num_workers
+        
+        self.batch_size = batch_size
+        self.shuffle_train = shuffle
+        self.collate_fn = collate_fn
+        
+        self.train_data_x = tr_data_x
+        self.train_data_y = tr_cloud_base_label
+        self.randomize_chunkwise = randomize_chunkwise
+        
+        self.val_data_x = val_data_x
+        self.val_data_y = val_cloud_base_label
+        
+    def setup(self, stage):
+        if(self.method == "1chunk"):
+            self.train_dset = CBH_Dataset_Load_One_Chunk(
+                self.data_x,
+                self.data_y,
+                self.randomize_chunkwise
+            )
+            self.val_dset = CBH_Dataset_Load_One_Chunk(
+                self.data_x,
+                self.data_y,
+                self.randomize_chunkwise
+            )
+        else:
+            raise Exception("Not Implemented Error")
+            
+    def train_dataloader(self):
+        return torch.utils.data.DataLoader(self.train_dset, batch_size=self.batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
+    
+    def val_dataloader(self):
+        return torch.utils.data.DataLoader(self.val_dset, batch_size=self.batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
 
 class CBH_Dataset_Load_One_Chunk(torch.utils.data.Dataset):
-    def __init__(self, data_x, cloud_base_label, thread_count_for_dask, randomize_chunkwise = False):
+    def __init__(self, data_x, cloud_base_label, randomize_chunkwise = False):
         
         # print('begin init')
         
@@ -239,20 +221,6 @@ class CBH_Dataset_Load_One_Chunk(torch.utils.data.Dataset):
         # print('CALL ON GETITEM')
         return input_features, cbh_lab
 
-def define_data_get_loader_1chunk(
-                           inp, 
-                           labels, 
-                           batch_size, 
-                           shuffle=False, 
-                           num_workers = 0, 
-                           collate_fn = None,
-                           pin_memory=False,
-                           thread_count_for_dask=4
-                          ):
-    dataset = CBH_Dataset_Load_One_Chunk(inp, labels, thread_count_for_dask)
-    loader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle, num_workers = num_workers, collate_fn=collate_fn, pin_memory=pin_memory)
-    return loader
-    
 # load in the data from zarr, ensure correct chunk sizes
 def load_data_from_zarr(path, get_cont=False):
     
