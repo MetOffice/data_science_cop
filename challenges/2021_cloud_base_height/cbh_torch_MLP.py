@@ -1,28 +1,34 @@
 import pytorch_lightning as pl
 import torch
 
-
 # define MLP
 class CloudBaseMLP(pl.LightningModule):
-    def __init__(self, input_size, ff_nodes, output_size, lr=2e-3):
+    def __init__(self, input_size, ff_nodes, output_size, layer_num, activation, lr=2e-3):
         super().__init__()
-            
-        self.input_size = input_size
+        
+        if activation == "relu" :
+            self.activation = torch.nn.ReLU
+        elif activation == "tanh":
+            self.activation = torch.nn.Tanh
         self.ff_nodes = ff_nodes
+        self.input_size = input_size
         self.output_size = output_size
         self.layer_norm = torch.nn.LayerNorm((input_size))
-        self.sequential_layers = torch.nn.Sequential(
-            torch.nn.Linear(self.input_size, self.ff_nodes),
-            torch.nn.ReLU(),
-            torch.nn.Linear(self.ff_nodes, self.ff_nodes),
-            torch.nn.ReLU(),
-            torch.nn.Linear(self.ff_nodes, self.ff_nodes),
-            torch.nn.ReLU(),
-            torch.nn.Linear(self.ff_nodes, self.ff_nodes),
-            torch.nn.ReLU(),
-            torch.nn.Linear(self.ff_nodes, self.output_size),
-        )  # pytorch insists softmax normalization should be done outside of model forwards, so a function is defined in the model for this purpose
-
+        
+        #init modellayers
+        self.linears = torch.nn.ModuleList([])
+        
+        #input layer
+        self.linears.append(torch.nn.Linear(self.input_size, ff_nodes[0]))
+        self.linears.append(self.activation())
+        #hidden layers
+        for i in range(layer_num-1):
+            self.linears.append(torch.nn.Linear(ff_nodes[i], ff_nodes[i+1]))
+            self.linears.append(self.activation())
+        #output layer
+        self.linears.append(torch.nn.Linear(ff_nodes[-1], self.output_size))
+        
+        # pytorch insists softmax normalization should be done outside of model forwards, so a function is defined in the model for this purpose
         self.normalize_outputs = torch.nn.Softmax()
 
         self.crossentropy_loss = torch.nn.CrossEntropyLoss()
@@ -34,11 +40,12 @@ class CloudBaseMLP(pl.LightningModule):
     def forward(self, x):
         
         # layernorm
-        norm_x = self.layer_norm(x)
+        x = self.layer_norm(x)
         
-        out = self.sequential_layers(norm_x)  # apply the sequential layers to the input
+        for layer in self.linears:
+            x = layer(x)
 
-        final_prediction = out  # do no more with the output
+        final_prediction = x  # do no more with the output
 
         return final_prediction
 
