@@ -1,6 +1,8 @@
 name: py-lightning
 channels:
+  - https://conda.anaconda.org/pytorch
   - conda-forge
+  - https://conda.anaconda.org/intel
 dependencies:
   - pytorch-lightning>=1.0.5,<=1.7.7
   - pytorch
@@ -12,5 +14,7 @@ dependencies:
   - zarr
   - numpy
   - rich>=10.2.2
+  - optuna
+  - ray-tune
 
   
