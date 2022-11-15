@@ -26,7 +26,7 @@ class CloudBaseMLP(pl.LightningModule):
             self.linears.append(torch.nn.Linear(ff_nodes[i], ff_nodes[i+1]))
             self.linears.append(self.activation())
         #output layer
-        self.linears.append(torch.nn.Linear(ff_nodes[-1], self.output_size))
+        self.linears.append(torch.nn.Linear(ff_nodes[layer_num-1], self.output_size))
         
         # pytorch insists softmax normalization should be done outside of model forwards, so a function is defined in the model for this purpose
         self.normalize_outputs = torch.nn.Softmax()
