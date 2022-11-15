@@ -138,13 +138,13 @@ class CBH_DataModule(pl.LightningDataModule):
     def setup(self, stage):
         if(self.method == "1chunk"):
             self.train_dset = CBH_Dataset_Load_One_Chunk(
-                self.data_x,
-                self.data_y,
+                self.train_data_x,
+                self.train_data_y,
                 self.randomize_chunkwise
             )
             self.val_dset = CBH_Dataset_Load_One_Chunk(
-                self.data_x,
-                self.data_y,
+                self.val_data_x,
+                self.val_data_y,
                 self.randomize_chunkwise
             )
         else:
@@ -164,8 +164,8 @@ class CBH_Dataset_Load_One_Chunk(torch.utils.data.Dataset):
         self.temp_humidity_pressure = data_x
         self.randomize_chunkwise = randomize_chunkwise
         self.cbh_label = cloud_base_label
-        global THREAD_COUNT_FOR_DASK
-        THREAD_COUNT_FOR_DASK = thread_count_for_dask
+        # global THREAD_COUNT_FOR_DASK
+        # THREAD_COUNT_FOR_DASK = thread_count_for_dask
         
         self.height_layer_number = data_x.shape[1] # take the shape at index 1 as data_x of format sample, height, feature
         
