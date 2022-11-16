@@ -157,15 +157,16 @@ class CBH_DataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.val_dset, batch_size=self.batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
 
 class CBH_Dataset_Load_One_Chunk(torch.utils.data.Dataset):
-    def __init__(self, data_x, cloud_base_label, randomize_chunkwise = False):
+    def __init__(self, data_x, cloud_base_label, randomize_chunkwise = False, threads=None):
         
         # print('begin init')
         
         self.temp_humidity_pressure = data_x
         self.randomize_chunkwise = randomize_chunkwise
         self.cbh_label = cloud_base_label
-        # global THREAD_COUNT_FOR_DASK
-        # THREAD_COUNT_FOR_DASK = thread_count_for_dask
+        if threads!=None:
+            global THREAD_COUNT_FOR_DASK
+            THREAD_COUNT_FOR_DASK = threads
         
         self.height_layer_number = data_x.shape[1] # take the shape at index 1 as data_x of format sample, height, feature
         
