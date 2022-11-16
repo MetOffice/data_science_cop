@@ -19,4 +19,4 @@ To run a local jupyter lab instance, the steps are:
 * Run Jupyter Lab `jupyter lab`
 * Navigate to the relevant notebook and run it.
 
-You can alson run this through the  Jupyter Hub installation. Instructions on using JupyterHub with custoim conda enviornments can be found in the [env folder](env).
+You can also run this through the  Jupyter Hub installation. Instructions on using JupyterHub with custom conda enviornments can be found in the [env folder](env).
