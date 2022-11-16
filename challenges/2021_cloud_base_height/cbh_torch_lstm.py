@@ -35,7 +35,7 @@ class CloudBaseLSTM(pl.LightningModule):
         self.skip = skip_connection
         self.loss_fn_base = torch.nn.CrossEntropyLoss()
         if skip_connection:
-            self.linearCap = torch.nn.Linear(height_dimension*(input_size+embed_size+1), height_dimension)
+            self.linearCap = torch.nn.Linear(height_dimension*(input_size+embed_size+output_size), height_dimension)
         else:
             self.linearCap = torch.nn.Linear(height_dimension, height_dimension)
             
