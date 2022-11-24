@@ -4,7 +4,7 @@ import pytorch_lightning as pl
 
 # define RNN
 class CloudBaseLSTM(pl.LightningModule):
-    def __init__(self, input_size, lstm_layers, lstm_hidden_size, output_size, height_dimension, embed_size, BILSTM=False, backward_lstm_differing_transitions=False, batch_first=False, lr=2e-3, skip_connection=False):
+    def __init__(self, input_size, lstm_layers, lstm_hidden_size, output_size, height_dimension, embed_size, BILSTM=False, backward_lstm_differing_transitions=False, batch_first=True, lr=2e-3, skip_connection=False, norm_method = None, norm_mat_mean = None, norm_mat_std = None):
         super().__init__()
         
         self.LSTM_upward = torch.nn.LSTM(
@@ -24,7 +24,7 @@ class CloudBaseLSTM(pl.LightningModule):
                                       bidirectional=BILSTM, 
                                       proj_size=output_size
             )
-        
+        self.norm_method = norm_method
         self.batch_first = batch_first
         self.proj_size = output_size
         self.backward_lstm_differing_transitions = backward_lstm_differing_transitions
@@ -33,19 +33,33 @@ class CloudBaseLSTM(pl.LightningModule):
         self.BILSTM = BILSTM
         self.lr = lr
         self.skip = skip_connection
+            
         self.loss_fn_base = torch.nn.CrossEntropyLoss()
         if skip_connection:
-            self.linearCap = torch.nn.Linear(height_dimension*(input_size+embed_size+output_size), height_dimension)
-        else:
-            self.linearCap = torch.nn.Linear(height_dimension, height_dimension)
+            self.scale_input_layer = torch.nn.Conv1d(input_size+embed_size, output_size, 1)
+        self.linearCap = torch.nn.Linear(output_size*height_dimension, height_dimension)
             
-        self.layer_norm = torch.nn.LayerNorm((input_size))
-        
         self.save_hyperparameters() # save hyperparameters for 
+        
+        if self.norm_method == 'p_l_p_f' or self.norm_method == 'p_f':
+            self.norm_mat_mean = norm_mat_mean
+            self.norm_mat_std = norm_mat_std
+        
         
     def forward(self, x):
         
-        x = self.layer_norm(x)
+        if self.norm_method == 'p_l_p_f' or self.norm_method == 'p_f':
+            x = torch.subtract(x, self.norm_mat_mean)
+            x = torch.div(x, self.norm_mat_std)
+        elif self.norm_method == 'layer_relative':
+            norm_mean = torch.mean(x, axis = 1, keepdims=True)
+            nord_std = torch.std(x, axis = 1, keepdims=True)
+            x = torch.sub(x, norm_mean)
+            x = torch.div(x, nord_std)
+        else:
+            print("Error norm")
+            raise Exception()
+            
         #produce height embeds
         if self.height_dim>0:
             height = torch.tensor(torch.arange(0,70)).repeat((len(x),1)).reshape(len(x),70,1)
@@ -58,10 +72,6 @@ class CloudBaseLSTM(pl.LightningModule):
             # print(x_and_height.size())
         else:
             x_and_height=x
-        # print(height_embeds.size())
-        
-        #concat with feature vector
-        
         
         #send through LSTM
         lstm_out, _ = self.LSTM_upward(x_and_height)
@@ -83,7 +93,15 @@ class CloudBaseLSTM(pl.LightningModule):
         lstm_out = torch.flatten(lstm_out, start_dim=1)
         
         if self.skip:
-            lstm_out = torch.cat((lstm_out, torch.flatten(x_and_height, start_dim=1)), 1)
+            # print(x_and_height.size())
+            resid = torch.swapaxes(x_and_height,1,2)
+            # print(resid.size())
+            resid = self.scale_input_layer(resid)
+            # print(resid.size())
+            resid = torch.squeeze(resid)
+            # print(resid.size())
+            # print(lstm_out.size())
+            lstm_out = resid + lstm_out
             
         
         nn_out = self.linearCap(lstm_out)
@@ -145,6 +163,7 @@ class CloudBaseLSTM(pl.LightningModule):
     def validation_epoch_end(self, valdation_step_outputs):
         
         loss_mean = torch.stack(valdation_step_outputs).mean()
+        self.logger.log_metrics({"val_loss_mean" : loss_mean}, step=self.global_step)
         self.log("val_loss_mean", loss_mean)
     
     def configure_optimizers(self):

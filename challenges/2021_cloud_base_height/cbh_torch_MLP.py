@@ -94,6 +94,7 @@ class CloudBaseMLP(pl.LightningModule):
     def validation_epoch_end(self, valdation_step_outputs):
         
         loss_mean = torch.stack(valdation_step_outputs).mean()
+        self.logger.log_metrics({"val_loss_mean" : loss_mean}, step=self.global_step)
         self.log("val_loss_mean", loss_mean)
 
 
