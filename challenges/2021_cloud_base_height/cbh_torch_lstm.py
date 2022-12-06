@@ -4,8 +4,16 @@ import pytorch_lightning as pl
 
 # define RNN
 class CloudBaseLSTM(pl.LightningModule):
-    def __init__(self, input_size, lstm_layers, lstm_hidden_size, output_size, height_dimension, embed_size, BILSTM=False, backward_lstm_differing_transitions=False, batch_first=True, lr=2e-3, skip_connection=False, norm_method = None, norm_mat_mean = None, norm_mat_std = None):
+    def __init__(self, 
+                 input_size, lstm_layers, lstm_hidden_size, output_size, height_dimension, embed_size, BILSTM=False,  
+                 backward_lstm_differing_transitions=False, batch_first=True, lr=2e-3, skip_connection=False, 
+                 norm_method = None, norm_mat_mean = None, norm_mat_std = None, linear_instead_of_conv_cap = False, conv_cap_window = 5
+                ):
         super().__init__()
+        output_changed_flag = False
+        if output_size >= lstm_hidden_size:
+            output_changed_flag = True
+            output_size = 0
         
         self.LSTM_upward = torch.nn.LSTM(
                                   input_size+embed_size, 
@@ -26,7 +34,13 @@ class CloudBaseLSTM(pl.LightningModule):
             )
         self.norm_method = norm_method
         self.batch_first = batch_first
-        self.proj_size = output_size
+        
+        if output_changed_flag:
+            output_size = lstm_hidden_size
+            self.proj_size = output_size
+        else:
+            self.proj_size = output_size
+            
         self.backward_lstm_differing_transitions = backward_lstm_differing_transitions
         self.height_dim = height_dimension
         self.height_embedding = torch.nn.Embedding(height_dimension, embed_size)
@@ -37,7 +51,12 @@ class CloudBaseLSTM(pl.LightningModule):
         self.loss_fn_base = torch.nn.CrossEntropyLoss()
         if skip_connection:
             self.scale_input_layer = torch.nn.Conv1d(input_size+embed_size, output_size, 1)
-        self.linearCap = torch.nn.Linear(output_size*height_dimension, height_dimension)
+        
+        self.linear_cap = linear_instead_of_conv_cap
+        if linear_instead_of_conv_cap:
+            self.cap_layer = torch.nn.Linear(output_size*height_dimension, height_dimension)
+        else:
+            self.cap_layer = torch.nn.Conv1d(output_size, 1, conv_cap_window, padding=int(conv_cap_window/2))
             
         self.save_hyperparameters() # save hyperparameters for 
         
@@ -90,7 +109,6 @@ class CloudBaseLSTM(pl.LightningModule):
         # combinedLSTMOut = combinedLSTMOut / 2 # possibility, hyperparameter of combination method
         
         # flatten seq out (each cell produced 1 value for a height layer, so combine all cell outputs to a sequence of height layers for application of further nn layers)
-        lstm_out = torch.flatten(lstm_out, start_dim=1)
         
         if self.skip:
             # print(x_and_height.size())
@@ -98,13 +116,18 @@ class CloudBaseLSTM(pl.LightningModule):
             # print(resid.size())
             resid = self.scale_input_layer(resid)
             # print(resid.size())
-            resid = torch.squeeze(resid)
+            resid = torch.swapaxes(resid,1,2)
             # print(resid.size())
             # print(lstm_out.size())
             lstm_out = resid + lstm_out
-            
         
-        nn_out = self.linearCap(lstm_out)
+        if self.linear_cap:
+            lstm_out = torch.flatten(lstm_out, start_dim=1)
+            nn_out = self.cap_layer(lstm_out)
+        else:
+            lstm_out = torch.swapaxes(lstm_out,1,2)
+            nn_out = self.cap_layer(lstm_out).squeeze()
+            nn_out = torch.flatten(nn_out, start_dim=1)
             
         return nn_out
     

@@ -13,4 +13,4 @@ __pycache__
 *.png
 *.db
 *.html
-
+*.out

@@ -115,6 +115,8 @@ class CBH_DataModule(pl.LightningDataModule):
                  shuffle = False,
                  randomize_chunkwise = False,
                  method='1chunk',
+                 val_batch_size=2080,
+                 data_limit=-1,
                 ):
         super().__init__()
         
@@ -122,14 +124,18 @@ class CBH_DataModule(pl.LightningDataModule):
         
         global THREAD_COUNT_FOR_DASK
         THREAD_COUNT_FOR_DASK = thread_count_for_dask
+        if data_limit > 0:
+            train_data_ind = tr_data_x.chunksize[0] * data_limit
+        else:
+            train_data_ind = len(tr_data_x)
         self.dataloader_workers = num_workers
-        
+        self.val_batch_size = val_batch_size
         self.batch_size = batch_size
         self.shuffle_train = shuffle
         self.collate_fn = collate_fn
         
-        self.train_data_x = tr_data_x
-        self.train_data_y = tr_cloud_base_label
+        self.train_data_x = tr_data_x[0:train_data_ind]
+        self.train_data_y = tr_cloud_base_label[0:train_data_ind]
         self.randomize_chunkwise = randomize_chunkwise
         
         self.val_data_x = val_data_x
@@ -154,7 +160,7 @@ class CBH_DataModule(pl.LightningDataModule):
         return torch.utils.data.DataLoader(self.train_dset, batch_size=self.batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
     
     def val_dataloader(self):
-        return torch.utils.data.DataLoader(self.val_dset, batch_size=self.batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
+        return torch.utils.data.DataLoader(self.val_dset, batch_size=self.val_batch_size, shuffle=self.shuffle_train, num_workers = self.dataloader_workers, collate_fn=self.collate_fn)
 
 class CBH_Dataset_Load_One_Chunk(torch.utils.data.Dataset):
     def __init__(self, data_x, cloud_base_label, randomize_chunkwise = False, threads=None):

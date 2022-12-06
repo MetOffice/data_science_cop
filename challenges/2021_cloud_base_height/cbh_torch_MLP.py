@@ -3,7 +3,7 @@ import torch
 
 # define MLP
 class CloudBaseMLP(pl.LightningModule):
-    def __init__(self, input_size, ff_nodes, output_size, layer_num, activation, lr=2e-3):
+    def __init__(self, input_size, ff_nodes, output_size, layer_num, activation, lr=2e-3, norm_method = None, norm_mat_mean = None, norm_mat_std = None):
         super().__init__()
         
         if activation == "relu" :
@@ -13,7 +13,6 @@ class CloudBaseMLP(pl.LightningModule):
         self.ff_nodes = ff_nodes
         self.input_size = input_size
         self.output_size = output_size
-        self.layer_norm = torch.nn.LayerNorm((input_size))
         
         #init modellayers
         self.linears = torch.nn.ModuleList([])
@@ -32,15 +31,29 @@ class CloudBaseMLP(pl.LightningModule):
         self.normalize_outputs = torch.nn.Softmax()
 
         self.crossentropy_loss = torch.nn.CrossEntropyLoss()
+        self.norm_method = norm_method
 
         self.lr = lr
 
         self.save_hyperparameters()  # save hyperparameters for model checkpointing
+        
+        if self.norm_method == 'p_l_p_f' or self.norm_method == 'p_f':
+            self.norm_mat_mean = norm_mat_mean
+            self.norm_mat_std = norm_mat_std
 
     def forward(self, x):
         
-        # layernorm
-        x = self.layer_norm(x)
+        if self.norm_method == 'p_l_p_f' or self.norm_method == 'p_f':
+            x = torch.subtract(x, self.norm_mat_mean)
+            x = torch.div(x, self.norm_mat_std)
+        elif self.norm_method == 'layer_relative':
+            norm_mean = torch.mean(x, axis = 1, keepdims=True)
+            nord_std = torch.std(x, axis = 1, keepdims=True)
+            x = torch.sub(x, norm_mean)
+            x = torch.div(x, nord_std)
+        else:
+            print("Error norm")
+            raise Exception()
         
         for layer in self.linears:
             x = layer(x)
