@@ -1,4 +1,4 @@
-name: py-lightning
+name: py-lightning-cbh
 channels:
   - https://conda.anaconda.org/pytorch
   - conda-forge
@@ -11,10 +11,14 @@ dependencies:
   - mlflow
   - dask
   - pandas
+  - matplotlib
   - zarr
+  - iris
   - numpy
   - rich>=10.2.2
   - optuna
-  - ray-tune
+  - pip
+  - pip:
+      - ray[tune]
 
   
