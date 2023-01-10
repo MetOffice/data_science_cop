@@ -1,11 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# Make initializations
-
-# In[1]:
-
-
 import cbh_data_definitions
 import pathlib
 import os
@@ -31,11 +23,6 @@ import datetime
 import cbh_torch_MLP
 import cbh_torch_lstm
 
-
-# In[2]:
-
-
-# intialize some settings: mlflow, data directory, resources
 root_data_directory = pathlib.Path(os.environ["SCRATCH"]) / "cbh_data"
 
 dev_data_path = root_data_directory / "analysis_ready" / "dev_randomized.zarr"
@@ -51,13 +38,6 @@ mlflow_artifact_root = pathlib.Path('./mlflow_artifacts/')
 
 hparams_for_mlflow = {}
 
-
-# redefine data
-
-# In[3]:
-
-
-# init data
 (
     train_input,
     train_labels,
@@ -70,26 +50,12 @@ hparams_for_mlflow = {}
     _
 ) = cbh_data_definitions.load_data_from_zarr(dev_data_path)
 
-# the cloud volume is not needed for the task, so isn't saved on the load
-# show a chunk
 train_input
 
-
-# In[4]:
-
-
-# limit the data by a factor for less data in a tuning trial
 factors_of_chunk = [n for n in range(1, train_input.chunksize[0] + 1) if train_input.chunksize[0] % n == 0]
 print("Factors of chunk: ", factors_of_chunk)
 hparams_for_mlflow['Limited sample number'] =  -1
 
-
-# setup study
-
-# In[5]:
-
-
-# DEFINE ALL SETTINGS FOR TRAINING, includes hparam space
 experiment_name = 'cbh-hparam-tuning'
 CPU_COUNT = 20
 RAM_GB = 150
@@ -99,10 +65,10 @@ thread_count_for_dask = CPU_COUNT
 dataset_method = '1chunk'
 randomize_chunkwise_1chunk = False
 shuffle_train_data = False
-collate_fn = None # alt: cbh_data_definitions.dataloader_collate_with_dask
-num_workers_dataloader = 0 # alt: CPU_COUNT +-
+collate_fn = None 
+num_workers_dataloader = 0 
 global_trail_number = 0
-max_time_for_trial = "00:11:50:00"  # dd:hh:mm:ss
+max_time_for_trial = "00:11:50:00"  
 hparams_for_mlflow["Training timeout"] = max_time_for_trial
 
 max_node_num_exclusive = 513
@@ -149,51 +115,24 @@ p_l_p_f_m = np.load("./per_level_per_feat_mean.npz")
 p_l_p_f_s = np.load("./per_level_per_feat_std.npz")
 p_f_m = np.load("./per_feat_mean.npz")
 p_f_s = np.load("./per_feat_std.npz")
-p_l_p_f_s += 5.0e-12 # prevent divide by 0
+p_l_p_f_s += 5.0e-12 
 layer_pattern = 'layer_node_number_{layer_num}_div_8'
 for layer_num in range(max_layers):
     mlp_search_space[layer_pattern.format(layer_num=layer_num)] = tune.randint(1,int(max_node_num_exclusive/8))
 print(mlp_search_space)
 
-
-# In[6]:
-
-
-class MLFlowLogger(pl.loggers.MLFlowLogger): #overwrite mlflogger
+class MLFlowLogger(pl.loggers.MLFlowLogger): 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
-    # def after_save_checkpoint(self, model_checkpoint: pl.callbacks.ModelCheckpoint) -> None:
-    #     """
-    #     Called after model checkpoint callback saves a new checkpoint.
-    #     """
-    #     best_chkpt = torch.load(model_checkpoint.best_model_path)
-    #     checkpoint_for_mlflow = {
-    #         "val loss": float(best_chkpt['callbacks'][list(key for key in list(best_chkpt['callbacks'].keys()) if "ModelCheckpoint" in key)[0]]['current_score']),
-    #         # "train loss at step-1": list(train_loss_metric.value for train_loss_metric in self._mlflow_client.get_metric_history(run.info.run_id, "Train loss") if (int(train_loss_metric.step) == int(best_chkpt['global_step']-1)))[0],
-    #         "global_step": best_chkpt['global_step'],
-    #         "model_state_dict": best_chkpt['state_dict'],
-    #         "checkpoint": best_chkpt,
-    #     }
-    #     print("Save Success")
-    #     with TemporaryDirectory() as tmpdirname:
-    #         f_name = os.path.join(tmpdirname, f"best_model_checkpoint-step_{best_chkpt['global_step']}.pt")
-    #         torch.save(checkpoint_for_mlflow, f_name)
-    #         mlflow.log_artifact(f_name)
-    #     print("Save end")
-
-
-# In[7]:
-
-
 verbose_objective = False
-# @mlflow_mixin
+
 def objective(ray_config):
     
     warnings.filterwarnings("ignore")
     
     mlflow.set_tracking_uri(mlflow_server_uri)
-    # make vars global
+    
     mlf_exp = None
     mlf_exp_id = None
     try: 
@@ -220,7 +159,7 @@ def objective(ray_config):
         val_batch_size=6400,
         data_limit=ray_config['data_limit']
     )
-    #def model
+    
     if ray_config['arch_name'] == "MLP":
         ff_nodes_strings = []
         for key in ray_config:
@@ -273,12 +212,12 @@ def objective(ray_config):
     current_run_name = run_name_template.format(network_name=model.__class__.__name__,
                                                     dt=datetime.datetime.now()
                                                    )
-    # begin mlflow experiment run
+    
     with mlflow.start_run(experiment_id=mlf_exp.experiment_id, run_name=current_run_name) as run:
         mlflow.pytorch.autolog()
         mlf_logger = MLFlowLogger(experiment_name=experiment_name, tracking_uri=mlflow_server_uri, run_id=run.info.run_id)
         if verbose_objective: print("Finished init logger")
-        # define trainer
+        
         time_for_checkpoint = ray_config['chkpt_time']
         checkpoint_callback = pl.callbacks.ModelCheckpoint(
             train_time_interval=time_for_checkpoint,
@@ -298,16 +237,16 @@ def objective(ray_config):
                 "val_loss_mean", min_delta=0.0, patience=40,
                 divergence_threshold=30.
             ),
-        ] # rich progress bar does not show on tune.   set default to 0 to prevent multiple lines of output (tracking done in mlflow)
+        ] 
         
         if verbose_objective: print("Finished define callbacks")
         trainer_hparams = {
             'max_epochs':ray_config['epoch'],
             'deterministic':ray_config['deterministic'],
-            'val_check_interval':0.01, # val every percentage of the epoch or an INT for after a number of batches
+            'val_check_interval':0.01, 
             'devices':"auto",
             'accelerator':"auto",
-            'max_time':ray_config['max_time'], ## Don't give tuning maxtime, as rewards favor low batch size / small networks able to perform more steps in the given time
+            'max_time':ray_config['max_time'], 
             'replace_sampler_ddp':False,
             'enable_checkpointing':True,
             'strategy':None,
@@ -327,19 +266,11 @@ def objective(ray_config):
         path_to_save = '{dt.year:04d}{dt.month:02d}{dt.day:02d}-{dt.hour:02d}{dt.minute:02d}{dt.second:02d}'.format(dt=datetime.datetime.now())
         trainer.save_checkpoint(filepath=run.info.artifact_uri + f'/post_epoch_modelchkpt_{path_to_save}')
 
-
-# In[8]:
-
-
 import warnings
 warnings.filterwarnings("ignore")
 
-
-# In[11]:
-
-
 searcher = OptunaSearch(metric=["val_loss_mean"], mode=["min"])
-max_concurrent_trails = CPU_COUNT-2#int(CPU_COUNT*(3/4))#1
+max_concurrent_trails = CPU_COUNT-2
 algo = ConcurrencyLimiter(searcher, max_concurrent=max_concurrent_trails)
 num_hparam_trials = 500
 
@@ -357,10 +288,3 @@ tuner = tune.Tuner(
     param_space=lstm_search_space,
 )
 results = tuner.fit()
-
-
-# ensure mlflow
-
-# run study
-
-# eval
