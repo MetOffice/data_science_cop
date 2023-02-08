@@ -3,11 +3,11 @@ channels:
   - https://conda.anaconda.org/pytorch
   - conda-forge
 dependencies:
-  - pytorch-lightning>=1.0.5,<=1.7.7
+  - pytorch-lightning>=1.0.5,<=1.8.5
   - pytorch
   - python
   - jupyterlab
-  - mlflow
+  - mlflow>1.29
   - dask
   - pandas
   - matplotlib
