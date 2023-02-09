@@ -15,6 +15,7 @@ dependencies:
   - iris
   - numpy
   - rich>=10.2.2
+  - tqdm
   - optuna
   - pip
   - pip:

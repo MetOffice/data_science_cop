@@ -1,5 +1,6 @@
 import torch
 import pytorch_lightning as pl
+import warnings
 
 
 # define RNN
@@ -24,6 +25,7 @@ class CloudBaseLSTM(pl.LightningModule):
                                   proj_size=output_size
                                  )
         if backward_lstm_differing_transitions:
+            warnings.warn("Warning: bad practice implementation")
             self.LSTM_downward = torch.nn.LSTM(
                                       input_size+embed_size, 
                                       lstm_hidden_size, 
@@ -41,7 +43,7 @@ class CloudBaseLSTM(pl.LightningModule):
         else:
             self.proj_size = output_size
             
-        self.backward_lstm_differing_transitions = backward_lstm_differing_transitions
+        self.backward_lstm_differing_transitions = backward_lstm_differing_transitions # 
         self.height_dim = height_dimension
         self.height_embedding = torch.nn.Embedding(height_dimension, embed_size)
         self.BILSTM = BILSTM
