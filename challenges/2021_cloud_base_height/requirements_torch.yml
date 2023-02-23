@@ -16,8 +16,13 @@ dependencies:
   - numpy
   - rich>=10.2.2
   - tqdm
+  - iprogress
+  - ipywidgets
+  - jupyter
   - optuna
   - pip
+  - scikit-learn
+  - mo_pack
   - pip:
       - ray[tune]
 
