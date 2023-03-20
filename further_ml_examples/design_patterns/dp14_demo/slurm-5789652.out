@@ -1,7 +1,0 @@
-2023-03-20 13:15:41.627112: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2023-03-20 13:15:43.208636: I tensorflow/tsl/cuda/cudart_stub.cc:28] Could not find cuda drivers on your machine, GPU will not be used.
-2023-03-20 13:15:43.210346: I tensorflow/core/platform/cpu_feature_guard.cc:182] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
-To enable the following instructions: AVX2 FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2023-03-20 13:16:00.446513: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
-2023-03-20 13:16:21.294344: I tensorflow/core/distributed_runtime/rpc/grpc_server_lib.cc:450] Started server with target: grpc://10.192.10.23:19172
-slurmstepd: error: *** JOB 5789652 ON expspicesrv027 CANCELLED AT 2023-03-20T13:17:52 ***
