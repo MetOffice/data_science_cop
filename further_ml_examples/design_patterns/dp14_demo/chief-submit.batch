@@ -1,0 +1,10 @@
+#!/bin/bash -l
+#SBATCH --qos=normal
+#SBATCH --mem=8G
+#SBATCH --ntasks=4
+#SBATCH --time=298
+
+conda activate piptf
+
+python3 tfdist-chief.py > chief_output.out
+
