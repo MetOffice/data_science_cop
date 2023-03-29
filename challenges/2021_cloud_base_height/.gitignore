@@ -1,0 +1,16 @@
+mlruns
+mlflow_artifacts
+lightning_logs
+DUPLICATE_*
+testing*
+*.txt
+*.json
+__pycache__
+*.h5
+*.nc
+*.pth
+*.ckpt
+*.png
+*.db
+*.html
+*.out

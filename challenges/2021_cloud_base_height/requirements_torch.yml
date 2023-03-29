@@ -1,0 +1,29 @@
+name: py-lightning-cbh
+channels:
+  - https://conda.anaconda.org/pytorch
+  - conda-forge
+dependencies:
+  - pytorch-lightning>=1.0.5,<=1.8.5
+  - pytorch
+  - python
+  - jupyterlab
+  - mlflow>1.29
+  - dask
+  - pandas
+  - matplotlib
+  - zarr
+  - iris
+  - numpy
+  - rich>=10.2.2
+  - tqdm
+  - iprogress
+  - ipywidgets
+  - jupyter
+  - optuna
+  - pip
+  - scikit-learn
+  - mo_pack
+  - pip:
+      - ray[tune]
+
+  
