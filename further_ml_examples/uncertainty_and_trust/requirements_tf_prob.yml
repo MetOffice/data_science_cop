@@ -1,0 +1,16 @@
+name: pip-tfprob
+channels:
+  - defaults
+dependencies:
+  - ipywidgets
+  - python=3.8
+  - jupyterlab
+  - ipykernel
+  - pandas=1.5
+  - matplotlib=3.4
+  - tensorflow=2.9
+  - scikit-learn=1.2
+  - tensorflow-datasets
+  - keras-applications
+  - tensorflow-probability
+  - jaxlib

@@ -1,0 +1,16 @@
+name: pip-skexplain
+channels:
+  - conda-forge
+dependencies:
+  - scikit-explain
+  - iris=3.4
+  - imbalanced-learn
+  - jupyterlab
+  - pandas=1.5
+  - python=3.8
+  - mlflow=2.1
+  - ipywidgets
+  - scikit-learn=1.2
+  - xarray=2023
+  - ipykernel
+  - xgboost=1.7

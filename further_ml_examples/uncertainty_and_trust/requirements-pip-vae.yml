@@ -1,0 +1,8 @@
+name: pip-vae
+channels:
+  - conda-forge
+dependencies:
+  - python=3.8
+  - tensorflow=2.7
+  - matplotlib=3.4
+  - pandas=1.3

@@ -1,0 +1,14 @@
+name: pip-sklearn
+channels:
+  - conda-forge
+dependencies:
+  - python=3.10
+  - jupyterlab
+  - ipywidgets
+  - ipykernel
+  - mlflow=2.1
+  - pandas=1.5
+  - xarray=2023
+  - iris=3.4
+  - scikit-learn=1.2
+  - imbalanced-learn

@@ -1,0 +1,16 @@
+name: pip-tf
+channels:
+  - conda-forge
+dependencies:
+  - ipywidgets
+  - python=3.8
+  - jupyterlab
+  - ipykernel
+  - pandas=1.5
+  - matplotlib=3.4
+  - scikit-learn=1.2
+  - tensorflow=2.9
+  - tensorboard=2.9
+  - mlflow=2.1
+  - tensorflow-datasets
+  - keras-applications
