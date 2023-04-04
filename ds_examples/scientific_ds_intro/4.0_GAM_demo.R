@@ -9,7 +9,7 @@ library(data.table)
 setwd('~/Documents/DataScienceCoP')
 
 # Load in demand and weather data frame
-load('Data.RData')
+load('Data/Data.RData')
 
 # Look at dataframe
 head(Data)
