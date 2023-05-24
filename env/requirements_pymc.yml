@@ -240,4 +240,3 @@ dependencies:
   - zipp=3.11.0=py311h06a4308_0
   - zlib=1.2.13=h5eee18b_0
   - zstd=1.5.5=hc292b87_0
-prefix: /net/data/users/hsteptoe/miniconda3/envs/data-science-cop-pymc
