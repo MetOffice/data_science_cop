@@ -50,6 +50,7 @@ Each environment has a focus on a particular technology, below lists the existin
 + `requirements_tensorflow-probability.yml`: [Tensorflow's Probability](https://www.tensorflow.org/probability/)
 + `requirements_tensorflow.yml`: [Tensorflow](https://www.tensorflow.org/)
 + `requirements_xgboost.yml`: [XGBoost](https://xgboost.ai/)
++ `requirements_pymc.yml`: [PyMC](https://www.pymc.io/welcome.html) and [ArviZ](https://python.arviz.org/en/stable/)
 
 ## Use on Met Office systems
 
