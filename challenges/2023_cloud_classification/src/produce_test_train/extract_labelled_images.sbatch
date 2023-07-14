@@ -3,9 +3,7 @@
 #SBATCH --mem=8000
 #SBATCH --output=src/sbatch/o/extract_lab_img_%a.out
 #SBATCH --error=src/sbatch/e/extract_lab_img_%a.err
-#SBATCH --time=240
-#SBATCH --mail-user=michael.eastman@metoffice.gov.uk
-#SBATCH --mail-type=ALL
+#SBATCH --time=240s
 
 module load scitools
 
