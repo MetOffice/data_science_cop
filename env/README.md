@@ -51,6 +51,7 @@ Each environment has a focus on a particular technology, below lists the existin
 + `requirements_tensorflow.yml`: [Tensorflow](https://www.tensorflow.org/)
 + `requirements_xgboost.yml`: [XGBoost](https://xgboost.ai/)
 + `requirements_pymc.yml`: [PyMC](https://www.pymc.io/welcome.html) and [ArviZ](https://python.arviz.org/en/stable/)
++ `requirements_cloud_class.yml`: [Cloud Classification Challenge](https://github.com/MetOffice/data_science_cop/tree/understanding-clouds-challenge/challenges/2023_cloud_classification)
 
 ## Use on Met Office systems
 
