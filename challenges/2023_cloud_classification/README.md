@@ -9,6 +9,12 @@ A set of 224x224 images that consist of a single class have been extracted, and 
 test sets. These will be used to train image classification algorithms that can be evaluated against the test images
 using a provided script. 
 
+__Environment__
+
+The environment file describing the environment used to execute all the code in this subdirectory can be found here: 
+
+/data_science_cop/env/requirements_cloud_class.yml
+
 This repository contains the following code:
 
 __src/produce_test_train__
@@ -19,12 +25,5 @@ __src/example_code__
 
 Examples of image classification algorithms that may be used to develop classifiers
 
-__src/evaluate__
-
-Script for evaluating classification of test image set
-
-__TODO:__ 
-- Produce example classification script
-- Produce scoring script
-- Create and set universal environment
+__TODO:__
 - Add links to sharepoint, kick off meeting, monthly catchups, etc.
