@@ -2,19 +2,16 @@ name: data-science-cop-tf
 channels:
   - conda-forge
 dependencies:
-  - python=3.8
+  - python=3.12
   - jupyterlab
-  - ipywidgets
-  - ipykernel
-  - dask-labextension
-  - dask-ml
-  - mlflow
-  - pandas
-  - xarray
-  - iris
+  - mlflow=2.22
+  - pandas=2.2
+  - xarray=2025.4
+  - iris=3.12
   - cartopy
-  - scikit-learn
+  - keras=3.10
+  - scikit-learn=1.6
   - tensorflow
-  - tensorboard
   - tf2onnx
+  - onnx
 
