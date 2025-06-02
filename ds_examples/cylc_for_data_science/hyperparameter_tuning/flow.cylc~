@@ -1,0 +1,58 @@
+#!Jinja2
+
+[meta]
+    title = Hyperparameter training
+    description = """
+        A basic training workflow, with one epoch per task, each  cycling workflow which runs the same set of tasks over
+        and over. Each cycle will be given an integer number.training
+    """
+
+{% set checkpoint_dir = '/path/to_check/points/' %}
+{% set num_epochs = '10' %}
+
+[task parameters]
+      num_layers = 2,4,6
+      learning rate = 0.001, 0.002, 0.005
+      
+[scheduling]
+    # tell Cylc to count cycles as numbers starting from the number 1
+    cycling mode = integer
+    initial cycle point = 1
+    runhead limit = P4
+    final cycle point = {{ num_epochs }}
+    [[graph]]
+	R1 = """
+	   get_data => train_epoch<num_layers><learning_rate>
+	"""
+
+	P1 = """
+	   train_epoch<num_layers><learning_rate>[-P1] => train_epoch<num_layers><learning_rate>
+"""
+
+[runtime]
+
+    [[root]]
+        platform = spice
+	execution time limit = PT10M
+	[[[directives]]]
+	    --mem = 2G
+	    --ntasks = 2
+	    --qos = normal
+
+    [[get_data]]
+	script = """
+	    #!/usr/bin/env bash
+       	    get_data
+        """
+
+    [[train_epoch<num_layers><learning_rate>]]
+	script = """
+	    #!/usr/bin/env bash
+       	    train_epoch --num-layers ${CYLC_TASK_PARAM_num_layers} --learning-rate ${CYLC_TASK_PARAM_learning_rate} --checkpoint_dir {{checkpoint_dir }}
+        """
+
+	# adding directives specific to training task, as we would expect the training task to be much more resource intense, and so a longer duration, more memory, more processors etc. should be requested.	execution time limit = PT15M
+	[[[directives]]]
+	    --mem = 4G
+	    --ntasks = 2
+	    --qos = normal

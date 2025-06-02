@@ -1,0 +1,17 @@
+#!/usr/bin/env python
+
+import argparse
+import pathlib
+
+def get_args():
+    parser1 = argparse.ArgumentParser()
+    parser1.add_argument('src_dir',help='source directory for data',type=pathlib.Path)
+    parser1.add_argument('dest_path',help='fsspec path to the dest dir.')
+    cmd_args = parser1.parse_args()
+    return cmd_args
+    
+def main():
+    cmd_args = get_args()
+    print(f'transferring data from {str(cmd_args.src_dir)} to {cmd_args.dest_path}')
+
+main()

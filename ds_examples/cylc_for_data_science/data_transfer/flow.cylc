@@ -1,0 +1,38 @@
+#!Jinja2
+
+[meta]
+    title="Cylc Workflow to run dummy data transfer workflow."
+
+{% set trigger_time = 'T04:00Z' %}
+{% set trigger_offset = 'PT5M' %}
+{% set data_src = '/path/to/data/src' %}
+{% set data_remote_dest = 's3://remote_bucket/dest_dir' %}
+
+[scheduling]
+    initial cycle point = previous({{ trigger_time }})
+    [[xtriggers]]
+        fivepast_trigger = wall_clock(offset={{ trigger_offset }})
+
+    [[graph]]
+        P1D = """
+        @fivepast_trigger => transfer_data
+        """
+
+[runtime]
+    [[root]]
+        platform = spice
+        execution time limit = PT10M
+        [[[directives]]]
+            --mem = 2G
+            --ntasks = 1
+            --qos = normal
+
+    [[transfer_data]]
+	script = """
+     	    #!/usr/bin/env bash
+	    module load scitools
+	    transfer_data ${DATA_SRC} ${DATA_DEST}
+        """
+	[[[environment]]]
+	    DATA_SRC = {{data_src}}
+	    DATA_DEST = {{data_remote_dest}}

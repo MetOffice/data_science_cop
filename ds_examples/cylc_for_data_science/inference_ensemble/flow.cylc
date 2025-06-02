@@ -1,0 +1,72 @@
+#!Jinja2
+
+[meta]
+    title="Cylc Workflow to run dummy ML ensemble modelling workflow."
+
+{% set start_date = '20250201T0000Z' %}
+{% set end_date  = '20250203T0000Z' %}
+{% set cycle_period = 'PT12H' %}
+
+[scheduling]
+        initial cycle point = {{ start_date }}
+        final cycle point = {{ end_date }}
+
+    [[graph]]
+	{{ cycle_period }} = """
+        retrieve_data => prepare_data
+	prepare_data => RUN_INFERENCE_BASE
+	RUN_INFERENCE_BASE:succeed-all => evaluate_results
+	RUN_INFERENCE_BASE:succeed-all => visualise_results
+        """
+[task parameters]
+      member_num = 1..5
+
+
+[runtime]
+
+    [[root]]
+        platform = spice
+	execution time limit = PT10M
+	[[[directives]]]
+	    --mem = 2G
+	    --ntasks = 2
+	    --qos = normal
+	
+    [[retrieve_data]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    retrieve_data
+        """
+	
+    [[prepare_data]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    prepare_data
+        """
+
+    [[RUN_INFERENCE_BASE]]
+	
+    [[run_inference<member_num>]]
+	inherit = RUN_INFERENCE_BASE
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    run_inference --member-num ${CYLC_TASK_PARAM_member_num}
+        """
+    
+    [[evaluate_results]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    evaluate_results
+        """
+    
+    [[visualise_results]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    visualise_results
+        """
+    

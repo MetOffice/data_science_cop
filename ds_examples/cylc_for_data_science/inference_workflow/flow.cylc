@@ -1,0 +1,67 @@
+#!Jinja2
+
+[meta]
+    title="Cylc Workflow to run dummy ML modelling workflow."
+
+{% set start_date = '20250201T0000Z' %}
+{% set end_date  = '20250203T0000Z' %}
+{% set cycle_period = 'PT12H' %}
+
+[scheduling]
+        initial cycle point = {{ start_date }}
+        final cycle point = {{ end_date }}
+
+    [[graph]]
+	{{ cycle_period }} = """
+        retrieve_data => prepare_data
+	prepare_data => run_inference
+	run_inference => evaluate_results
+	run_inference => visualise_results
+        """
+
+
+[runtime]
+
+    [[root]]
+        platform = spice
+	execution time limit = PT10M
+	[[[directives]]]
+	    --mem = 2G
+	    --ntasks = 2
+	    --qos = normal
+	
+    [[retrieve_data]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    retrieve_data
+        """
+	
+    [[prepare_data]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    prepare_data
+        """
+    
+    [[run_inference]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    run_inference
+        """
+    
+    [[evaluate_results]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    evaluate_results
+        """
+    
+    [[visualise_results]]
+	script = """
+            #!/usr/bin/env bash
+            module load scitools
+	    visualise_results
+        """
+    

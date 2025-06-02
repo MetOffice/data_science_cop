@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import argparse
+import pathlib
+
+def get_args():
+    parser1 = argparse.ArgumentParser()
+    parser1.add_argument('--member-num',dest='member_num',help='the member num to be used in running the model',type=int)
+    cmd_args = parser1.parse_args()
+    return cmd_args
+    
+def main():
+    cmd_args = get_args()
+    print(f'running inference for member {cmd_args.member_num} in the ensemble')
+
+main()

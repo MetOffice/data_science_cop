@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+def get_args():
+    parser1 = argparse.ArgumentParser()
+    parser1.add_argument('epoch_num',type=int)
+    parser1.add_argument('--checkpoint-dir'dest='checkpoint_dir',help='location of checkpoints',type=pathlib.Path)
+    parser1.add_argument('--num-layers',dest='num_layers',help='hyperparameter - number of layers for NN', type=int)
+    parser1.add_argument('--learning-rate',dest='learning_rate',help='hyperparameter - learning rate for training for NN', type=float)
+    cmd_args = parser1.parse_args()
+    return cmd_args
+    
+def main():
+    cmd_args = get_args()
+    print(f'training model, epoch {epoch_num}')
+    print(f'hyperparamters: number of layers = {cmd_args.num_layers}')
+    print(f'hyperparamters: learning rate = {cmd_args.learning_rate}')    
+    if epoch_num ==1:
+        print('first epoch, training from cold start initialisation of weights.')
+    else:
+	print(f'training from warm start from weight in {cmd_args.checkpoint_dir})
+
+main()
