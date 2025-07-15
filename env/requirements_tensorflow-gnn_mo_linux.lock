@@ -1,0 +1,296 @@
+# This file may be used to create an environment using:
+# $ conda create --name <env> --file <this file>
+# platform: linux-64
+@EXPLICIT
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/_libgcc_mutex-0.1-conda_forge.tar.bz2#d7c89558ba9fa0495403155b64376d81
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/ca-certificates-2024.7.4-hbcca054_0.conda#23ab7665c5f63cfb9f1f6195256daac6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/ld_impl_linux-64-2.40-hf3520f5_7.conda#b80f2f396ca2c28b8c14c437a4ed1e74
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/python_abi-3.10-4_cp310.conda#26322ec5d7712c3ded99dd656142b8ce
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/tzdata-2024a-h0c530f3_0.conda#161081fc7cec0bfda0d86d7cb595f8d8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libgomp-14.1.0-h77fa898_0.conda#ae061a5ed5f05818acdf9adab72c146d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/_openmp_mutex-4.5-2_gnu.tar.bz2#73aaf86a425cc6e73fcf236a5a46396d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libgcc-ng-14.1.0-h77fa898_0.conda#ca0fad6a41ddaef54a153b78eccb5037
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/bzip2-1.0.8-h4bc722e_7.conda#62ee74e96c5ebb0af99386de58cf9553
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/c-ares-1.32.3-h4bc722e_0.conda#7624e34ee6baebfc80d67bac76cc9d9d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/keyutils-1.6.1-h166bdaf_0.tar.bz2#30186d27e2c9fa62b45fb1476b7200e3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libbrotlicommon-1.1.0-hd590300_1.conda#aec6c91c7371c26392a06708a73c70e5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libdeflate-1.20-hd590300_0.conda#8e88f9389f1165d7c0936fe40d9a9a79
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libev-4.33-hd590300_2.conda#172bf1cd1ff8629f2b1179945ed45055
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libexpat-2.6.2-h59595ed_0.conda#e7ba12deb7020dd080c6c70e7b6f6a3d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libffi-3.4.2-h7f98852_5.tar.bz2#d645c6d2ac96843a2bfaccd2d62b3ac3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libgfortran5-14.1.0-hc5f4f2c_0.conda#6456c2620c990cd8dde2428a27ba0bc5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libiconv-1.17-hd590300_2.conda#d66573916ffcf376178462f1b61c941e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libjpeg-turbo-3.0.0-hd590300_1.conda#ea25936bb4080d843790b586850f82b8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libnsl-2.0.1-hd590300_0.conda#30fd6e37fe21f86f4bd26d6ee73eeec7
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libsodium-1.0.18-h36c2ea0_1.tar.bz2#c3788462a6fbddafdb413a9f9053e58d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libstdcxx-ng-14.1.0-hc0a3c3a_0.conda#1cb187a157136398ddbaae90713e2498
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libuuid-2.38.1-h0b41bf4_0.conda#40b61aab5c7ba9ff276c41cfffe6b80b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libwebp-base-1.4.0-hd590300_0.conda#b26e8aa824079e1be0294e7152ca4559
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libxcrypt-4.4.36-hd590300_1.conda#5aa797f8787fe7a17d1b0821485b5adc
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libzlib-1.3.1-h4ab18f5_1.conda#57d7dc60e9325e3de37ff8dffd18e814
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/ncurses-6.5-h59595ed_0.conda#fcea371545eda051b6deafb24889fc69
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/openssl-3.3.1-h4bc722e_2.conda#e1b454497f9f7c1147fdde4b53f1b512
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pthread-stubs-0.4-h36c2ea0_1001.tar.bz2#22dad4df6e8630e8dff2428f6f6a7036
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/xorg-libxau-1.0.11-hd590300_0.conda#2c80dc38fface310c9bd81b17037fee5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/xorg-libxdmcp-1.1.3-h7f98852_0.tar.bz2#be93aabceefa2fac576e971aef407908
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/xxhash-0.8.2-hd590300_0.conda#f08fb5c89edfc4aadee1c81d4cfb1fa1
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/xz-5.2.6-h166bdaf_0.tar.bz2#2161070d867d1b1204ea749c8eec4ef0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/yaml-0.2.5-h7f98852_2.tar.bz2#4cb3ad778ec2d5a7acbdf254eb1c42ae
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/geos-3.12.2-he02047a_1.conda#aab9195bc018b82dc77a84584b36cce9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/hdf4-4.2.15-h2a13503_7.conda#bd77f8da987968ec3927990495dc22e4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/icu-75.1-he02047a_0.conda#8b189310083baabfb622af68fd9d3ae3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/lerc-4.0.0-h27087fc_0.tar.bz2#76bbff344f0134279f225174e9064c8f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libaec-1.1.3-h59595ed_0.conda#5e97e271911b8b2001a8b71860c32faa
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libbrotlidec-1.1.0-hd590300_1.conda#f07002e225d7a60a694d42a7bf5ff53f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libbrotlienc-1.1.0-hd590300_1.conda#5fc11c6020d421960607d821310fcd4d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libedit-3.1.20191231-he28a2e2_2.tar.bz2#4d331e44109e3f0e19b4cb8f9b82f3e1
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libgfortran-ng-14.1.0-h69a702a_0.conda#f4ca84fbd6d06b0a052fb2d5b96dde41
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libnghttp2-1.58.0-h47da74e_1.conda#700ac6ea6d53d5510591c4344d5c989a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libpng-1.6.43-h2797004_0.conda#009981dd9cfcaa4dbfa25ffaed86bcae
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libsqlite-3.46.0-hde9e2c9_0.conda#18aa975d2094c34aef978060ae7da7d8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libssh2-1.11.0-h0841786_0.conda#1f5a58e686b13bcfde88b93f547d23fe
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libudunits2-2.2.28-h40f5838_3.conda#4bdace082e911a3e1f1f0b721bed5b56
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libxcb-1.16-hd590300_0.conda#151cba22b85a989c2d6ef9633ffee1e4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libzip-1.10.1-h2629f0a_3.conda#ac79812548e7e8cf61f7b0abdef01d3b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/lz4-c-1.9.4-hcb278e6_0.conda#318b08df404f9c9be5712aaa5a6f0bb0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/qhull-2020.2-h434a139_5.conda#353823361b1d27eb3960efb076dfcaf6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/readline-8.2-h8228510_1.conda#47d31b792659ce70f470b5c82fdfb7a4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/snappy-1.2.1-ha2e4443_0.conda#6b7dcc7349efd123d493d2dbe85a045f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/tk-8.6.13-noxft_h4845f30_101.conda#d453b98d9c83e71da0741bb0ff4d76bc
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/zlib-1.3.1-h4ab18f5_1.conda#9653f1bf3766164d0e65fa723cabbc54
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/zstd-1.5.6-ha6fb4c9_0.conda#4d056880988120e29d75bfff282e0f45
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/blosc-1.21.6-hef167b5_0.conda#54fe76ab3d0189acaef95156874db7f9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/brotli-bin-1.1.0-hd590300_1.conda#39f910d205726805a958da408ca194ba
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/freetype-2.12.1-h267a509_2.conda#9ae35c3d96db2c94ce0cef86efdfa2cb
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/krb5-1.21.3-h659f571_0.conda#3f43953b7d3fb3aaa1d0d0723d91e368
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libopenblas-0.3.27-pthreads_hac2b453_1.conda#ae05ece66d3924ac3d48b4aa3fa96cec
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libtiff-4.6.0-h1dd3fc0_3.conda#66f03896ffbe1a110ffda05c7a856504
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libxml2-2.12.7-he7c6b58_4.conda#08a9265c637230c37cb1be4a6cad4536
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/python-3.10.14-hd12c33a_0_cpython.conda#2b4ba962994e8bd4be9ff5b64b75aff2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/sqlite-3.46.0-h6d4b2fc_0.conda#77ea8dff5cf8550cc8f5629a6af56323
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/udunits2-2.2.28-h40f5838_3.conda#6bb8deb138f87c9d48320ac21b87e7a1
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/antlr-python-runtime-4.11.1-pyhd8ed1ab_0.tar.bz2#15109c4977d39ad7aa3423f57243e286
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/attrs-23.2.0-pyh71513ae_0.conda#5e4c0743c70186509d1412e03c2d8dfa
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/brotli-1.1.0-hd590300_1.conda#f27a24d46e3ea7b70a1f98e50c62508f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/brotli-python-1.1.0-py310hc6cd4ac_1.conda#1f95722c94f00b69af69a066c7433714
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/cached_property-1.5.2-pyha770c72_1.tar.bz2#576d629e47797577ab0f1b351297ef4a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/certifi-2024.7.4-pyhd8ed1ab_0.conda#24e7fd6ca65997938fff9e5ab6f653e4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/charset-normalizer-3.3.2-pyhd8ed1ab_0.conda#7f4a9e3fcff3f6356ae99244a014da6a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/click-8.1.7-unix_pyh707e725_0.conda#f3ad426304898027fc619827ff428eca
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/cloudpickle-3.0.0-pyhd8ed1ab_0.conda#753d29fe41bb881e4b9c004f0abf973f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/cycler-0.12.1-pyhd8ed1ab_0.conda#5cd86562580f274031ede6aa6aa24441
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/debugpy-1.8.2-py310h76e45a6_0.conda#285568244bd06fbe2cccf2ee1617f582
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/decorator-5.1.1-pyhd8ed1ab_0.tar.bz2#43afe5ab04e35e17ba28649471dd7364
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/defusedxml-0.7.1-pyhd8ed1ab_0.tar.bz2#961b3a227b437d82ad7054484cfa71b2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/entrypoints-0.4-pyhd8ed1ab_0.tar.bz2#3cf04868fee0a029769bd41f4b2fbf2d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/exceptiongroup-1.2.2-pyhd8ed1ab_0.conda#d02ae936e42063ca46af6cdad2dbd1e0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/executing-2.0.1-pyhd8ed1ab_0.conda#e16be50e378d8a4533b989035b196ab8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/fsspec-2024.6.1-pyhff2d567_0.conda#996bf792cdb8c0ac38ff54b9fde56841
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/hpack-4.0.0-pyh9f0ad1d_0.tar.bz2#914d6646c4dbb1fd3ff539830a12fd71
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/hyperframe-6.0.1-pyhd8ed1ab_0.tar.bz2#9f765cbfab6870c8435b9eefecd7a1f4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/idna-3.7-pyhd8ed1ab_0.conda#c0cc1420498b17414d8617d0b9f506ca
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/json5-0.9.25-pyhd8ed1ab_0.conda#5d8c241a9261e720a34a07a3e1ac4109
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/jsonpointer-3.0.0-py310hff52083_0.conda#e546c847260e094f41d0d2f8d17fcbdd
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/kiwisolver-1.4.5-py310hd41b1e2_1.conda#b8d67603d43b23ce7e988a5d81a7ab79
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/lcms2-2.16-hb7c19ff_0.conda#51bb7010fc86f70eee639b4bb7a894f5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libblas-3.9.0-23_linux64_openblas.conda#96c8450a40aa2b9733073a9460de972c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libcurl-8.9.0-hdb1bdb2_0.conda#5badfbdb2688d8aaca7bd3c98d557b97
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/locket-1.0.0-pyhd8ed1ab_0.tar.bz2#91e27ef3d05cc772ce627e51cff111c4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/markupsafe-2.1.5-py310h2372a71_0.conda#f6703fa0214a00bf49d1bef6dc7672d0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/mistune-3.0.2-pyhd8ed1ab_0.conda#5cbee699846772cc939bef23a0d524ed
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/munkres-1.1.4-pyh9f0ad1d_0.tar.bz2#2ba8498c1018c1e9c61eb99b973dfe19
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/nest-asyncio-1.6.0-pyhd8ed1ab_0.conda#6598c056f64dc8800d40add25e4e2c34
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/networkx-3.3-pyhd8ed1ab_1.conda#d335fd5704b46f4efb89a6774e81aef0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/openjpeg-2.5.2-h488ebb8_0.conda#7f2e286780f072ed750df46dc2631138
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/packaging-24.1-pyhd8ed1ab_0.conda#cbe1bb1f21567018ce595d9c2be0f0db
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pandocfilters-1.5.0-pyhd8ed1ab_0.tar.bz2#457c2c8c08e54905d6954e79cb5b5db9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/parso-0.8.4-pyhd8ed1ab_0.conda#81534b420deb77da8833f2289b8d47ac
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pickleshare-0.7.5-py_1003.tar.bz2#415f0ebb6198cc2801c73438a9fb5761
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pkgutil-resolve-name-1.3.10-pyhd8ed1ab_1.conda#405678b942f2481cecdb3e010f4925d9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/platformdirs-4.2.2-pyhd8ed1ab_0.conda#6f6cf28bf8e021933869bae3f84b8fc9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/prometheus_client-0.20.0-pyhd8ed1ab_0.conda#9a19b94034dd3abb2b348c8b93388035
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/psutil-6.0.0-py310hc51659f_0.conda#b04405826f96f4eb2f502e642d121bb5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/ptyprocess-0.7.0-pyhd3deb0d_0.tar.bz2#359eeb6536da0e687af562ed265ec263
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pure_eval-0.2.3-pyhd8ed1ab_0.conda#0f051f09d992e0d08941706ad519ee0e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pycparser-2.22-pyhd8ed1ab_0.conda#844d9eb3b43095b031874477f7d70088
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pygments-2.18.0-pyhd8ed1ab_0.conda#b7f5c092b8f9800150d998a71b76d5a1
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pyparsing-3.1.2-pyhd8ed1ab_0.conda#b9a4dacf97241704529131a0dfc0494f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pyshp-2.3.1-pyhd8ed1ab_0.tar.bz2#92a889dc236a5197612bc85bee6d7174
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pysocks-1.7.1-pyha2e5f31_6.tar.bz2#2a7de29fb590ca14b5243c4c812c8025
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/python-fastjsonschema-2.20.0-pyhd8ed1ab_0.conda#b98d2018c01ce9980c03ee2850690fab
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/python-json-logger-2.0.7-pyhd8ed1ab_0.conda#a61bf9ec79426938ff785eb69dbb1960
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/python-tzdata-2024.1-pyhd8ed1ab_0.conda#98206ea9954216ee7540f0c773f2104d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/python-xxhash-3.4.1-py310h2372a71_0.conda#b631b889b0b4bc2fca7b8b977ca484b2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pytz-2024.1-pyhd8ed1ab_0.conda#3eeeeb9e4827ace8c0c1419c85d590ad
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pyyaml-6.0.1-py310h2372a71_1.conda#bb010e368de4940771368bc3dc4c63e7
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/rfc3986-validator-0.1.1-pyh9f0ad1d_0.tar.bz2#912a71cc01012ee38e6b90ddd561e36f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/rpds-py-0.19.1-py310h42e942d_0.conda#e475e081b969944abf635b7484b8661e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/send2trash-1.8.3-pyh0d859eb_0.conda#778594b20097b5a948c59e50ae42482a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/setuptools-71.0.4-pyhd8ed1ab_0.conda#ee78ac9c720d0d02fcfd420866b82ab1
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/six-1.16.0-pyh6c4a22f_0.tar.bz2#e5f25f8dbc060e9a8d912e432202afc2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/sniffio-1.3.1-pyhd8ed1ab_0.conda#490730480d76cf9c8f8f2849719c6e2b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/soupsieve-2.5-pyhd8ed1ab_1.conda#3f144b2c34f8cb5a9abd9ed23a39c561
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/threadpoolctl-3.5.0-pyhc1e730c_0.conda#df68d78237980a159bd7149f33c0e8fd
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/tomli-2.0.1-pyhd8ed1ab_0.tar.bz2#5844808ffab9ebdb694585b50ba02a96
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/toolz-0.12.1-pyhd8ed1ab_0.conda#2fcb582444635e2c402e8569bb94e039
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/tornado-6.4.1-py310hc51659f_0.conda#c5a6aac4a1e0989986d9f06b3c2be2a0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/traitlets-5.14.3-pyhd8ed1ab_0.conda#3df84416a021220d8b5700c613af2dc5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/types-python-dateutil-2.9.0.20240316-pyhd8ed1ab_0.conda#7831efa91d57475373ee52fb92e8d137
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/typing_extensions-4.12.2-pyha770c72_0.conda#ebe6952715e1d5eb567eeebf25250fa7
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/typing_utils-0.1.0-pyhd8ed1ab_0.tar.bz2#eb67e3cace64c66233e2d35949e20f92
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/unicodedata2-15.1.0-py310h2372a71_0.conda#72637c58d36d9475fda24700c9796f19
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/uri-template-1.3.0-pyhd8ed1ab_0.conda#0944dc65cb4a9b5b68522c3bb585d41c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/wcwidth-0.2.13-pyhd8ed1ab_0.conda#68f0738df502a14213624b288c60c9ad
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/webcolors-24.6.0-pyhd8ed1ab_0.conda#419f2f6cf90fc7a6feee657752cd0f7b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/webencodings-0.5.1-pyhd8ed1ab_2.conda#daf5160ff9cde3a468556965329085b9
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/websocket-client-1.8.0-pyhd8ed1ab_0.conda#f372c576b8774922da83cda2b12f9d29
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/wheel-0.43.0-pyhd8ed1ab_1.conda#0b5293a157c2b5cd513dd1b03d8d3aae
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/zeromq-4.3.5-h75354e8_4.conda#03cc8d9838ad9dd0060ab532e81ccb21
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/zipp-3.19.2-pyhd8ed1ab_0.conda#49808e59df5535116f6878b2a820d6f4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/anyio-4.4.0-pyhd8ed1ab_0.conda#1fa97c6e8db1f82c64ff17a5efc4ae8e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/asttokens-2.4.1-pyhd8ed1ab_0.conda#5f25798dcefd8252ce5f9dc494d5f571
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/async-lru-2.0.4-pyhd8ed1ab_0.conda#3d081de3a6ea9f894bbb585e8e3a4dcb
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/babel-2.14.0-pyhd8ed1ab_0.conda#9669586875baeced8fc30c0826c3270e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/beautifulsoup4-4.12.3-pyha770c72_0.conda#332493000404d8411859539a5a630865
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/bleach-6.1.0-pyhd8ed1ab_0.conda#0ed9d7c0e9afa7c025807a9a8136ea3e
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/cached-property-1.5.2-hd8ed1ab_1.tar.bz2#9b347a7ec10940d3f7941ff6c460b551
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/cffi-1.16.0-py310h2fee648_0.conda#45846a970e71ac98fd327da5d40a0a2c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/comm-0.2.2-pyhd8ed1ab_0.conda#948d84721b578d426294e17a02e24cbb
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/fonttools-4.53.1-py310h5b4e0ec_0.conda#2c5257cb35d1946f5e80a0cfd69ed7ec
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/h11-0.14.0-pyhd8ed1ab_0.tar.bz2#b21ed0883505ba1910994f1df031a428
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/h2-4.1.0-pyhd8ed1ab_0.tar.bz2#b748fbf7060927a6e82df7cb5ee8f097
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/hdf5-1.14.3-nompi_hdf9ad27_105.conda#7e1729554e209627636a0f6fabcdd115
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/importlib-metadata-8.2.0-pyha770c72_0.conda#c261d14fc7f49cdd403868998a18c318
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/importlib_resources-6.4.0-pyhd8ed1ab_0.conda#c5d3907ad8bd7bf557521a1833cf7e6d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jedi-0.19.1-pyhd8ed1ab_0.conda#81a3be0b2023e1ea8555781f0ad904a2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jinja2-3.1.4-pyhd8ed1ab_0.conda#7b86ecb7d3557821c649b3c31e3eb9f2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/joblib-1.4.2-pyhd8ed1ab_0.conda#25df261d4523d9f9783bcdb7208d872f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/jupyter_core-5.7.2-py310hff52083_0.conda#cb92c27600d5716fd526a206aa43342c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyterlab_pygments-0.3.0-pyhd8ed1ab_1.conda#afcd1b53bcac8844540358e33f33d28f
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libcblas-3.9.0-23_linux64_openblas.conda#eede29b40efa878cbe5bdcb767e97310
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/liblapack-3.9.0-23_linux64_openblas.conda#2af0879961951987e464722fd00ec1e0
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/matplotlib-inline-0.1.7-pyhd8ed1ab_0.conda#779345c95648be40d22aaa89de7d4254
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/overrides-7.7.0-pyhd8ed1ab_0.conda#24fba5a9d161ad8103d4e84c0e1a3ed4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/partd-1.4.2-pyhd8ed1ab_0.conda#0badf9c54e24cecfb0ad2f99d680c163
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pexpect-4.9.0-pyhd8ed1ab_0.conda#629f3203c99b32e0988910c93e77f3b6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pillow-10.4.0-py310hebfe307_0.conda#89d70dfe2d59edcefc3881be6bff33a6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/pip-24.0-pyhd8ed1ab_0.conda#f586ac1e56c8638b64f9c8122a7b8a67
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/proj-9.4.1-hb784bbd_0.conda#c38c5246d064ef16eba065d93c46f1c6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/prompt-toolkit-3.0.47-pyha770c72_0.conda#1247c861065d227781231950e14fe817
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/python-dateutil-2.9.0-pyhd8ed1ab_0.conda#2cf4264fffb9e6eff6031c5b6884d61c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pyzmq-26.0.3-py310h6883aea_0.conda#af2e86793164f8bd11e892142d0faa4c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/referencing-0.35.1-pyhd8ed1ab_0.conda#0fc8b52192a8898627c3efae1003e9f6
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/rfc3339-validator-0.1.4-pyhd8ed1ab_0.tar.bz2#fed45fc5ea0813240707998abe49f520
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/terminado-0.18.1-pyh0d859eb_0.conda#efba281bbdae5f6b0a1d53c6d4a97c93
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/tinycss2-1.3.0-pyhd8ed1ab_0.conda#8662629d9a05f9cff364e31ca106c1ac
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/typing-extensions-4.12.2-hd8ed1ab_0.conda#52d648bd608f5737b123f510bb5514b5
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/argon2-cffi-bindings-21.2.0-py310h2372a71_4.conda#68ee85860502d53c8cbfa0e4cef0f6cb
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/arrow-1.3.0-pyhd8ed1ab_0.conda#b77d8c2313158e6e461ca0efb1c2c508
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/fqdn-1.5.1-pyhd8ed1ab_0.tar.bz2#642d35437078749ef23a5dca2c9bb1f3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/httpcore-1.0.5-pyhd8ed1ab_0.conda#a6b9a0158301e697e4d0a36a3d60e133
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/importlib_metadata-8.2.0-hd8ed1ab_0.conda#0fd030dce707a6654472cf7619b0b01b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jsonschema-specifications-2023.12.1-pyhd8ed1ab_0.conda#a0e4efb5f35786a05af4809a2fb1f855
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyter_server_terminals-0.5.3-pyhd8ed1ab_0.conda#219b3833aa8ed91d47d1be6ca03f30be
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/libnetcdf-4.9.2-nompi_h135f659_114.conda#a908e463c710bd6b10a9eaa89fdf003c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/numpy-2.0.1-py310hf9f9071_0.conda#566294c71fda1d83c7e3d6b88bb1a725
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pyproj-3.6.1-py310hf666db6_7.conda#577d33875077f2ae50b13dd56e4d90f8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/stack_data-0.6.2-pyhd8ed1ab_0.conda#e7df0fdd404616638df5ece6e69ba7af
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/zstandard-0.23.0-py310h64cae3c_0.conda#b527de1849629f2635dafc77745b015a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/argon2-cffi-23.1.0-pyhd8ed1ab_0.conda#3afef1f55a1366b4d3b6a0d92e2235e4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/cftime-1.6.4-py310h261611a_0.conda#5c0e2cd80ceab2ac5201459cc016b88b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/contourpy-1.2.1-py310hd41b1e2_0.conda#60ee50b1968f802f2a487ba36d4cce0d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/dask-core-2024.7.1-pyhd8ed1ab_0.conda#80f7ce024289c333fdc5ad54a194fc86
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/httpx-0.27.0-pyhd8ed1ab_0.conda#9f359af5a886fd6ca6b2b6ea02e58332
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/ipython-8.26.0-pyh707e725_0.conda#f64d3520d5d00321c10f4dabb5b903f3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/isoduration-20.11.0-pyhd8ed1ab_0.tar.bz2#4cb68948e0b8429534380243d063a27a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jsonschema-4.23.0-pyhd8ed1ab_0.conda#da304c192ad59975202859b367d0f6a2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyter_client-8.6.2-pyhd8ed1ab_0.conda#3cdbb2fa84490e5fd44c9f9806c0d292
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/pandas-2.2.2-py310hf9f9076_1.conda#18100768350158f1795ab9ad7d06d5ca
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/scipy-1.14.0-py310h93e2701_1.conda#c6b2a8134aa49940afe552f69bdef957
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/shapely-2.0.5-py310h019a838_0.conda#2902ec08257b19d75d08a375cdc37c2c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/urllib3-2.2.2-pyhd8ed1ab_1.conda#e804c43f58255e977093a2298e442bb8
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/cf-units-3.2.0-py310h261611a_5.conda#643414a9f73226b2a6a43a4800734d3b
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/ipykernel-6.29.5-pyh3099207_0.conda#b40131ab6a36ac2c09b7c57d4d3fbf99
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jsonschema-with-format-nongpl-4.23.0-hd8ed1ab_0.conda#16b37612b3a2fd77f409329e213b530c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/matplotlib-base-3.9.1-py310h0b1de36_0.conda#5341c2c1a7f0a9d196f8070bfa4e16ba
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/nbformat-5.10.4-pyhd8ed1ab_0.conda#0b57b5368ab7fc7cdc9e3511fa867214
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/netcdf4-1.7.1-nompi_py310hf3005e6_101.conda#409736627835306542425033e2a41dd2
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/requests-2.32.3-pyhd8ed1ab_0.conda#5ede4753180c7a550a443c430dc8ab52
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/scikit-learn-1.4.2-py310h981052a_1.conda#672f0238a945f1c98fe97b147c8a040a
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/xarray-2024.6.0-pyhd8ed1ab_1.conda#a6775bba72ade3fd777ccac04902202c
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/linux-64/cartopy-0.23.0-py310hf9f9076_1.conda#dd5c97834c12bae782b35261e0bea7b4
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyter_events-0.10.0-pyhd8ed1ab_0.conda#ed45423c41b3da15ea1df39b1f80c2ca
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/nbclient-0.10.0-pyhd8ed1ab_0.conda#15b51397e0fe8ea7d7da60d83eb76ebc
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/iris-3.8.1-pyha770c72_0.conda#b08a116ef1607e7e960a4caa902e3a90
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/nbconvert-core-7.16.4-pyhd8ed1ab_1.conda#e2d2abb421c13456a9a9f80272fdf543
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyter_server-2.14.2-pyhd8ed1ab_0.conda#ca23c71f70a7c7935b3d03f0f1a5801d
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyter-lsp-2.2.5-pyhd8ed1ab_0.conda#885867f6adab3d7ecdf8ab6ca0785f51
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyterlab_server-2.27.3-pyhd8ed1ab_0.conda#af8239bf1ba7e8c69b689f780f653488
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/notebook-shim-0.2.4-pyhd8ed1ab_0.conda#3d85618e2c97ab896b5b5e298d32b5b3
+https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/jupyterlab-4.2.3-pyhd8ed1ab_0.conda#fc3e207aa4596a682acc725da4b845ad
+# pip absl-py @ https://files.pythonhosted.org/packages/a2/ad/e0d3c824784ff121c03cc031f944bc7e139a8f1870ffd2845cc2dd76f6c4/absl_py-2.1.0-py3-none-any.whl#sha256=526a04eadab8b4ee719ce68f204172ead1027549089702d99b9059f129ff1308
+# pip async-timeout @ https://files.pythonhosted.org/packages/a7/fa/e01228c2938de91d47b307831c62ab9e4001e747789d0b05baf779a6488c/async_timeout-4.0.3-py3-none-any.whl#sha256=7405140ff1230c310e51dc27b3145b9092d659ce68ff733fb0cefe3ee42be028
+# pip attrs @ https://files.pythonhosted.org/packages/f0/eb/fcb708c7bf5056045e9e98f62b93bd7467eb718b0202e7698eb11d66416c/attrs-23.1.0-py3-none-any.whl#sha256=1f28b4522cdc2fb4256ac1a020c78acf9cba2c6b461ccd2c126f3aa8e8335d04
+# pip cachetools @ https://files.pythonhosted.org/packages/04/e6/a1551acbaa06f3e48b311329828a34bc9c51a8cfaecdeb4d03c329a1ef85/cachetools-5.4.0-py3-none-any.whl#sha256=3ae3b49a3d5e28a77a0be2b37dbcb89005058959cb2323858c2657c4a8cab474
+# pip cloudpickle @ https://files.pythonhosted.org/packages/15/80/44286939ca215e88fa827b2aeb6fa3fd2b4a7af322485c7170d6f9fd96e0/cloudpickle-2.2.1-py3-none-any.whl#sha256=61f594d1f4c295fa5cd9014ceb3a1fc4a70b0de1164b94fbc2d854ccba056f9f
+# pip contextlib2 @ https://files.pythonhosted.org/packages/76/56/6d6872f79d14c0cb02f1646cbb4592eef935857c0951a105874b7b62a0c3/contextlib2-21.6.0-py2.py3-none-any.whl#sha256=3fbdb64466afd23abaf6c977627b75b6139a5a3e8ce38405c5b413aed7a0471f
+# pip crcmod @ https://files.pythonhosted.org/packages/6b/b0/e595ce2a2527e169c3bcd6c33d2473c1918e0b7f6826a043ca1245dd4e5b/crcmod-1.7.tar.gz#sha256=dc7051a0db5f2bd48665a990d3ec1cc305a466a77358ca4492826f41f283601e
+# pip dill @ https://files.pythonhosted.org/packages/c7/11/345f3173809cea7f1a193bfbf02403fff250a3360e0e118a1630985e547d/dill-0.3.1.1.tar.gz#sha256=42d8ef819367516592a825746a18073ced42ca169ab1f5f4044134703e7a049c
+# pip dnspython @ https://files.pythonhosted.org/packages/87/a1/8c5287991ddb8d3e4662f71356d9656d91ab3a36618c3dd11b280df0d255/dnspython-2.6.1-py3-none-any.whl#sha256=5ef3b9680161f6fa89daf8ad451b5f1a33b18ae8a1c6778cdf4b43f08c0a6e50
+# pip docopt @ https://files.pythonhosted.org/packages/a2/55/8f8cab2afd404cf578136ef2cc5dfb50baa1761b68c9da1fb1e4eed343c9/docopt-0.6.2.tar.gz#sha256=49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491
+# pip fastavro @ https://files.pythonhosted.org/packages/fc/3f/ddb2f935c95c12cda4904d91da192677acdbdfab15c0e4aa165fa72387cd/fastavro-1.9.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=0adbf4956fd53bd74c41e7855bb45ccce953e0eb0e44f5836d8d54ad843f9944
+# pip fasteners @ https://files.pythonhosted.org/packages/61/bf/fd60001b3abc5222d8eaa4a204cd8c0ae78e75adc688f33ce4bf25b7fafa/fasteners-0.19-py3-none-any.whl#sha256=758819cb5d94cdedf4e836988b74de396ceacb8e2794d21f82d131fd9ee77237
+# pip flatbuffers @ https://files.pythonhosted.org/packages/41/f0/7e988a019bc54b2dbd0ad4182ef2d53488bb02e58694cd79d61369e85900/flatbuffers-24.3.25-py2.py3-none-any.whl#sha256=8dbdec58f935f3765e4f7f3cf635ac3a77f83568138d6a2311f524ec96364812
+# pip gast @ https://files.pythonhosted.org/packages/b6/48/583c032b79ae5b3daa02225a675aeb673e58d2cb698e78510feceb11958c/gast-0.4.0-py3-none-any.whl#sha256=b7adcdd5adbebf1adf17378da5ba3f543684dbec47b1cda1f3997e573cd542c4
+# pip greenlet @ https://files.pythonhosted.org/packages/24/35/945d5b10648fec9b20bcc6df8952d20bb3bba76413cd71c1fdbee98f5616/greenlet-3.0.3-cp310-cp310-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl#sha256=73a411ef564e0e097dbe7e866bb2dda0f027e072b04da387282b02c308807405
+# pip grpcio @ https://files.pythonhosted.org/packages/b4/b5/fe9dcf91919d0f09da8eec3c2091fab6dbb5e102027deeca928bc26b9fc2/grpcio-1.65.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=a8422dc13ad93ec8caa2612b5032a2b9cd6421c13ed87f54db4a3a2c93afaf77
+# pip jsonpickle @ https://files.pythonhosted.org/packages/e4/cb/1fb5ed5f1bc65779f0a14cb428ffe205924b2941ca50c53cfa566aed9583/jsonpickle-3.2.2-py3-none-any.whl#sha256=87cd82d237fd72c5a34970e7222dddc0accc13fddf49af84111887ed9a9445aa
+# pip keras @ https://files.pythonhosted.org/packages/d5/80/34e55d7e3ed9cf18020929460f969de1bf82cf2f509c639b358ae2b25618/keras-2.12.0-py2.py3-none-any.whl#sha256=35c39534011e909645fb93515452e98e1a0ce23727b55d4918b9c58b2308c15e
+# pip libclang @ https://files.pythonhosted.org/packages/1d/fc/716c1e62e512ef1c160e7984a73a5fc7df45166f2ff3f254e71c58076f7c/libclang-18.1.1-py2.py3-none-manylinux2010_x86_64.whl#sha256=c533091d8a3bbf7460a00cb6c1a71da93bffe148f172c7d03b1c31fbf8aa2a0b
+# pip markdown @ https://files.pythonhosted.org/packages/fc/b3/0c0c994fe49cd661084f8d5dc06562af53818cc0abefaca35bdc894577c3/Markdown-3.6-py3-none-any.whl#sha256=48f276f4d8cfb8ce6527c8f79e2ee29708508bf4d40aa410fbc3b4ee832c850f
+# pip numpy @ https://files.pythonhosted.org/packages/e4/f3/679b3a042a127de0d7c84874913c3e23bb84646eb3bc6ecab3f8c872edc9/numpy-1.23.5-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=5e05b1c973a9f858c74367553e236f287e749465f773328c8ef31abe18f691e1
+# pip oauthlib @ https://files.pythonhosted.org/packages/7e/80/cab10959dc1faead58dc8384a781dfbf93cb4d33d50988f7a69f1b7c9bbe/oauthlib-3.2.2-py3-none-any.whl#sha256=8139f29aac13e25d502680e9e19963e83f16838d48a0d71c287fe40e7067fbca
+# pip objsize @ https://files.pythonhosted.org/packages/98/26/00ba2cd7d79935ecefa384020828f3a96c3c9c9b66faf9d93aa16eb75985/objsize-0.7.0-py3-none-any.whl#sha256=a8b03ce87477c649a99e6b1920f4eeb8b9ba3f8bc2a94d0e5c06ef68adc334a7
+# pip orjson @ https://files.pythonhosted.org/packages/36/06/f5e0d6a921af2feae3c189514ebe12a6b8ab59ffe92c855996bcb4e6aa7f/orjson-3.10.6-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=633a3b31d9d7c9f02d49c4ab4d0a86065c4a6f6adc297d63d272e043472acab5
+# pip protobuf @ https://files.pythonhosted.org/packages/ca/6c/cc7ab2fb3a4a7f07f211d8a7bbb76bba633eb09b148296dbd4281e217f95/protobuf-4.25.4-cp37-abi3-manylinux2014_x86_64.whl#sha256=3319e073562e2515c6ddc643eb92ce20809f5d8f10fead3332f71c63be6a7040
+# pip pyarrow-hotfix @ https://files.pythonhosted.org/packages/e4/f4/9ec2222f5f5f8ea04f66f184caafd991a39c8782e31f5b0266f101cb68ca/pyarrow_hotfix-0.6-py3-none-any.whl#sha256=dcc9ae2d220dff0083be6a9aa8e0cdee5182ad358d4931fce825c545e5c89178
+# pip pyasn1 @ https://files.pythonhosted.org/packages/23/7e/5f50d07d5e70a2addbccd90ac2950f81d1edd0783630651d9268d7f1db49/pyasn1-0.6.0-py2.py3-none-any.whl#sha256=cca4bb0f2df5504f02f6f8a775b6e416ff9b0b3b16f7ee80b5a3153d9b804473
+# pip pyjsparser @ https://files.pythonhosted.org/packages/48/ef/c72abcfa2c6accd03e7c89c400790fc3d908c5804d50a7c4e9ceabd74d23/pyjsparser-2.7.1.tar.gz#sha256=be60da6b778cc5a5296a69d8e7d614f1f870faf94e1b1b6ac591f2ad5d729579
+# pip regex @ https://files.pythonhosted.org/packages/3e/66/04b63f31580026c8b819aed7f171149177d10cfab27477ea8800a2268d50/regex-2024.7.24-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=bf7a89eef64b5455835f5ed30254ec19bf41f7541cd94f266ab7cbd463f00c41
+# pip tensorboard-data-server @ https://files.pythonhosted.org/packages/7a/13/e503968fefabd4c6b2650af21e110aa8466fe21432cd7c43a84577a89438/tensorboard_data_server-0.7.2-py3-none-any.whl#sha256=7e0610d205889588983836ec05dc098e80f97b7e7bbff7e994ebb78f578d0ddb
+# pip tensorflow-estimator @ https://files.pythonhosted.org/packages/d1/e1/c3596da404e2c47561a2bb392397208925e65be6f61bd3081e630371d5e8/tensorflow_estimator-2.12.0-py2.py3-none-any.whl#sha256=59b191bead4883822de3d63ac02ace11a83bfe6c10d64d0c4dfde75a50e60ca1
+# pip tensorflow-io-gcs-filesystem @ https://files.pythonhosted.org/packages/f3/48/47b7d25572961a48b1de3729b7a11e835b888e41e0203cca82df95d23b91/tensorflow_io_gcs_filesystem-0.37.1-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=9679b36e3a80921876f31685ab6f7270f3411a4cc51bc2847e80d0e4b5291e27
+# pip termcolor @ https://files.pythonhosted.org/packages/d9/5f/8c716e47b3a50cbd7c146f45881e11d9414def768b7cd9c5e6650ec2a80a/termcolor-2.4.0-py3-none-any.whl#sha256=9297c0df9c99445c2412e832e882a7884038a25617c60cea2ad69488d4040d63
+# pip tzlocal @ https://files.pythonhosted.org/packages/97/3f/c4c51c55ff8487f2e6d0e618dba917e3c3ee2caae6cf0fbb59c9b1876f2e/tzlocal-5.2-py3-none-any.whl#sha256=49816ef2fe65ea8ac19d19aa7a1ae0551c834303d5014c6d5a62e4cbda8047b8
+# pip wrapt @ https://files.pythonhosted.org/packages/fd/70/8a133c88a394394dd57159083b86a564247399440b63f2da0ad727593570/wrapt-1.14.1-cp310-cp310-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=257fd78c513e0fb5cdbe058c27a0624c9884e735bbd131935fd49e9fe719d310
+# pip astunparse @ https://files.pythonhosted.org/packages/2b/03/13dde6512ad7b4557eb792fbcf0c653af6076b81e5941d36ec61f7ce6028/astunparse-1.6.3-py2.py3-none-any.whl#sha256=c2652417f2c8b5bb325c885ae329bdf3f86424075c4fd1a128674bc6fba4b8e8
+# pip google-pasta @ https://files.pythonhosted.org/packages/a3/de/c648ef6835192e6e2cc03f40b19eeda4382c49b5bafb43d88b931c4c74ac/google_pasta-0.2.0-py3-none-any.whl#sha256=b32482794a366b5366a32c92a9a9201b107821889935a02b3e51f6b432ea84ed
+# pip googleapis-common-protos @ https://files.pythonhosted.org/packages/02/48/87422ff1bddcae677fb6f58c97f5cfc613304a5e8ce2c3662760199c0a84/googleapis_common_protos-1.63.2-py2.py3-none-any.whl#sha256=27a2499c7e8aff199665b22741997e485eccc8645aa9176c7c988e6fae507945
+# pip grpcio-tools @ https://files.pythonhosted.org/packages/e3/55/4fc4857209b5029b855f4db1232bbb43f03fb0deb82f230fd3e58d44ee74/grpcio_tools-1.62.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=b6746bc823958499a3cf8963cc1de00072962fb5e629f26d658882d3f4c35095
+# pip h5py @ https://files.pythonhosted.org/packages/94/00/94bf8573e7487b7c37f2b613fc381880d48ec2311f2e859b8a5817deb4df/h5py-3.11.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=77b19a40788e3e362b54af4dcf9e6fde59ca016db2c61360aa30b47c7b7cef00
+# pip hdfs @ https://files.pythonhosted.org/packages/29/c7/1be559eb10cb7cac0d26373f18656c8037553619ddd4098e50b04ea8b4ab/hdfs-2.7.3.tar.gz#sha256=752a21e43f82197dce43697c73f454ba490838108c73a57a9247efb66d1c0479
+# pip httplib2 @ https://files.pythonhosted.org/packages/a8/6c/d2fbdaaa5959339d53ba38e94c123e4e84b8fbc4b84beb0e70d7c1608486/httplib2-0.22.0-py3-none-any.whl#sha256=14ae0a53c1ba8f3d37e9e27cf37eabb0fb9980f435ba405d546948b009dd64dc
+# pip js2py @ https://files.pythonhosted.org/packages/88/58/2feb430d47c9f18f331494b429697342722b51f28dad8ad92a511c0f6fc8/Js2Py-0.74-py3-none-any.whl#sha256=40a508a79e2f8d624e3f2e604f90a1e6f46ac75b416d7f4745939ff4a2e95e09
+# pip ml-collections @ https://files.pythonhosted.org/packages/aa/ea/853aa32dfa1006d3eb43384712f35b8f2d6f0a757b8c779d40c29e3e8515/ml_collections-0.1.1.tar.gz#sha256=3fefcc72ec433aa1e5d32307a3e474bbb67f405be814ea52a2166bfc9dbe68cc
+# pip ml-dtypes @ https://files.pythonhosted.org/packages/9d/15/e5af59287e712b26ce776f00911c45c97ac9f4cd82d46500602cc94127ed/ml_dtypes-0.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=03e7cda6ef164eed0abb31df69d2c00c3a5ab3e2610b6d4c42183a43329c72a5
+# pip opt-einsum @ https://files.pythonhosted.org/packages/bc/19/404708a7e54ad2798907210462fd950c3442ea51acc8790f3da48d2bee8b/opt_einsum-3.3.0-py3-none-any.whl#sha256=2455e59e3947d3c275477df7f5205b30635e266fe6dc300e3d9f9646bfcea147
+# pip portpicker @ https://files.pythonhosted.org/packages/32/2d/440e4d7041fff89f28f483733eb617127aa866135c2dc719e05893f089e1/portpicker-1.6.0-py3-none-any.whl#sha256=b2787a41404cf7edbe29b07b9e0ed863b09f2665dcc01c1eb0c2261c1e7d0755
+# pip proto-plus @ https://files.pythonhosted.org/packages/7c/6f/db31f0711c0402aa477257205ce7d29e86a75cb52cd19f7afb585f75cda0/proto_plus-1.24.0-py3-none-any.whl#sha256=402576830425e5f6ce4c2a6702400ac79897dab0b4343821aa5188b0fab81a12
+# pip pyarrow @ https://files.pythonhosted.org/packages/eb/64/da178bd17f9e9a7cfffc76bd718fbc26c08b4f4fd0c115ec4ab8b279941e/pyarrow-14.0.2-cp310-cp310-manylinux_2_28_x86_64.whl#sha256=76fc257559404ea5f1306ea9a3ff0541bf996ff3f7b9209fc517b5e83811fa8e
+# pip pyasn1-modules @ https://files.pythonhosted.org/packages/13/68/8906226b15ef38e71dc926c321d2fe99de8048e9098b5dfd38343011c886/pyasn1_modules-0.4.0-py3-none-any.whl#sha256=be04f15b66c206eed667e0bb5ab27e2b1855ea54a842e5037738099e8ca4ae0b
+# pip pydot @ https://files.pythonhosted.org/packages/ea/76/75b1bb82e9bad3e3d656556eaa353d8cd17c4254393b08ec9786ac8ed273/pydot-1.4.2-py2.py3-none-any.whl#sha256=66c98190c65b8d2e2382a441b4c0edfdb4f4c025ef9cb9874de478fb0793a451
+# pip pymongo @ https://files.pythonhosted.org/packages/62/bd/b5e91ac167b57f3559e405389dad760980cf88b90824d7e9f758eacdd01c/pymongo-4.8.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=aec2b9088cdbceb87e6ca9c639d0ff9b9d083594dda5ca5d3c4f6774f4c81b33
+# pip redis @ https://files.pythonhosted.org/packages/2f/3b/db091387f25c202a34030de8f7fee26a69c11b83797eecaef5b06e261966/redis-5.0.7-py3-none-any.whl#sha256=0e479e24da960c690be5d9b96d21f7b918a98c0cf49af3b6fafaa0753f93a0db
+# pip requests-oauthlib @ https://files.pythonhosted.org/packages/3b/5d/63d4ae3b9daea098d5d6f5da83984853c1bbacd5dc826764b249fe119d24/requests_oauthlib-2.0.0-py2.py3-none-any.whl#sha256=7dd8a5c40426b779b0868c404bdef9768deccf22749cde15852df527e6269b36
+# pip rsa @ https://files.pythonhosted.org/packages/49/97/fa78e3d2f65c02c8e1268b9aba606569fe97f6c8f7c2d74394553347c145/rsa-4.9-py3-none-any.whl#sha256=90260d9058e514786967344d0ef75fa8727eed8a7d2e43ce9f4bcf1b536174f7
+# pip sqlalchemy @ https://files.pythonhosted.org/packages/bf/90/0ce8c76cd2ef8a5e0838d61d6648a1193859e1990bc1d65c8b0fd1f77ca8/SQLAlchemy-2.0.31-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=9f2bee229715b6366f86a95d497c347c22ddffa2c7c96143b59a2aa5cc9eebbc
+# pip werkzeug @ https://files.pythonhosted.org/packages/9d/6e/e792999e816d19d7fcbfa94c730936750036d65656a76a5a688b57a656c4/werkzeug-3.0.3-py3-none-any.whl#sha256=fc9645dc43e03e4d630d23143a04a7f947a9a3b5727cd535fdfe155a17cc48c8
+# pip apache-beam @ https://files.pythonhosted.org/packages/1e/c1/9b660c3ed37f593acec18f1f7957b6c09c4c508eb1a8a8b5ebf2103cdc96/apache_beam-2.56.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=897b53388cd0a19dea676734b73753e6a0a95f9d12b94fd821ada30da49067e0
+# pip google-auth @ https://files.pythonhosted.org/packages/e7/00/85c22f7f73fa2e88dfbf0e1f63c565386ba40e0264b59c8a4362ae27c9fc/google_auth-2.32.0-py2.py3-none-any.whl#sha256=53326ea2ebec768070a94bee4e1b9194c9646ea0c2bd72422785bd0f9abfad7b
+# pip google-vizier @ https://files.pythonhosted.org/packages/b2/df/0dc35e79bde0a8b87898a85e12c2fe5df3e4d95c9ee09d032608f034c505/google_vizier-0.1.17-py3-none-any.whl#sha256=f4300f81595cd21a861892140e63c5ecf5bec01d86842dd2cb1b6dc4e89ba7f9
+# pip jaxlib @ https://files.pythonhosted.org/packages/4a/ca/561aabed63007bb2621a62f0d816aa2f68cfe947859c8b4e61519940344b/jaxlib-0.4.30-cp310-cp310-manylinux2014_x86_64.whl#sha256=d83f36ef42a403bbf7c7f2da526b34ba286988e170f4df5e58b3bb735417868c
+# pip google-auth-oauthlib @ https://files.pythonhosted.org/packages/4a/07/8d9a8186e6768b55dfffeb57c719bc03770cf8a970a074616ae6f9e26a57/google_auth_oauthlib-1.0.0-py2.py3-none-any.whl#sha256=95880ca704928c300f48194d1770cf5b1462835b6e49db61445a520f793fd5fb
+# pip jax @ https://files.pythonhosted.org/packages/fd/f2/9dbb75de3058acfd1600cf0839bcce7ea391148c9d2b4fa5f5666e66f09e/jax-0.4.30-py3-none-any.whl#sha256=289b30ae03b52f7f4baf6ef082a9f4e3e29c1080e22d13512c5ecf02d5f1a55b
+# pip tensorboard @ https://files.pythonhosted.org/packages/32/09/86e2ef3b4f4ec04bde0eca499325f291ae6b3313381d0666ee20b5b80c73/tensorboard-2.12.3-py3-none-any.whl#sha256=b4a69366784bc347e02fbe7d847e01896a649ca52f8948a11005e205dcf724fb
+# pip tensorflow @ https://files.pythonhosted.org/packages/3f/b2/33372601ed71fb41049642f8f6e1e142215e8b5c3463df434fc8885db278/tensorflow-2.12.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl#sha256=357d9d2851188a8d27ee195345b4d175cad970150d1344ba9d9fcc4bf2b68336
+# pip tensorflow-gnn @ https://files.pythonhosted.org/packages/33/7c/41b83efdada583d9ada883ca0648198dfdcc820b08573fd858c3a34e1a30/tensorflow_gnn-1.0.3-py3-none-any.whl#sha256=5fe9f14e21dd6355b35877ee662883af75ad50097a6b1365812aae4a6f464719
