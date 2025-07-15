@@ -1,2 +1,3 @@
 *.ipynb_checkpoints/
 *.DS_Store
+challenges/2023_cloud_classification/src/example_code/mlruns/
