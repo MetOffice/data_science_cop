@@ -2,13 +2,13 @@ name: data-science-cop-sklearn
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - jupyterlab
   - onnx
-  - xarray=2025.4
+  - xarray=2025
   - iris=3.12
-  - pandas=2.2
-  - scikit-learn=1.6
+  - pandas=2.3
+  - scikit-learn=1.7
   - mlflow=2.22
   - ipywidgets
   - dask-labextension
