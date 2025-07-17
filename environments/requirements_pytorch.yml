@@ -1,0 +1,18 @@
+name: dscop_pytorch
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - ipywidgets
+  - ipykernel
+  - dask-labextension
+  - dask-ml
+  - mlflow=2.22
+  - pandas=2.3
+  - xarray=2025
+  - iris=3.12
+  - cartopy=0.24
+  - scikit-learn=1.7
+  - pytorch=2.7
+  - lightning
