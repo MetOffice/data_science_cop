@@ -1,4 +1,4 @@
-name: data-science-cop-tf
+name: dscop_tensorflow
 channels:
   - conda-forge
 dependencies:

@@ -1,4 +1,4 @@
-name: data-science-cop-torch
+name: dscop_pytorch
 channels:
   - conda-forge
 dependencies:

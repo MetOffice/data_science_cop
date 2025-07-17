@@ -1,5 +1,5 @@
 # This file may be used to create an environment using:
-# $ conda create --name <env> --file <this file>
+# $ conda create --name dscop_pytorch --file requirements_pytorch_molinux.lock
 # platform: linux-64
 @EXPLICIT
 https://metoffice.jfrog.io/metoffice/api/conda/conda-forge/noarch/ca-certificates-2025.7.14-hbd8a1cb_0.conda

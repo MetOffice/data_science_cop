@@ -1,4 +1,4 @@
-name: data-science-cop-xgboost
+name: dscop_xgboost
 channels:
   - conda-forge
 dependencies:

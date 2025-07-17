@@ -1,4 +1,4 @@
-name: data-science-cop-sklearn
+name: dscop_sklearn
 channels:
   - conda-forge
 dependencies:
