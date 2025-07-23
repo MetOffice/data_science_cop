@@ -1,0 +1,17 @@
+name: dscop_xgboost
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - ipywidgets
+  - ipykernel
+  - dask-labextension
+  - dask-ml
+  - scikit-learn=1.7
+  - xgboost=3.0
+  - mlflow=2.22
+  - pandas=2.3
+  - xarray=2025
+  - iris=3.12
+  - cartopy

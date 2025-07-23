@@ -1,0 +1,17 @@
+name: dscop_tensorflow
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - mlflow=2.22
+  - pandas=2.2
+  - xarray=2025.4
+  - iris=3.12
+  - cartopy
+  - keras=3.10
+  - scikit-learn=1.6
+  - tensorflow
+  - tf2onnx
+  - onnx
+
