@@ -1,4 +1,4 @@
-name: data-science-cop-tfgnn
+name: dscop_tfgnn
 channels:
   - conda-forge
 dependencies:
