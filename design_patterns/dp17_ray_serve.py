@@ -37,7 +37,7 @@ class TFPredictor:
 
 # Use 2 parallel actors for inference. Each actor predicts on a
 # different partition of data.
-scale = ray.data.ActorPoolStrategy(size=2)
+scale = ray.data.ActorPoolStrategy(size=1)
 # Step 3: Map the Predictor over the Dataset to get predictions.
 predictions = ds.map_batches(TFPredictor, compute=scale)
  # Step 4: Show one prediction output.
