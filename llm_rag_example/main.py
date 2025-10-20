@@ -20,6 +20,9 @@ if __name__ == "__main__":
     vectorstore_parent_dir="add-storage-path"
 
     data = load_website(url, max_pages=10)
+    # to load large website in batch and async
+    #data = load_website_in_batch(url, max_pages=3000, batch_size=50, max_concurrent=20)
+
     print(f"\nLoaded {len(data)} documents total.")
     content = data[0].page_content
 
