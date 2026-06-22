@@ -1,0 +1,214 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "type": "string", "defaultValue": "[resourceGroup().location]" },
+    "workspaceName": { "type": "string" },
+    "storageAccountName": { "type": "string" },
+    "keyVaultName": { "type": "string" },
+    "acrName": { "type": "string" },
+    "appInsightsName": { "type": "string" },
+    "computeInstanceName": { "type": "string", "defaultValue": "ci-ds3v2" },
+    "cpuClusterName": { "type": "string", "defaultValue": "cpu-cluster" },
+    "gpuClusterName": { "type": "string", "defaultValue": "gpu-cluster" },
+    "computeInstanceOwnerObjectId": { "type": "string" },
+    "computeInstanceOwnerTenantId": { "type": "string", "defaultValue": "[subscription().tenantId]" },
+    "cpuVmSize": { "type": "string", "defaultValue": "STANDARD_DS3_V2" },
+    "gpuVmSize": { "type": "string", "defaultValue": "STANDARD_NC6S_V3" },
+    "kerasBuildContextUri": { "type": "string" },
+    "lightningBuildContextUri": { "type": "string" }
+  },
+  "variables": {
+    "apiVersion": "2025-06-01"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": { "name": "Standard_LRS" },
+      "kind": "StorageV2",
+      "properties": {
+        "allowBlobPublicAccess": false,
+        "minimumTlsVersion": "TLS1_2",
+        "allowSharedKeyAccess": true
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "tenantId": "[subscription().tenantId]",
+        "sku": { "family": "A", "name": "standard" },
+        "enableRbacAuthorization": true,
+        "enablePurgeProtection": true
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2023-07-01",
+      "name": "[parameters('acrName')]",
+      "location": "[parameters('location')]",
+      "sku": { "name": "Basic" },
+      "properties": {
+        "adminUserEnabled": false
+      }
+    },
+    {
+      "type": "Microsoft.Insights/components",
+      "apiVersion": "2020-02-02",
+      "name": "[parameters('appInsightsName')]",
+      "location": "[parameters('location')]",
+      "kind": "web",
+      "properties": {
+        "Application_Type": "web"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[parameters('workspaceName')]",
+      "location": "[parameters('location')]",
+      "identity": { "type": "SystemAssigned" },
+      "sku": { "name": "Basic", "tier": "Basic" },
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]",
+        "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
+      ],
+      "properties": {
+        "friendlyName": "[parameters('workspaceName')]",
+        "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName'))]",
+        "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "containerRegistry": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('acrName'))]",
+        "applicationInsights": "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/computes",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('computeInstanceName'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "computeType": "ComputeInstance",
+        "properties": {
+          "vmSize": "[parameters('cpuVmSize')]",
+          "sshSettings": {
+            "sshPublicAccess": "Disabled"
+          },
+          "personalComputeInstanceSettings": {
+            "assignedUser": {
+              "objectId": "[parameters('computeInstanceOwnerObjectId')]",
+              "tenantId": "[parameters('computeInstanceOwnerTenantId')]"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/computes",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('cpuClusterName'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "computeType": "AmlCompute",
+        "properties": {
+          "vmSize": "[parameters('cpuVmSize')]",
+          "vmPriority": "Dedicated",
+          "scaleSettings": {
+            "minNodeCount": 0,
+            "maxNodeCount": 4,
+            "nodeIdleTimeBeforeScaleDown": "PT120S"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/computes",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('gpuClusterName'))]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "computeType": "AmlCompute",
+        "properties": {
+          "vmSize": "[parameters('gpuVmSize')]",
+          "vmPriority": "Dedicated",
+          "scaleSettings": {
+            "minNodeCount": 0,
+            "maxNodeCount": 2,
+            "nodeIdleTimeBeforeScaleDown": "PT120S"
+          }
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/environments",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/keras-v3-env', parameters('workspaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "description": "Custom Keras v3 environment"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/keras-v3-env/1', parameters('workspaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaceName'), 'keras-v3-env')]"
+      ],
+      "properties": {
+        "description": "Keras v3 custom environment",
+        "osType": "Linux",
+        "autoRebuild": "OnBaseImageUpdate",
+        "build": {
+          "contextUri": "[parameters('kerasBuildContextUri')]",
+          "dockerfilePath": "Dockerfile"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/environments",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/pytorch-lightning-env', parameters('workspaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaceName'))]"
+      ],
+      "properties": {
+        "description": "Custom PyTorch Lightning environment"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/environments/versions",
+      "apiVersion": "[variables('apiVersion')]",
+      "name": "[format('{0}/pytorch-lightning-env/1', parameters('workspaceName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces/environments', parameters('workspaceName'), 'pytorch-lightning-env')]"
+      ],
+      "properties": {
+        "description": "PyTorch Lightning custom environment",
+        "osType": "Linux",
+        "autoRebuild": "OnBaseImageUpdate",
+        "build": {
+          "contextUri": "[parameters('lightningBuildContextUri')]",
+          "dockerfilePath": "Dockerfile"
+        }
+      }
+    }
+  ]
+}

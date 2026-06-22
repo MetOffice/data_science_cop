@@ -1,0 +1,13 @@
+$schema: https://azuremlschemas.azureedge.net/latest/data.schema.json
+
+# Supported paths include:
+# local: './<path>/<file>' (this will be automatically uploaded to cloud storage)
+# blob:  'wasbs://<container_name>@<account_name>.blob.core.windows.net/<path>/<file>'
+# ADLS gen2: 'abfss://<file_system>@<account_name>.dfs.core.windows.net/<path>/<file>'
+# Datastore: 'azureml://datastores/<data_store_name>/paths/<path>/<file>'
+
+type: uri_folder
+name: xbtdir
+version: 1
+description: A sample of XBT dataset
+path: azureml:/datastoress/workspaceblobstore/xbt/
