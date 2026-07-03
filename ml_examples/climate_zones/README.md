@@ -4,8 +4,21 @@
 The climate of different areas of the world is classified into different types, based on the Koppen-Geiger scheme. As the climate changes, some areas may change the classification of their climate 
 In this series of tutorial notebooks, we willlearn how to build a machine learning pipeline by building a model to predict the climate zone of a location from key climate means and indicators. We will look at how climate models predict shifts in the classification of climate zones as the climate changes in the future.
 
+# Tutorial Pathway
+
+- [Data Exploration](ClimateZones_DataExploration.ipynb)
+- [Building a Training Pipeline](ClimateZones_TrainingPipeline.ipynb)
+- [Predictions and Visulisation](ClimateZones_InferenceVisualisation.ipynb)
+- [Model Evaluation](ClimateZones_Evaluation.ipynb)
+- [Training in PyTorch]()
+
+Addtional
+- [Data Preparation](ClimateZones_DataPrep.ipynb)
+
 # Running this tutorial
 
 This tutorial has been tested on the scitools ml community environment, which can be accssed as follows:
 - Met Office: Load the model `module load scitools/community/ml`
 - Other platforms: Create a conda envirinment based on the [scitools ml yaml file](https://github.com/MetOffice/ssstack/blob/main/environments/ml-0.1.0.yml) 
+
+
