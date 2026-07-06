@@ -10,15 +10,17 @@ In this series of tutorial notebooks, we willlearn how to build a machine learni
 - [Building a Training Pipeline](ClimateZones_TrainingPipeline.ipynb)
 - [Predictions and Visulisation](ClimateZones_InferenceVisualisation.ipynb)
 - [Model Evaluation](ClimateZones_Evaluation.ipynb)
-- [Training in PyTorch]()
+- [Training in PyTorch](ClimateZones_Training_Torch.ipynb)
 
-Addtional
+Additional notebooks - demonstrating things not part of the main learning pathway:
 - [Data Preparation](ClimateZones_DataPrep.ipynb)
 
 # Running this tutorial
 
-This tutorial has been tested on the scitools ml community environment, which can be accssed as follows:
-- Met Office: Load the model `module load scitools/community/ml`
-- Other platforms: Create a conda envirinment based on the [scitools ml yaml file](https://github.com/MetOffice/ssstack/blob/main/environments/ml-0.1.0.yml) 
+This tutorial has been tested on the scitools ml community environment, which can be accessed as follows:
+- Met Office:
+  - From the command line - Load the module from the commend line `module load scitools/community/ml`.
+  - In Jupyterhub - select the `ml-0.1.0 Python` kernel for the each of the notebooks.
+- Other platforms: Create a conda environment based on the [scitools ml yaml file](https://github.com/MetOffice/ssstack/blob/main/environments/ml-0.1.0.yml) 
 
 
