@@ -8,7 +8,7 @@ In this series of tutorial notebooks, we willlearn how to build a machine learni
 
 - [Data Exploration](ClimateZones_DataExploration.ipynb)
 - [Building a Training Pipeline](ClimateZones_TrainingPipeline.ipynb)
-- [Predictions and Visulisation](ClimateZones_InferenceVisualisation.ipynb)
+- [Predictions and Visualisation](ClimateZones_InferenceVisualisation.ipynb)
 - [Model Evaluation](ClimateZones_Evaluation.ipynb)
 - [Training in PyTorch](ClimateZones_Training_Torch.ipynb)
 
