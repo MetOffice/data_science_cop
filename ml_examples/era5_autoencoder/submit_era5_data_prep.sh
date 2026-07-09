@@ -2,7 +2,7 @@
 
 set -e
 
-cd ~/prog/ai4c_hackathon/
+cd ~/prog/data_science_cop/ml_examples/era5_autoencoder/
 
 export STD_OUT_PATH=/gws/nopw/j04/mohc_shared/users/shaddad/log/era5_data_prep_log_$(date '+%Y%m%d%H%M').out
 export STD_ERR_PATH=/gws/nopw/j04/mohc_shared/users/shaddad/log/era5_data_prep_log_$(date '+%Y%m%d%H%M').err
