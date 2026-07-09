@@ -4,15 +4,13 @@ channels:
 dependencies:
   - python=3.12
   - jupyterlab
-  - ipywidgets
   - ipykernel
-  - dask-labextension
-  - dask-ml
-  - mlflow=2.22
+  - mlflow=3.9
   - pandas=2.3
-  - xarray=2025
+  - xarray=2026
   - iris=3.12
-  - cartopy=0.24
-  - scikit-learn=1.7
-  - pytorch=2.7
+  - cartopy=0.25
+  - scikit-learn=1.8
+  - pytorch=2.10
+  - scores=2.5
   - lightning
