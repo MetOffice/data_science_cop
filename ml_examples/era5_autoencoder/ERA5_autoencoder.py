@@ -383,12 +383,12 @@ def main():
         wb_arco_path = root_data_dir / 'wb_arco'
 
     train_interval = (
-        datetime.datetime(1990,1,1,0,0),
-        datetime.datetime(2000,1,1,0,0),
-    )
-    val_interval = (
         datetime.datetime(2010,1,1,0,0),
         datetime.datetime(2012,1,1,0,0),
+    )
+    val_interval = (
+        datetime.datetime(2013,1,1,0,0),
+        datetime.datetime(2014,1,1,0,0),
     )
     
     (wb_train_ds, wb_train_loader, wb_val_ds, wb_val_loader) = create_data_loaders(wb_arco_path, 
