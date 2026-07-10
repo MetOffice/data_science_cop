@@ -2,6 +2,7 @@ pandas==2.3
 mlflow==3.9
 ipykernel
 xarray==2026.1
+zarr==3.1
 scitools-iris==3.12
 cartopy==0.25
 scikit-learn==1.8

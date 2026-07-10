@@ -8,6 +8,7 @@ dependencies:
   - mlflow=3.9
   - pandas=2.3
   - xarray=2026
+  - zarr=3.1
   - iris=3.12
   - cartopy=0.25
   - scikit-learn=1.8
