@@ -16,8 +16,8 @@ This tutorial walks through preparing low-resolution ERA5/WeatherBench pressure-
 - `submit_era5_ae.sh`: Convenience wrapper that submits the training batch job via `sbatch` with timestamped log paths.
 
 ## Environments
-- **Data prep (CPU):** `/gws/nopw/j04/mohc_shared/dscop/conda_envs/ai4c_hack_cli_cpu`
-- **Training (GPU):** `/gws/ssde/j25a/mmh_storage/ai4c_conda/ai4c_cli_gpu`
+- **Data prep (CPU):** `/gws/ssde/j25a/mmh_storage/user/shaddad/conda/dscop_torch`
+- **Training (GPU):** `/gws/ssde/j25a/mmh_storage/user/shaddad/conda/dscop_torch_gpu`
 
 If you prefer named envs instead of absolute env paths, adapt the activation line to your local setup (for example, `conda activate <env_name>`).
 
@@ -27,7 +27,7 @@ If you prefer named envs instead of absolute env paths, adapt the activation lin
 From this directory:
 
 ```bash
-conda activate /gws/nopw/j04/mohc_shared/dscop/conda_envs/ai4c_hack_cli_cpu
+conda activate /gws/ssde/j25a/mmh_storage/user/shaddad/conda/dscop_torch
 python era5_autoencoder_data_prep.py \
   --start-year 1980 \
   --end-year 2016 \
@@ -39,7 +39,7 @@ python era5_autoencoder_data_prep.py \
 From this directory:
 
 ```bash
-conda activate /gws/ssde/j25a/mmh_storage/ai4c_conda/ai4c_cli_gpu
+conda activate /gws/ssde/j25a/mmh_storage/user/shaddad/conda/dscop_torch_gpu
 python train_era5_autoencoder.py \
   --config-path config.json \
   --model-out-dir /gws/ssde/j25a/mmh_storage/user/shaddad/experiments/era5_autoencoder \

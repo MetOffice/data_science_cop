@@ -11,8 +11,9 @@ export LOG_DIR=/gws/ssde/j25a/mmh_storage/user/shaddad/log/
 
 export STD_OUT_PATH=${LOG_DIR}/era5_ae_train_log_$(date '+%Y%m%d%H%M').out
 export STD_ERR_PATH=${LOG_DIR}/era5_ae_train_log_$(date '+%Y%m%d%H%M').err
+export JOBNAME=era5_ae_train_$(date '+%Y%m%d%H%M')
 
-sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH run_era5_ae_train.sh 
+sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH -J ${JOBNAME} run_era5_ae_train.sh 
 
 
 
