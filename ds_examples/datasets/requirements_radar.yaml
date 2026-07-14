@@ -1,0 +1,12 @@
+name: dscop_radar_data_prep
+channels:
+ - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - ipykernel
+  - xarray=2026.1
+  - intake
+  - intake-xarray
+  - zarr=3.1
+  - jinja2

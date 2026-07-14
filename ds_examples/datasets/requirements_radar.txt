@@ -1,0 +1,6 @@
+ipykernel
+xarray==2026.1
+intake
+intake_xarray
+zarr==3.1
+jinja2
