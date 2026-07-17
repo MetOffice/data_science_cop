@@ -5,15 +5,17 @@
 #SBATCH --time=02:00:00
 #SBATCH --ntasks=4
 #SBATCH --mem=64G
-#SBATCH --job-name=ai4c_era5_data_prep
+#SBATCH --job-name=dscop_era5_ae_data_prep
 
 set -e
 
-conda activate /gws/nopw/j04/mohc_shared/dscop/conda_envs/ai4c_hack_cli_cpu
+export CONDA_ENV=/gws/ssde/j25b/mohc_shared/dscop/conda_envs/dscop_pytorch_cpu
+export DATA_OUTPUT_DIR=/gws/ssde/j25b/mohc_shared/dscop/weatherbench/mlready/
 
-cd ~/prog/ai4c_hackathon/
+conda activate ${CONDA_ENV}
+cd ~/prog/data_science_cop
 
-python src/ai4c_hack/era5_autoencoder_data_prep.py --start-year 1980 --end-year 2016 --data-out-dir  /gws/ssde/j25a/mmh_storage/ai4c_data/weatherbench/mlready --config notebooks/config.json
+python ml_examples/era5_autoencoder/era5_autoencoder_data_prep.py --start-year 1980 --end-year 2016 --data-out-dir  $DATA_OUTPUT_DIR --root-data-dir /gws/ssde/j25a/mmh_storage/ai4c_data/weatherbench/
 
 
 

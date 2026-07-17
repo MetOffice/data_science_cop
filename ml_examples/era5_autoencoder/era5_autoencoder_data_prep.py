@@ -44,7 +44,7 @@ def get_cmd_args():
     parser.add_argument('--start-year', dest='start_year', type=int, default=1980)
     parser.add_argument('--end-year', dest='end_year', type=int, default=2017 )
     parser.add_argument('--data-out-dir', dest='data_out_dir', type=pathlib.Path)
-    parser.add_argument('--config', type=pathlib.Path)
+    parser.add_argument('--root-data-dir', dest='root_data_dir', type=pathlib.Path)
 
     cmd_args = parser.parse_args()
     return cmd_args
@@ -54,21 +54,21 @@ def get_cmd_args():
 def main():
     cmd_args = get_cmd_args()
     
-    with open (cmd_args.config,'r') as tutorial_config:
-        tutorial_config = json.load(tutorial_config)
-
-    current_platform = tutorial_config['platform']
-    root_data_dir = get_platform_dir(current_platform, tutorial_config)
+    root_data_dir = cmd_args.root_data_dir
 
     wb_zarr_root_dir = cmd_args.data_out_dir 
     if not wb_zarr_root_dir.is_dir():
         wb_zarr_root_dir.mkdir(parents=True)
         
-    var_list = {
-        'temperature': [850, 500],
-        'geopotential': [500],
-    }
+    var_list = ['temperature', 
+            'specific_humidity',
+            'u_component_of_wind',
+            'v_component_of_wind',
+            'geopotential'
+           ]
 
+    pl_list = [1000,850,700,500,200]
+    
     era5_rename_lut = {
         'z': 'geopotential',
         't': 'temperature',
@@ -82,16 +82,6 @@ def main():
     if not weatherbench_dir.is_dir():
         raise FileNotFoundError('root data directory not found, please correct config file.')
     
-
-    var_list = ['temperature', 
-            'specific_humidity',
-            'u_component_of_wind',
-            'v_component_of_wind',
-            'geopotential'
-           ]
-
-    pl_list = [1000,850,700,500,200]
-
     start_period = datetime.datetime(cmd_args.start_year,1,1,0,0)
     end_period = datetime.datetime(cmd_args.end_year,12,31,0,0)
 

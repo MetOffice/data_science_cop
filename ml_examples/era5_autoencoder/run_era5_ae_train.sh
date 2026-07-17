@@ -6,11 +6,11 @@
 #SBATCH --time=08:50:00
 #SBATCH --ntasks=16
 #SBATCH --mem=64G
-#SBATCH --job-name=era5_ae_train_ai4c
+#SBATCH --job-name=dscop_era5_ae_train
 
 set -e
 
-export CONDA_ENV=/gws/ssde/j25a/mmh_storage/user/shaddad/conda/dscop_torch_gpu
+export CONDA_ENV=/gws/ssde/j25b/mohc_shared/dscop/conda_envs/dscop_pytorch_gpu/
 export MLFLOW_DIR=/gws/ssde/j25a/mmh_storage/user/shaddad/mlflow
 export MLFLOW_PORT=4455
 
