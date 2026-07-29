@@ -14,8 +14,9 @@ export DATA_OUTPUT_DIR=/gws/ssde/j25b/mohc_shared/dscop/weatherbench/mlready/
 
 conda activate ${CONDA_ENV}
 cd ~/prog/data_science_cop
+cd ml_examples/era5_autoencoder/
 
-python ml_examples/era5_autoencoder/era5_autoencoder_data_prep.py --start-year 1980 --end-year 2016 --data-out-dir  $DATA_OUTPUT_DIR --root-data-dir /gws/ssde/j25a/mmh_storage/ai4c_data/weatherbench/
+python era5_autoencoder_data_prep.py --start-year 1980 --end-year 2016 --data-out-dir  $DATA_OUTPUT_DIR --root-data-dir /gws/ssde/j25a/mmh_storage/ai4c_data/weatherbench/
 
 
 

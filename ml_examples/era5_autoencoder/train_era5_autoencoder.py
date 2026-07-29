@@ -69,13 +69,6 @@ class WeatherbenchDataset(torch.utils.data.Dataset):
         self._time_list = (self._ds_norm[ list(self._ds_norm.keys())[0] ]['time'].values)
         self.num_channels = len(self._ds_norm.data_vars)*len(self._ds_norm['level'])
 
-
-    def __str__(self):
-        return str(self._wb_ds)
-
-    def __repr_html__(self):
-        return self._wb_ds.__rept_html__()
-
     def __len__(self):
         return len(self._time_list)
 
@@ -146,65 +139,49 @@ class Era5AutoEncoder(torch.nn.Module):
         self._decoder = self._get_decoder()
 
     def _get_encoder(self, max_pool):
-        if max_pool:
-            encoder = torch.nn.Sequential(
-                torch.nn.Conv2d(in_channels=self.num_channels, 
-                                out_channels=16, 
-                                kernel_size=3, 
-                                padding=1,
-                               ),
-                torch.nn.ReLU(),
-                torch.nn.MaxPool2d(2, stride=2),
-                torch.nn.Conv2d(in_channels=16, 
-                                out_channels=32, 
-                                kernel_size=3, 
-                                padding=1,
-                               ),
-                torch.nn.ReLU(),
-                torch.nn.MaxPool2d(2, stride=2),
-                torch.nn.Flatten(1,-1)
-            )
-        else:
-            encoder = torch.nn.Sequential(
-                torch.nn.Conv2d(in_channels=self.num_channels, 
-                                out_channels=16, 
-                                kernel_size=3, 
-                                padding=1,
-                                stride=2,
-                               ),
-                torch.nn.ReLU(),
-                torch.nn.Conv2d(in_channels=16, 
-                                out_channels=32, 
-                                kernel_size=3, 
-                                padding=1,
-                                stride=2,
-                               ),
-                torch.nn.ReLU(),
-                torch.nn.Flatten(),
-                # torch.nn.Linear(self._prelatent_size, self._latent_size),
-                # torch.nn.ReLU(),
-            )
+        encoder = torch.nn.Sequential(
+            torch.nn.Conv2d(in_channels=self.num_channels, 
+                            out_channels=16, 
+                            kernel_size=3, 
+                            padding=1,
+                            stride=2,
+                           ),
+            torch.nn.ReLU(),
+            torch.nn.Conv2d(in_channels=16, 
+                            out_channels=32, 
+                            kernel_size=3, 
+                            padding=1,
+                            stride=2,
+                           ),
+            torch.nn.ReLU(),
+            torch.nn.Flatten(),
+            torch.nn.Linear(self._prelatent_size, self._latent_size),
+            torch.nn.ReLU(),
+        )
         return encoder
 
     def _get_decoder(self):
         """
         """
         decoder = torch.nn.Sequential(
+            torch.nn.Linear(self._prelatent_size, self._latent_size),
+            torch.nn.Unflatten(dim=1, unflattened_size=self._latent_array_dims[1:]),
             torch.nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=2,stride=2),
             torch.nn.ReLU(),
             torch.nn.ConvTranspose2d(in_channels=16, out_channels=self.num_channels, kernel_size=2,stride=2),
-            # torch.nn.ReLU(),
-            # torch.nn.Sigmoid(),   
         )
         return decoder
+        
     def forward(self, x):
-
+        # Convert to $D batch size of 1 if input is one data point (with three dimensions)
         # Get latent representation
+        if x.ndim == 3:
+            x = x.unsqueeze(0)
         latent = self._encoder(x)
 
         # Reconstruct input
-        reconstructed = self._decoder(latent.view(self._latent_array_dims))
-        # reconstructed = self._decoder(latent)
+        reconstructed = self._decoder(latent)
+
 
         return reconstructed
 
@@ -273,11 +250,16 @@ def run_train_loop(device, ae_model, loss_function, optimizer, train_loader, val
             epoch_train_loss += loss_batch.to('cpu').item()
         epoch_train_loss /= len(train_loader)
         print(epoch_train_loss)
+
+        #calculate validation loss
         epoch_val_loss = 0.0
-        for batch_ix_val, X_batch_val in enumerate(val_loader):
-            predictions_val = ae_model.forward(X_batch_val.to(device))
-            loss_batch_val = loss_function(predictions_val, X_batch_val.to(device))
-            epoch_val_loss += loss_batch_val.to('cpu').item()
+        ae_model.eval()
+        with torch.no_grad():
+            for batch_ix_val, X_batch_val in enumerate(val_loader):
+                predictions_val = ae_model.forward(X_batch_val.to(device))
+                loss_batch_val = loss_function(predictions_val, X_batch_val.to(device))
+                epoch_val_loss += loss_batch_val.to('cpu').item()
+        ae_model.train()
         epoch_val_loss /= len(val_loader)
         if use_mlflow:
             mlflow.log_metrics(
@@ -287,10 +269,10 @@ def run_train_loop(device, ae_model, loss_function, optimizer, train_loader, val
 
         print(epoch_train_loss)
         print(epoch_val_loss)
-        epoch_duration_minutes = (datetime.datetime.now() - epoch_start_dt) // 60
+        epoch_duration_minutes = (datetime.datetime.now() - epoch_start_dt).total_seconds() // 60
         print(f'epoch train loop time {epoch_duration_minutes} minutes')
         if checkpoint_dir is not None:
-            cp_fname = f'era5_autoencoder_checkoint_{epoch_num:03d}.pth'
+            cp_fname = f'era5_autoencoder_checkpoint_{epoch_num:03d}.pth'
             cp_path = checkpoint_dir / cp_fname
             torch.save(ae_model, cp_path)
             print(f'checkpoint for epoch {epoch_num} saved to {cp_path}')
@@ -298,7 +280,7 @@ def run_train_loop(device, ae_model, loss_function, optimizer, train_loader, val
                 mlflow.log_artifact(cp_path)
                             
 
-    train_duration_minutes = (datetime.datetime.now() - train_start_dt) // 60
+    train_duration_minutes = (datetime.datetime.now() - train_start_dt).total_seconds() // 60
     print(f'total train loop time {train_duration_minutes} minutes')
     if use_mlflow:
         mlflow.log_param('train_time_minutes', train_duration_minutes)
@@ -313,14 +295,14 @@ def run_train_loop(device, ae_model, loss_function, optimizer, train_loader, val
 
 def plot_sample_prediction(select_ds, ae_model, device, out_dir):
     """
-    create a new data array to contain the model predictions, which can then subsequnetly use the xarray plotting interface
+    Create a new DataArray to contain the model predictions, which can then subsequnetly use the xarray plotting interface
     """
     pred_da = xarray.DataArray(select_ds._ds_norm['temperature'][2].sel(level=850))
-    pred_arr = ae_model.forward(select_ds[2].to(device)).to('cpu').detach().numpy() 
-    pred_da.values = pred_arr[0,0,:]
+    pred_arr = ae_model.forward(select_ds[2].to(device).unsqueeze()).to('cpu').detach().numpy() 
+    pred_da.values = pred_arr[0,0,:,:]
     
     # plot results compared to truth
-    fig1 = matplotlib.pyplot.figure('sample prediction - temprature', figsize=(10,16))
+    fig1 = matplotlib.pyplot.figure('sample prediction - temperature', figsize=(10,16))
     ax1 = fig1.add_subplot(2,1,1, title='sample truth: temp 850')
     select_ds._ds_norm['temperature'][2].sel(level=850).plot.contourf(ax=ax1)
     ax1 = fig1.add_subplot(2,1,2, title='sample prediction: temp 850')
@@ -338,7 +320,7 @@ def do_evaluation(ae_model, ds1, device):
 
 def get_cmd_args():
     parser = argparse.ArgumentParser(
-        prog='train_era5_autoenconder',
+        prog='train_era5_autoencoder',
         description='Train an autoencoder on lowres era5 data',
     )
     

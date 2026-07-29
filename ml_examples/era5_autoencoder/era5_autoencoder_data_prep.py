@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # (C) British Crown Copyright 2017-2026, Met Office.
-# Please see LICENSE.md for license details.import pathlib
+# Please see LICENSE.md for license details.
 """
 This module takes the low resolution version of ERA5 data that makes up the Weatherbench v1 dataset, and prepares it for use in this exercise. This includes calculating means and std deviation of fields for normalising data ahead of training, and saving in zarr format for improved loading performance.
 
@@ -136,7 +136,7 @@ def main():
         wb_zarr_norm_dir.mkdir(parents=True)
     era5_norm_ds = xarray.merge(var_norm_ds_list).chunk({'time':240})
     era5_norm_ds.to_zarr(wb_zarr_norm_dir)
-    print(f'zarr of original data written to {wb_zarr_norm_dir}')
+    print(f'zarr of normalised data written to {wb_zarr_norm_dir}')
     
 if __name__ =='__main__':
     main()

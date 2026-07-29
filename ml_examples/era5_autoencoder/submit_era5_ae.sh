@@ -7,7 +7,12 @@ cd ~/prog/data_science_cop
 cd ml_examples/era5_autoencoder/
 
 # Set to a suitable directory for writing log files (for which you have write permission).
-export LOG_DIR=/gws/ssde/j25a/mmh_storage/user/shaddad/log/
+export USER_DIR=/gws/ssde/j25b/mohc_shared//users/$USER
+export USER_LOG_DIR=${USER_DIR}/log/
+
+#uncomment these lines if you do not have a user directory yet
+# mkdir $USER_DIR
+# mkdir $USER_LOG_DIR
 
 export STD_OUT_PATH=${LOG_DIR}/era5_ae_train_log_$(date '+%Y%m%d%H%M').out
 export STD_ERR_PATH=${LOG_DIR}/era5_ae_train_log_$(date '+%Y%m%d%H%M').err
