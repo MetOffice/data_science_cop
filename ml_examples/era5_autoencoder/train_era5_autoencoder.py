@@ -164,7 +164,7 @@ class Era5AutoEncoder(torch.nn.Module):
         """
         """
         decoder = torch.nn.Sequential(
-            torch.nn.Linear(self._prelatent_size, self._latent_size),
+            torch.nn.Linear(self._latent_size, self._prelatent_size),
             torch.nn.Unflatten(dim=1, unflattened_size=self._latent_array_dims[1:]),
             torch.nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=2,stride=2),
             torch.nn.ReLU(),
@@ -298,7 +298,7 @@ def plot_sample_prediction(select_ds, ae_model, device, out_dir):
     Create a new DataArray to contain the model predictions, which can then subsequnetly use the xarray plotting interface
     """
     pred_da = xarray.DataArray(select_ds._ds_norm['temperature'][2].sel(level=850))
-    pred_arr = ae_model.forward(select_ds[2].to(device).unsqueeze()).to('cpu').detach().numpy() 
+    pred_arr = ae_model.forward(select_ds[2].to(device).unsqueeze(0)).to('cpu').detach().numpy() 
     pred_da.values = pred_arr[0,0,:,:]
     
     # plot results compared to truth
@@ -387,7 +387,7 @@ def main():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-    exp_dir = cmd_args.model_out_dir
+    exp_dir = cmd_args.model_out_dir / exp_name 
     cdt = datetime.datetime.now()
     run_dir = exp_dir / f'run_{cdt.year:04d}{cdt.month:02d}{cdt.day:02d}_{cdt.hour:02d}{cdt.minute:02d}'
     try:
