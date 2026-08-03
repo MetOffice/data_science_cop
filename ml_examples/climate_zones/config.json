@@ -1,0 +1,57 @@
+{
+    "platform": "mo_linux",
+    "default_dirs": {
+        "mo_linux": "/data/users/dscop/ml_tutorial/",
+        "jasmin": "/gws/ssde/j25a/mmh_storage/ai4c_data/"
+    },
+    "random_seed": 12345,
+    "climate_subgroups": {
+        "non-land": "None",
+         "Af": "Tropical, rainforest",
+         "Am": "Tropical, monsoon",
+         "Aw": "Tropical, savannah",
+         "BWh": "Arid, desert, hot",
+         "BWk": "Arid, desert, cold",
+         "BSh": "Arid, steppe, hot",
+         "BSk": "Arid, steppe, cold",
+         "Csa": "Temperate, dry summer, hot summer",
+         "Csb": "Temperate, dry summer, warm summer",
+         "Csc": "Temperate, dry summer, cold summer",
+         "Cwa": "Temperate, dry winter, hot summer",
+         "Cwb": "Temperate, dry winter, warm summer",
+         "Cwc": "Temperate, dry winter, cold summer",
+         "Cfa": "Temperate, no dry season, hot summer",
+         "Cfb": "Temperate, no dry season, warm summer",
+         "Cfc": "Temperate, no dry season, cold summer",
+         "Dsa": "Cold, dry summer, hot summer",
+         "Dsb": "Cold, dry summer, warm summer",
+         "Dsc": "Cold, dry summer, cold summer",
+         "Dsd": "Cold, dry summer, very cold winter",
+         "Dwa": "Cold, dry winter, hot summer",
+         "Dwb": "Cold, dry winter, warm summer",
+         "Dwc": "Cold, dry winter, cold summer",
+         "Dwd": "Cold, dry winter, very cold winter",
+         "Dfa": "Cold, no dry season, hot summer",
+         "Dfb": "Cold, no dry season, warm summer",
+         "Dfc": "Cold, no dry season, cold summer",
+         "Dfd": ",Cold, no dry season, very cold winter",
+         "ET": "Polar, tundra",
+         "EF": "Polar, frost"        
+        },
+    "resolutions_names": {
+        "0.1": "0p1",
+        "0.5": "0p5",
+        "1.0": "1p0"
+    },
+
+    "dataset_prefix": {
+        "climate_mean": "ensemble_mean",
+        "climate_std": "ensemble_std",
+        "climate_zone": "koppen_geiger"
+    },
+    "fname_template": "{prefix}_{res}.{suffix}",
+    "time_dir_template": "{start_year}_{end_year}",
+    "csv_out_template": "climate_zones_{resolution}.csv",
+    "future_scenarios": ["ssp119","ssp126","ssp245","ssp370","ssp434","ssp460","ssp585"],
+    "historic_scenarios": ["historic"]
+}
