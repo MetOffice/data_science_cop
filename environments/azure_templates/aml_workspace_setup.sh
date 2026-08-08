@@ -6,6 +6,15 @@
 # Login to AzureML CLI - If your terminal is not currently running in a logged-in Azure CLI session, run the following command to log in:
 # az login
 
+# the user name for the account must be specified by the user through a command line argument, otherwise the rest of the script will not work.
+# Check if the first argument is empty
+if [ -z "$1" ]; then
+    echo "Error: You must supply the username for the azure account in the first command line argument." >&2
+    exit 1
+else
+    export USER_NAME=$1
+fi
+
 #use this if on Met Office IT
 export PLATFORM=metoffice
 
@@ -16,8 +25,6 @@ export PLATFORM=metoffice
 export WORKSPACE_NAME=dscoptest1
 export RESOURCE_GROUP=$(python get_resource_groups.py)
 
-# this must be updated by the user before running
-export USER_NAME=cloud_user_p_540617ae
 #===============================
 # Create workspace
 
@@ -67,20 +74,20 @@ export COMPUTE_SIZE=Standard_DS3_v2
 # instance
 # copy the script to user space
 
-export FILE_STORE=code-391ff5ac-6576-460f-ba4d-7e03433c68b6
-azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
+#export FILE_STORE=code-391ff5ac-6576-460f-ba4d-7e03433c68b6
+#azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
 
 az ml compute create --name dscopcitest01 --size $COMPUTE_SIZE --type ComputeInstance --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 #todo: specify the script to run on creation to set up the copmpute instance for the tutorial, need to create a python script to populate a compute spec yaml file which specifies a creation script, which must first be uploaded
 
 #cluster
-az ml compute create --name dscopclustertest01 --size $COMPUTE_SIZE --min-instances 0 --max-instances 1 --type AmlCompute --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+#az ml compute create --name dscopclustertest01 --size $COMPUTE_SIZE --min-instances 0 --max-instances 1 --type AmlCompute --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 
 #=========================================
 # Create compute instances and clusters
-python create_workspace_spec.py environment  --conda-file ../requirements_pytorch.yml --name dscop_pytorch --output env_dscop_pytorch_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies." --image  "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04"
-
-az ml environment create --file env_dscop_pytorch_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+#python create_workspace_spec.py environment  --conda-file ../requirements_pytorch.yml --name dscop_pytorch --output env_dscop_pytorch_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies." --image  "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04"
+#
+#az ml environment create --file env_dscop_pytorch_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 
