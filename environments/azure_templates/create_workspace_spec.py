@@ -6,6 +6,7 @@ This module supports creating YAML specs for:
 - Azure ML environment (from a conda file)
 - Azure ML Azure Blob datastore
 - Azure ML data asset (dataset)
+- Azure ML command job
 
 References:
 - Workspace schema:
@@ -29,6 +30,7 @@ WORKSPACE_SCHEMA = "https://azuremlschemas.azureedge.net/latest/workspace.schema
 ENVIRONMENT_SCHEMA = "https://azuremlschemas.azureedge.net/latest/environment.schema.json"
 DATASTORE_BLOB_SCHEMA = "https://azuremlschemas.azureedge.net/latest/datastoreBlob.schema.json"
 DATA_SCHEMA = "https://azuremlschemas.azureedge.net/latest/data.schema.json"
+COMMAND_JOB_SCHEMA = "https://azuremlschemas.azureedge.net/latest/commandJob.schema.json"
 
 
 def write_yaml_file(spec: Dict[str, Any], output_path: str) -> bool:
@@ -159,6 +161,46 @@ def create_dataset_yaml(
         dataset_spec["description"] = description
 
     return write_yaml_file(dataset_spec, output_path)
+
+
+def create_job_yaml(
+    code: str,
+    command: str,
+    compute_name: str,
+    output_path: str,
+    environment: Optional[str],
+    experiment_name: Optional[str],
+    job_name: Optional[str],
+) -> bool:
+    """Create an Azure ML command job YAML specification file."""
+    code_path = Path(code)
+    if not code_path.exists() or not code_path.is_dir():
+        print(f"Code directory does not exist or is not a directory: {code_path}")
+        return False
+
+    # Azure ML command jobs expect compute in the form `azureml:<compute_name>`.
+    compute_target = (
+        compute_name
+        if compute_name.startswith("azureml:")
+        else f"azureml:{compute_name}"
+    )
+
+    job_spec: Dict[str, Any] = {
+        "$schema": COMMAND_JOB_SCHEMA,
+        "type": "command",
+        "code": str(code_path),
+        "command": command,
+        "compute": compute_target,
+    }
+
+    if environment:
+        job_spec["environment"] = environment
+    if experiment_name:
+        job_spec["experiment_name"] = experiment_name
+    if job_name:
+        job_spec["name"] = job_name
+
+    return write_yaml_file(job_spec, output_path)
 
 
 def add_workspace_subcommand(subparsers: argparse._SubParsersAction) -> None:
@@ -308,6 +350,56 @@ def add_dataset_subcommand(subparsers: argparse._SubParsersAction) -> None:
     dataset_parser.set_defaults(func=handle_dataset_subcommand)
 
 
+def add_job_subcommand(subparsers: argparse._SubParsersAction) -> None:
+    """Register the command job subcommand and its arguments."""
+    job_parser = subparsers.add_parser(
+        "job", help="Create an Azure ML command job YAML specification"
+    )
+    job_parser.add_argument(
+        "--code",
+        type=str,
+        required=True,
+        help="Path to local code directory to upload",
+    )
+    job_parser.add_argument(
+        "--command",
+        type=str,
+        required=True,
+        help="Command string to run",
+    )
+    job_parser.add_argument(
+        "--compute-name",
+        dest="compute_name",
+        type=str,
+        required=True,
+        help="Compute target name (compute instance or cluster)",
+    )
+    job_parser.add_argument(
+        "--environment",
+        type=str,
+        help="Optional environment reference (for example azureml:my-env@latest)",
+    )
+    job_parser.add_argument(
+        "--experiment-name",
+        dest="experiment_name",
+        type=str,
+        help="Optional experiment name",
+    )
+    job_parser.add_argument(
+        "--job-name",
+        dest="job_name",
+        type=str,
+        help="Optional job name",
+    )
+    job_parser.add_argument(
+        "--output",
+        type=str,
+        default="job_spec.yaml",
+        help="Output YAML path",
+    )
+    job_parser.set_defaults(func=handle_job_subcommand)
+
+
 def get_cmd_args() -> argparse.Namespace:
     """Parse and return command line arguments for all supported subcommands."""
     parser = argparse.ArgumentParser(
@@ -319,6 +411,7 @@ def get_cmd_args() -> argparse.Namespace:
     add_environment_subcommand(subparsers)
     add_datastore_subcommand(subparsers)
     add_dataset_subcommand(subparsers)
+    add_job_subcommand(subparsers)
 
     return parser.parse_args()
 
@@ -369,6 +462,19 @@ def handle_dataset_subcommand(args: argparse.Namespace) -> bool:
         data_type=args.data_type,
         version=args.version,
         description=args.description,
+    )
+
+
+def handle_job_subcommand(args: argparse.Namespace) -> bool:
+    """Handle `job` subcommand execution."""
+    return create_job_yaml(
+        code=args.code,
+        command=args.command,
+        compute_name=args.compute_name,
+        output_path=args.output,
+        environment=args.environment,
+        experiment_name=args.experiment_name,
+        job_name=args.job_name,
     )
 
 
