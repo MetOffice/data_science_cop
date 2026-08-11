@@ -45,11 +45,15 @@ else
   wget -O "${CLIMATE_ZONES_DATA_PATH}" https://zenodo.org/records/21773439/files/climate_zones_1p0.csv
 fi
 
+export STORAGE_ACCOUNT=$(python get_storage_account.py $RESOURCE_GROUP --first-only)
+export CONTAINER_NAME=azureml
+export CONTAINER_URL=https://${STORAGE_ACCOUNT}.blob.core.windows.net/${CONTAINER_NAME}
+
 azcopy copy "${XBT_DATA_PATH}" "${CONTAINER_URL}/xbt/xbt_1968.csv"
 azcopy copy "${CLIMATE_ZONES_DATA_PATH}" "${CONTAINER_URL}/climate_zones/climate_zones_1p0.csv"
 # create workspace
 
-export STORAGE_ACCOUNT=$(python get_storage_account.py $RESOURCE_GROUP --first-only)
+
 
 export DSCOP_DATASTORE_NAME=dscopworkspacestore
 python create_workspace_spec.py datastore --name $DSCOP_DATASTORE_NAME --account-name $STORAGE_ACCOUNT --container-name $CONTAINER_NAME --description="Main datastore for blob storage associated with workspace."
@@ -74,8 +78,8 @@ export COMPUTE_SIZE=Standard_DS3_v2
 # instance
 # copy the script to user space
 
-#export FILE_STORE=code-391ff5ac-6576-460f-ba4d-7e03433c68b6
-#azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
+export FILE_STORE=$( python get_file_shares.py $STORAGE_ACCOUNT --prefix "code")
+azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
 
 az ml compute create --name dscopcitest01 --size $COMPUTE_SIZE --type ComputeInstance --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 #todo: specify the script to run on creation to set up the copmpute instance for the tutorial, need to create a python script to populate a compute spec yaml file which specifies a creation script, which must first be uploaded
