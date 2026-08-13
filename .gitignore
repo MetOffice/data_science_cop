@@ -1,3 +1,8 @@
 *.ipynb_checkpoints/
 *.DS_Store
 challenges/2023_cloud_classification/src/example_code/mlruns/
+
+# Local planning artefacts (handover docs, implementation plans, task
+# breakdowns) - intentionally kept out of pull requests / deliverables.
+.planning/
+AGENTS.md
