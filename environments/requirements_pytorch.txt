@@ -1,5 +1,5 @@
 pandas==2.3
-mlflow==3.9
+mlflow==3.13.0rc0
 ipykernel
 xarray==2026.1
 zarr==3.1
