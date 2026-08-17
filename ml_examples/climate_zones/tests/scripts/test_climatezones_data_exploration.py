@@ -35,6 +35,7 @@ References
 import subprocess
 import sys
 import traceback
+import datetime
 
 TEST_NAME = "ClimateZones Test"
 
@@ -58,11 +59,56 @@ def classify_exception(exc):
     return "WORKFLOW FAILURE"
 
 
+def _get_module():
+    try:
+        idx = sys.argv.index("--module")
+        return sys.argv[idx + 1]
+    except Exception:
+        return "unknown"
+
+
+def initialise_troubleshooting():
+    troubleshooting = "--troubleshooting" in sys.argv
+    return troubleshooting, []
+
+
+def save_troubleshooting_outputs(retained_figures):
+    try:
+        import json
+        import pathlib
+
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        troubleshooting_dir = (pathlib.Path("../troubleshooting/climatezones_data_exploration") / timestamp)
+        troubleshooting_dir.mkdir(parents=True, exist_ok=False)
+
+        metadata = {
+            "test_name": TEST_NAME,
+            "git_version": get_git_version(),
+            "module": _get_module(),
+        }
+        with open(troubleshooting_dir / "metadata.json", "w") as metadata_file:
+            json.dump(metadata, metadata_file, indent=2)
+
+        for filename, fig in retained_figures:
+            fig.savefig(troubleshooting_dir / filename)
+    except Exception:
+        print("Troubleshooting artefacts could not be retained.")
+
+    try:
+        import matplotlib.pyplot
+
+        for _, fig in retained_figures:
+            matplotlib.pyplot.close(fig)
+    except Exception:
+        pass
+
 def main():
     print(TEST_NAME)
     print()
     print(f"Git Version: {get_git_version()}")
     print()
+
+    troubleshooting, retained_figures = initialise_troubleshooting()
 
     try:
 
@@ -148,7 +194,6 @@ def main():
         future_climate_zone_ds = xarray.open_dataset(future_climate_zone_path)
         historic_climate_mean_ds = xarray.open_dataset(historic_climate_mean_path)
 
-
         fig1 = matplotlib.pyplot.figure(figsize=(16, 8))
 
         ax1 = fig1.add_subplot(1, 1, 1, projection=cartopy.crs.PlateCarree(),)
@@ -159,7 +204,10 @@ def main():
         ax1.set_title(f"KG Climate Zones diff {select_future} compared to {select_historic}")
 
         fig1.canvas.draw()
-        matplotlib.pyplot.close(fig1)
+        if troubleshooting:
+            retained_figures.append(("01_climate_zone_diff_map.png", fig1))
+        else:
+            matplotlib.pyplot.close(fig1)
 
 
         january_air_temperature = (historic_climate_mean_ds.loc[{"time": 1}]["air_temperature"])
@@ -172,19 +220,21 @@ def main():
         ax1.set_title("January Air Temperature")
 
         fig1.canvas.draw()
-        matplotlib.pyplot.close(fig1)
-
-
+        if troubleshooting:
+            retained_figures.append(("02_january_air_temperature_map.png", fig1))
+        else:
+            matplotlib.pyplot.close(fig1)
         mlready_data_path = ml_ready_dir / ml_ready_fname_template.format(resolution=resolutions_dict[current_res])
 
-
         zones_df = pandas.read_csv(mlready_data_path, nrows=25000)
+        bar_fig = matplotlib.pyplot.figure(figsize=(8, 5))
+        zones_df['climate_subgroup'].value_counts().plot.bar()
 
-
-        zones_df['climate_subgroup'].value_counts().plot.bar(figsize=(8,5))
-        bar_ax = matplotlib.pyplot.gca()
-        bar_ax.get_figure().canvas.draw()
-        matplotlib.pyplot.close(bar_ax.get_figure())
+        bar_fig.canvas.draw()
+        if troubleshooting:
+            retained_figures.append(("03_climate_subgroup_bar.png", bar_fig))
+        else:
+            matplotlib.pyplot.close(bar_fig)
 
         fig1 = matplotlib.pyplot.figure(figsize=(8, 5))
         ax1 = fig1.add_subplot(1, 1, 1, title="distribution of January Air Temperature - Zone A")
@@ -192,7 +242,10 @@ def main():
         ax1.set_xlim(-30, 40)
 
         fig1.canvas.draw()
-        matplotlib.pyplot.close(fig1)
+        if troubleshooting:
+            retained_figures.append(("04_zone_a_january_temp_hist.png", fig1))
+        else:
+            matplotlib.pyplot.close(fig1)
 
     except Exception as exc:
         category = classify_exception(exc)
@@ -205,7 +258,12 @@ def main():
         print("Exception:")
         print(f"{type(exc).__name__}: {exc}")
         traceback.print_exc(file=sys.stderr)
+        if troubleshooting:
+            save_troubleshooting_outputs(retained_figures)
         return 1
+
+    if troubleshooting:
+        save_troubleshooting_outputs(retained_figures)
 
     print("RESULT:")
     print("VALIDATED")
