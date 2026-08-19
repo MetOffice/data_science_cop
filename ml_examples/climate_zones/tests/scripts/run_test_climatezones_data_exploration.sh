@@ -7,15 +7,15 @@
 # Cylc-specific behaviour; runnable manually now, and later from Cylc.
 #
 # Usage:
-#   ./run_test_climatezones_data_exploration.sh [--module <module>] [--troubleshooting]
+#   ./run_test_climatezones_data_exploration.sh [--module <module>] [--retention]
 #
 # Default module: scitools/community/ml
-# --troubleshooting: activates the Python script's artefact-retention mode (off by default).
+# --retention: activates the Python script's artefact-retention mode (off by default).
 
 set -eu
 
 MODULE="scitools/community/ml"
-TROUBLESHOOTING=0
+RETENTION=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -23,8 +23,8 @@ while [[ $# -gt 0 ]]; do
             MODULE="$2"
             shift 2
             ;;
-        --troubleshooting)
-            TROUBLESHOOTING=1
+        --retention)
+            RETENTION=1
             shift
             ;;
         *)
@@ -39,16 +39,16 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 module load "$MODULE" || exit 1
 
 echo "Module: $MODULE"
-if [[ "$TROUBLESHOOTING" -eq 1 ]]; then
-    echo "Troubleshooting: ON"
+if [[ "$RETENTION" -eq 1 ]]; then
+    echo "Retention: ON"
 else
-    echo "Troubleshooting: OFF"
+    echo "Retention: OFF"
 fi
 echo
 
 cd "$SCRIPT_DIR"
-ARGS=(--module "$MODULE")
-if [[ "$TROUBLESHOOTING" -eq 1 ]]; then
-    ARGS+=(--troubleshooting)
+ARGS=()
+if [[ "$RETENTION" -eq 1 ]]; then
+    ARGS+=(--retention)
 fi
 python test_climatezones_data_exploration.py "${ARGS[@]}"
