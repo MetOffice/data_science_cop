@@ -11,8 +11,6 @@
 #
 # Default module: scitools/community/ml
 # --retention: activates the Python script's artefact-retention mode (off by default).
-run_wrapper(){
-
 set -eu
 
 MODULE="scitools/community/ml"
@@ -48,15 +46,8 @@ fi
 echo
 
 cd "$SCRIPT_DIR"
-ARGS=()
+ARGS=(--module "$MODULE")
 if [[ "$RETENTION" -eq 1 ]]; then
     ARGS+=(--retention)
 fi
 python test_climatezones_data_exploration.py "${ARGS[@]}"
-}
-WRAPPER_STDOUT=$(run_wrapper "$@")
-WRAPPER_EXIT_CODE=$?
-
-echo "$WRAPPER_STDOUT"
-
-exit "$WRAPPER_EXIT_CODE"

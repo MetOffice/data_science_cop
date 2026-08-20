@@ -67,7 +67,7 @@ def create_artefact_directory():
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         artefact_dir = pathlib.Path("../test_run_logs/climatezones_data_exploration") / timestamp
         artefact_dir.mkdir(parents=True, exist_ok=False)
-        print(f"artefact_dir={artefact_dir.resolve()}")
+        pathlib.Path("latest_artefact_dir.txt").write_text(str(artefact_dir.resolve()))
 
         return artefact_dir
     except Exception:
@@ -92,6 +92,22 @@ def save_retained_figures(retained_figures, artefact_dir, retention):
     except Exception:
         pass
 
+def save_metadata(artefact_dir):
+    try:
+        import json
+
+        metadata = {
+            "git_version": get_git_version(),
+            "test_name": TEST_NAME,
+            "arguments": sys.argv,
+        }
+
+        with open(artefact_dir / "metadata.json", "w") as metadata_file:
+            json.dump(metadata, metadata_file, indent=2)
+
+    except Exception:
+        print("Metadata could not be retained.")
+
 def main():
     print(TEST_NAME)
     print()
@@ -102,6 +118,7 @@ def main():
     artefact_dir = None
     if retention:
         artefact_dir = create_artefact_directory()
+        save_metadata(artefact_dir)
 
     try:
 
