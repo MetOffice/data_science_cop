@@ -37,12 +37,28 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 module load "$MODULE" || exit 1
 
+ENVIRONMENT_INVENTORY=$(
+    find "$SSS_ENV_DIR/conda-meta" \
+        -maxdepth 1 \
+        -type f \
+        -name '*.json' \
+        -printf '%f\n' |
+    sort
+)
+
+ENVIRONMENT_HASH=$(
+    printf "%s" "$ENVIRONMENT_INVENTORY" |
+    sha256sum |
+    awk '{print $1}'
+)
+
 echo "Module: $MODULE"
 if [[ "$RETENTION" -eq 1 ]]; then
     echo "Retention: ON"
 else
     echo "Retention: OFF"
 fi
+echo "Environment Hash: $ENVIRONMENT_HASH"
 echo
 
 cd "$SCRIPT_DIR"
@@ -50,4 +66,19 @@ ARGS=(--module "$MODULE")
 if [[ "$RETENTION" -eq 1 ]]; then
     ARGS+=(--retention)
 fi
+set +e
 python test_climatezones_data_exploration.py "${ARGS[@]}"
+PYTHON_EXIT_CODE=$?
+set -e
+
+if [[ "$RETENTION" -eq 1 ]]; then
+    ARTEFACT_DIR="$(<latest_artefact_dir.txt)"
+
+    printf "%s\n" "$ENVIRONMENT_INVENTORY" \
+        > "$ARTEFACT_DIR/environment_inventory.txt"
+
+    printf "%s\n" "$ENVIRONMENT_HASH" \
+        > "$ARTEFACT_DIR/environment_hash.txt"
+fi
+
+exit "$PYTHON_EXIT_CODE"
