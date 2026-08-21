@@ -62,14 +62,22 @@ echo "Environment Hash: $ENVIRONMENT_HASH"
 echo
 
 cd "$SCRIPT_DIR"
+PYTHON_OUTPUT_FILE="$(mktemp)"
 ARGS=(--module "$MODULE")
 if [[ "$RETENTION" -eq 1 ]]; then
     ARGS+=(--retention)
 fi
 set +e
-python test_climatezones_data_exploration.py "${ARGS[@]}"
+python test_climatezones_data_exploration.py "${ARGS[@]}" > "$PYTHON_OUTPUT_FILE" 2>&1
 PYTHON_EXIT_CODE=$?
 set -e
+
+cat "$PYTHON_OUTPUT_FILE"
+PYTHON_OUTPUT_HASH=$(
+    sha256sum "$PYTHON_OUTPUT_FILE" |
+    awk '{print $1}'
+)
+echo "Python Output Hash: $PYTHON_OUTPUT_HASH"
 
 if [[ "$RETENTION" -eq 1 ]]; then
     ARTEFACT_DIR="$(<latest_artefact_dir.txt)"
@@ -79,6 +87,13 @@ if [[ "$RETENTION" -eq 1 ]]; then
 
     printf "%s\n" "$ENVIRONMENT_HASH" \
         > "$ARTEFACT_DIR/environment_hash.txt"
+
+    mv "$PYTHON_OUTPUT_FILE" \
+    "$ARTEFACT_DIR/python_output.txt"
+
+    printf "%s\n" "$PYTHON_OUTPUT_HASH" \
+        > "$ARTEFACT_DIR/python_output_hash.txt"
 fi
 
+rm -f "$PYTHON_OUTPUT_FILE"
 exit "$PYTHON_EXIT_CODE"
