@@ -50,6 +50,36 @@ def get_git_version():
     except Exception:
         return "unknown"
 
+def get_file_git_status(file_path):
+    try:
+        unstaged_changes = subprocess.run(
+            ["git", "diff", "--quiet", "--", str(file_path),]).returncode
+
+        staged_changes = subprocess.run(
+            ["git", "diff", "--cached", "--quiet", "--", str(file_path),]).returncode
+
+        if unstaged_changes != 0 or staged_changes != 0:
+            return "DIRTY"
+        return "CLEAN"
+    except Exception:
+        return "UNKNOWN"
+
+def get_git_file_statuses():
+    try:
+        from pathlib import Path
+        script_path = Path(__file__).resolve()
+        wrapper_path = (script_path.parent /"run_test_climatezones_data_exploration.sh").resolve()
+
+        return {
+            "python_script": get_file_git_status(script_path),
+            "bash_wrapper": get_file_git_status(wrapper_path),
+            }
+    except Exception:
+        return {
+            "python_script": "UNKNOWN",
+            "bash_wrapper": "UNKNOWN",
+        }
+
 def classify_exception(exc):
     if isinstance(exc, (ModuleNotFoundError, ImportError)):
         return "ENVIRONMENT FAILURE"
@@ -92,33 +122,41 @@ def save_retained_figures(retained_figures, artefact_dir, retention):
     except Exception:
         pass
 
-def save_metadata(artefact_dir):
+def finalise_run(retention, retained_figures):
+    git_statuses = get_git_file_statuses()
+    git_version = get_git_version()
+    print()
+    print(f"Git Version: {git_version}")
+    print(f"Python Script Status: {git_statuses['python_script']}")
+    print(f"Bash Wrapper Status: {git_statuses['bash_wrapper']}")
+    print()
+    artefact_dir = None
+    if retention:
+        artefact_dir = create_artefact_directory()
+        save_metadata(artefact_dir, git_statuses, git_version)
+        save_retained_figures(retained_figures, artefact_dir, retention)
+
+def save_metadata(artefact_dir, git_statuses, git_version):
     try:
         import json
 
         metadata = {
-            "git_version": get_git_version(),
+            "git_version": git_version,
             "test_name": TEST_NAME,
             "arguments": sys.argv,
+            "git_statuses": git_statuses,
         }
 
         with open(artefact_dir / "metadata.json", "w") as metadata_file:
             json.dump(metadata, metadata_file, indent=2)
-
     except Exception:
         print("Metadata could not be retained.")
 
 def main():
     print(TEST_NAME)
     print()
-    print(f"Git Version: {get_git_version()}")
-    print()
 
     retention, retained_figures = initialise_retention_mode()
-    artefact_dir = None
-    if retention:
-        artefact_dir = create_artefact_directory()
-        save_metadata(artefact_dir)
 
     try:
 
@@ -268,13 +306,13 @@ def main():
         print("Exception:")
         print(f"{type(exc).__name__}: {exc}")
         traceback.print_exc(file=sys.stderr)
-        save_retained_figures(retained_figures, artefact_dir, retention)
+        finalise_run(retention, retained_figures)
         return 1
-
-    save_retained_figures(retained_figures, artefact_dir, retention)
 
     print("RESULT:")
     print("VALIDATED")
+    finalise_run(retention, retained_figures)
+
     return 0
 
 
