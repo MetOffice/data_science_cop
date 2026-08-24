@@ -36,8 +36,10 @@ import subprocess
 import sys
 import traceback
 import datetime
+import logging
 
 TEST_NAME = "ClimateZones Test"
+RESULT_LEVEL = 60
 
 
 def get_git_version():
@@ -91,6 +93,35 @@ def initialise_retention_mode():
     retention = "--retention" in sys.argv
     return retention, []
 
+def configure_logging():
+    logging.addLevelName(RESULT_LEVEL, "RESULT")
+    try:
+        log_level_index = sys.argv.index("--log-level")
+        supplied_level = sys.argv[log_level_index + 1].upper()
+
+        if supplied_level == "RESULT":
+            logging_level = RESULT_LEVEL
+        else:
+            logging_level = getattr(logging, supplied_level)
+
+        logging.basicConfig(
+            level=logging_level,
+            format="%(message)s",
+        )
+
+    except Exception:
+        logging.basicConfig(
+            level=logging.INFO,
+            format="%(message)s",
+        )
+
+        logging.warning("Invalid log level supplied. Falling back to INFO.")
+
+    return logging.getLogger(__name__)
+
+def log_result(message):
+    LOGGER.log(RESULT_LEVEL, message)
+
 def create_artefact_directory():
     try:
         import pathlib
@@ -101,7 +132,7 @@ def create_artefact_directory():
 
         return artefact_dir
     except Exception:
-        print("Run artefacts could not be retained.")
+        LOGGER.warning("Run artefacts could not be retained.")
         return None
 
 
@@ -112,7 +143,7 @@ def save_retained_figures(retained_figures, artefact_dir, retention):
         for filename, fig in retained_figures:
             fig.savefig(artefact_dir / filename)
     except Exception:
-        print("Retained figures could not be retained.")
+        LOGGER.warning("Retained figures could not be retained.")
 
     try:
         import matplotlib.pyplot
@@ -125,11 +156,11 @@ def save_retained_figures(retained_figures, artefact_dir, retention):
 def finalise_run(retention, retained_figures):
     git_statuses = get_git_file_statuses()
     git_version = get_git_version()
-    print()
-    print(f"Git Version: {git_version}")
-    print(f"Python Script Status: {git_statuses['python_script']}")
-    print(f"Bash Wrapper Status: {git_statuses['bash_wrapper']}")
-    print()
+    LOGGER.info("")
+    LOGGER.info(f"Git Version: {git_version}")
+    LOGGER.info(f"Python Script Status: {git_statuses['python_script']}")
+    LOGGER.info(f"Bash Wrapper Status: {git_statuses['bash_wrapper']}")
+    LOGGER.info("")
     artefact_dir = None
     if retention:
         artefact_dir = create_artefact_directory()
@@ -150,11 +181,13 @@ def save_metadata(artefact_dir, git_statuses, git_version):
         with open(artefact_dir / "metadata.json", "w") as metadata_file:
             json.dump(metadata, metadata_file, indent=2)
     except Exception:
-        print("Metadata could not be retained.")
+        LOGGER.warning("Metadata could not be retained.")
+
+LOGGER = configure_logging()
 
 def main():
-    print(TEST_NAME)
-    print()
+    LOGGER.info(TEST_NAME)
+    LOGGER.info("")
 
     retention, retained_figures = initialise_retention_mode()
 
@@ -297,20 +330,20 @@ def main():
 
     except Exception as exc:
         category = classify_exception(exc)
-        print("RESULT:")
-        print("NOT SUCCESSFULLY VALIDATED")
-        print()
-        print("Failure Category:")
-        print(category)
-        print()
-        print("Exception:")
-        print(f"{type(exc).__name__}: {exc}")
-        traceback.print_exc(file=sys.stderr)
+        log_result("RESULT:")
+        log_result("NOT SUCCESSFULLY VALIDATED")
+        LOGGER.error("")
+        LOGGER.error("Failure Category:")
+        LOGGER.error(category)
+        LOGGER.error("")
+        LOGGER.error("Exception:")
+        LOGGER.error(f"{type(exc).__name__}: {exc}")
+        LOGGER.error(traceback.format_exc())
         finalise_run(retention, retained_figures)
         return 1
 
-    print("RESULT:")
-    print("VALIDATED")
+    log_result("RESULT:")
+    log_result("VALIDATED")
     finalise_run(retention, retained_figures)
 
     return 0

@@ -15,6 +15,7 @@ set -eu
 
 MODULE="scitools/community/ml"
 RETENTION=0
+LOG_LEVEL="INFO"
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
@@ -25,6 +26,10 @@ while [[ $# -gt 0 ]]; do
         --retention)
             RETENTION=1
             shift
+            ;;
+        --log-level)
+            LOG_LEVEL="$2"
+            shift 2
             ;;
         *)
             echo "Unknown argument: $1" >&2
@@ -53,6 +58,7 @@ ENVIRONMENT_HASH=$(
 )
 
 echo "Module: $MODULE"
+echo "Log Level: $LOG_LEVEL"
 if [[ "$RETENTION" -eq 1 ]]; then
     echo "Retention: ON"
 else
@@ -63,7 +69,9 @@ echo
 
 cd "$SCRIPT_DIR"
 PYTHON_OUTPUT_FILE="$(mktemp)"
-ARGS=(--module "$MODULE")
+ARGS=(--module "$MODULE"
+    --log-level "$LOG_LEVEL"
+)
 if [[ "$RETENTION" -eq 1 ]]; then
     ARGS+=(--retention)
 fi
