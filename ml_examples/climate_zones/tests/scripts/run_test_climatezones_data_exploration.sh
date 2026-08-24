@@ -89,10 +89,38 @@ if [[ "$RETENTION" -eq 1 ]]; then
         > "$ARTEFACT_DIR/environment_hash.txt"
 
     mv "$PYTHON_OUTPUT_FILE" \
-    "$ARTEFACT_DIR/python_output.txt"
+        "$ARTEFACT_DIR/python_output.txt"
 
     printf "%s\n" "$PYTHON_OUTPUT_HASH" \
         > "$ARTEFACT_DIR/python_output_hash.txt"
+
+    for artefact in \
+        "$ARTEFACT_DIR"/*.png \
+        "$ARTEFACT_DIR"/metadata.json
+    do
+        ARTEFACT_HASH=$(
+            sha256sum "$artefact" |
+            awk '{print $1}'
+        )
+
+        printf "%s\n" "$ARTEFACT_HASH" \
+            > "${artefact%.*}_hash.txt"
+    done
+
+    MASTER_HASH=$(
+        find "$ARTEFACT_DIR" \
+            -maxdepth 1 \
+            -name '*_hash.txt' \
+            ! -name 'environment_hash.txt' |
+        xargs cat |
+        sha256sum |
+        awk '{print $1}'
+    )
+
+    printf "%s\n" "$MASTER_HASH" \
+        > "$ARTEFACT_DIR/master_hash.txt"
+
+    echo "Master Hash: $MASTER_HASH"
 fi
 
 rm -f "$PYTHON_OUTPUT_FILE"
