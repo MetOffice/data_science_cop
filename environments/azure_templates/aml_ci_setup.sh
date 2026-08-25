@@ -1,5 +1,6 @@
 #!/bin/bash -l
 # This script is to run on a new compute instance to set it up for the DS CoP AzureML tutorials. It should be run on the compute instance.
+set -e
 
 export PROG_ROOT_DIR=$PWD
 
@@ -20,11 +21,9 @@ cd environments
 # conda doesn't seem to work until you accept the terms of service so adding these commands
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
 conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+conda init
 
-conda env create --file requirements_pytorch.yml
-conda activate dscop_pytorch
-pip install mltable azure-ai-ml azureml-dataprep[pandas]
-python -m ipykernel install --user --name dscop_pytorch --display-name "dscop_pytorch_azureml"
+./azure_templates/azure_conda_setup.sh $PWD/requirements_pytorch.yml dscop_pytorch
 
 
 

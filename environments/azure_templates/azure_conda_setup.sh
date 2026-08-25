@@ -9,6 +9,6 @@ export CONDA_ENV_NAME=$2
 conda env create --file $CONDA_REQUIREMENTS_FILE
 
 conda activate $CONDA_ENV_NAME
-pip install mltable azure-ai-ml azureml-dataprep[pandas]
+pip install mltable azure-ai-ml azureml-dataprep[pandas] azureml-fsspec azureml-mlflow
 
-python -m ipykernel install --user --name $CONDA_ENV_NAME --display-name "$CONDA_ENV_NAME"z
+python -m ipykernel install --user --name $CONDA_ENV_NAME --display-name "$CONDA_ENV_NAME"

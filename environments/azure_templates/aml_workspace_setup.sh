@@ -22,8 +22,8 @@ export PLATFORM=metoffice
 # export PLATFORM=local
 
 
-export WORKSPACE_NAME=dscoptest1
-export RESOURCE_GROUP=$(python get_resource_groups.py)
+  export WORKSPACE_NAME=dscoptest1
+  export RESOURCE_GROUP=$(python get_resource_groups.py)
 
 #===============================
 # Create workspace
@@ -38,7 +38,7 @@ az ml workspace create --file workspace_spec.yaml --resource-group $RESOURCE_GRO
 if [ "${PLATFORM}" = "metoffice" ]; then
   export XBT_DATA_PATH=/data/users/dscop/ml_tutorial/xbt/xbt_1968.csv
   export CLIMATE_ZONES_DATA_PATH=/data/users/dscop/ml_tutorial/climate_zones/ml_ready/climate_zones_1p0.csv
-  export WEATHERBENCH_PATH=/data/users/dscop/weatherbench/5.625deg/
+  export WEATHERBENCH_PATH=/data/users/dscop/weatherbench/5.625deg/2m_temperature
 else
   export XBT_DATA_PATH=xbt_1968.csv
   export CLIMATE_ZONES_DATA_PATH=climate_zones_1p0.csv
@@ -58,7 +58,7 @@ export CONTAINER_URL=https://${STORAGE_ACCOUNT}.blob.core.windows.net/${CONTAINE
 
 azcopy copy "${XBT_DATA_PATH}" "${CONTAINER_URL}/xbt/xbt_1968.csv"
 azcopy copy "${CLIMATE_ZONES_DATA_PATH}" "${CONTAINER_URL}/climate_zones/climate_zones_1p0.csv"
-azcopy copy --recursive="true"  unzip ${WEATHERBENCH_ZIP_FILE} -d ${WEATHERBENCH_PATH}/*.nc "${CONTAINER_URL}/weatherbench/5.625deg"
+azcopy copy --recursive="true"  ${WEATHERBENCH_PATH}/*.nc "${CONTAINER_URL}/weatherbench/5.625deg"
 
 
 export DSCOP_DATASTORE_NAME=dscopworkspacestore
@@ -76,7 +76,7 @@ python create_workspace_spec.py dataset --name climate_zones_1_0 --path $CLIMATE
 az ml data create --file dataset_cz_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 export WEATHERBENCH_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/weatherbench/5.625deg/"
-python create_workspace_spec.py dataset --name weatherbench_5.625 --path $WEATHERBENCH_AML_URI --type uri_folder --output dataset_weatherbench_spec.yaml
+python create_workspace_spec.py dataset --name weatherbench5625 --path $WEATHERBENCH_AML_URI --type uri_folder --output dataset_weatherbench_spec.yaml
 az ml data create --file dataset_weatherbench_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 
