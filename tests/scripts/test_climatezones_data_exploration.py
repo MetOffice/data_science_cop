@@ -204,7 +204,7 @@ def main():
         import xarray
         import pandas
 
-        CONFIG_PATH = pathlib.Path("../../config.json").resolve()
+        CONFIG_PATH = pathlib.Path("../../ml_examples/climate_zones/config.json").resolve()
 
         with open(CONFIG_PATH, "r") as tutorial_config_file:
             tutorial_config = json.load(tutorial_config_file)
