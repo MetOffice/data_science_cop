@@ -84,10 +84,10 @@ def get_git_file_statuses():
 
 def classify_exception(exc):
     if isinstance(exc, (ModuleNotFoundError, ImportError)):
-        return "ENVIRONMENT FAILURE"
-    if isinstance(exc, (FileNotFoundError, OSError)):
-        return "DATA UNAVAILABLE"
-    return "WORKFLOW FAILURE"
+        return "LIKELY ENVIRONMENT FAILURE"
+    if isinstance(exc, (PermissionError, MemoryError)):
+        return "UNCLEAR WHETHER ENVIRONMENT FAILURE"
+    return "LIKELY NON-ENVIRONMENT FAILURE"
 
 def initialise_retention_mode():
     retention = "--retention" in sys.argv
