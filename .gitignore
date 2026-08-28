@@ -6,3 +6,7 @@ challenges/2023_cloud_classification/src/example_code/mlruns/
 # breakdowns) - intentionally kept out of pull requests / deliverables.
 .planning/
 AGENTS.md
+
+# ClimateZones test generated artefacts
+tests/scripts/latest_artefact_dir.txt
+tests/test_run_logs/

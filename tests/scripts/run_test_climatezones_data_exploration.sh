@@ -42,7 +42,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 module load "$MODULE" || exit 1
 
-ENVIRONMENT_INVENTORY=$(
+ENVIRONMENT_HASH="UNAVAILABLE"
+ENVIRONMENT_INVENTORY=""
+if ENVIRONMENT_INVENTORY=$(
     find "$SSS_ENV_DIR/conda-meta" \
         -maxdepth 1 \
         -type f \
@@ -50,12 +52,15 @@ ENVIRONMENT_INVENTORY=$(
         -printf '%f\n' |
     sort
 )
-
-ENVIRONMENT_HASH=$(
-    printf "%s" "$ENVIRONMENT_INVENTORY" |
-    sha256sum |
-    awk '{print $1}'
-)
+then
+    ENVIRONMENT_HASH=$(
+        printf "%s" "$ENVIRONMENT_INVENTORY" |
+        sha256sum |
+        awk '{print $1}'
+    )
+else
+    echo "Warning: Environment inventory could not be generated." >&2
+fi
 
 echo "Module: $MODULE"
 echo "Log Level: $LOG_LEVEL"
@@ -106,6 +111,8 @@ if [[ "$RETENTION" -eq 1 ]]; then
         "$ARTEFACT_DIR"/*.png \
         "$ARTEFACT_DIR"/metadata.json
     do
+        [[ -f "$artefact" ]] || continue
+
         ARTEFACT_HASH=$(
             sha256sum "$artefact" |
             awk '{print $1}'

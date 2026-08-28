@@ -1,36 +1,46 @@
 """ClimateZones Data Exploration - Environment Validation Test
 
-This script's workflow content is produced by mechanically exporting the reduced reference
-notebook (tests/notebooks/test_climatezones_data_exploration.ipynb) via
-`jupyter nbconvert --to script`, then wrapping the exported content in main() below, in its
-original order, essentially verbatim, with V1 environment-validation reporting logic added
-around it.
+This script's workflow content originated from the ClimateZones Data Exploration
+tutorial notebook and was reduced to provide a representative environment-
+validation workflow.
 
-* Author: Stephen Haddad and Kate Brown; Environment-validation test wrapper and notebook reduction: Jacob Way;
+The workflow content below remains substantially derived from that reduced
+workflow, with environment-validation reporting and retention functionality
+added around it.
+
+* Author: Stephen Haddad and Kate Brown; Environment-validation test wrapper and workflow reduction: Jacob Way;
 * Affiliation: UK Met Office
-* History: 1.0
-* Last update: 2026-03-16
+* History: 1.1
+* Last update: 2026-08-28
 * (c) British Crown Copyright 2017-2026, Met Office. Please see LICENSE.md for license details.
 
-Running this script
---------------------
-This script is an environment-validation test: its purpose is to check whether the *current*
-environment can still execute this workflow. Run it directly, with the environment under test already
-active:
-    python test_climatezones_data_exploration.py
-See the RESULT / Failure Category output below for how to interpret the outcome.
+Running this test
+-----------------
+This script forms part of an environment-validation framework.
+
+It is intended to be executed via:
+
+    run_test_climatezones_data_exploration.sh
+
+which loads the environment under test and invokes this script.
+
+See the validation result and failure-classification output below for guidance
+on interpreting outcomes.
 
 Data statement
 --------------
-This script is an environment-validation wrapper around a reduced version of the original
-ClimateZones Data Exploration tutorial notebook. The underlying data it references, is the Koppen-Geiger Climate Classification dataset created by
-GloH2O.
+This script is an environment-validation implementation based on the original
+ClimateZones Data Exploration tutorial workflow.
+
+The underlying data referenced by the workflow is the Koppen-Geiger Climate
+Classification dataset created by GloH2O.
 
 References
 ----------
 - Climate Zones Dataset:
   https://www.gloh2o.org/koppen/#:~:text=The%20K%C3%B6ppen%2DGeiger%20climate%20classification%20maps%20are%20high%2Dresolution,Climate%20Sensitivity%20(ECS)%2C%20and%20historical%20warming%20trend
 """
+
 
 import subprocess
 import sys
