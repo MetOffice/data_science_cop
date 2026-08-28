@@ -44,7 +44,8 @@ module load "$MODULE" || exit 1
 
 ENVIRONMENT_HASH="UNAVAILABLE"
 ENVIRONMENT_INVENTORY=""
-if ENVIRONMENT_INVENTORY=$(
+
+ENVIRONMENT_INVENTORY=$(
     find "$SSS_ENV_DIR/conda-meta" \
         -maxdepth 1 \
         -type f \
@@ -52,6 +53,7 @@ if ENVIRONMENT_INVENTORY=$(
         -printf '%f\n' |
     sort
 )
+if [[ -n "$ENVIRONMENT_INVENTORY" ]]
 then
     ENVIRONMENT_HASH=$(
         printf "%s" "$ENVIRONMENT_INVENTORY" |
