@@ -1,6 +1,0 @@
-$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
-name: dscop_tf_conda
-version: 1
-image: mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04
-conda_file: ../../requirements_tensorflow.yml
-description: DS CoP Tensforflow environment, created from a Docker image plus Conda environment.

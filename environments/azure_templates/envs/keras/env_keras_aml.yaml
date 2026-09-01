@@ -1,7 +1,0 @@
-$schema: https://azuremlschemas.azureedge.net/latest/environment.schema.json
-name: dscop_keras_dockerfile_aml
-build:
-  path: .
-version: 1
-description: dscop keras environment build from a dockerfile.
-
