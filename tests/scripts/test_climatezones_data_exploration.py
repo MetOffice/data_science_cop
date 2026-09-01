@@ -10,7 +10,7 @@ added around it.
 
 * Author: Stephen Haddad and Kate Brown; Environment-validation test wrapper and workflow reduction: Jacob Way;
 * Affiliation: UK Met Office
-* History: 1.1
+* History: 1.0
 * Last update: 2026-08-28
 * (c) British Crown Copyright 2017-2026, Met Office. Please see LICENSE.md for license details.
 
