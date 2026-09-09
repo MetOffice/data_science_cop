@@ -1,0 +1,19 @@
+name: llm_env
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pip
+  - pip:
+    - scrapy>=2.11.0
+    - beautifulsoup4>=4.12.0
+    - openai>=1.12.0
+    - chromadb>=0.4.22
+    - langchain>=0.1.0
+    - langchain-openai>=0.0.5
+    - langchain-community>=0.0.20
+    - faiss-cpu>=1.7.4
+    - tiktoken>=0.5.2
+    - lxml>=4.9.0
+    - requests>=2.31.0
+    - jupyter
