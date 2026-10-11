@@ -1,0 +1,23 @@
+name: dscop_pytorch
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - ipykernel
+  - mlflow=3.9
+  - pandas=2.3
+  - xarray=2026
+  - zarr=3.1
+  - iris=3.12
+  - cartopy=0.25
+  - scikit-learn=1.8
+  - pytorch=2.10
+  - scores=2.5
+  - lightning
+  - pip:
+    - mltable
+    - azure-ai-ml
+    - azureml-dataprep[pandas]
+    - azureml-fssspec
+    - azureml-mlflow

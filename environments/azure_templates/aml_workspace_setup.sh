@@ -90,17 +90,20 @@ export COMPUTE_SIZE=Standard_DS3_v2
 export FILE_STORE=$( python get_file_shares.py $STORAGE_ACCOUNT --prefix "code")
 azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
 
-az ml compute create --name dscopcitest01 --size $COMPUTE_SIZE --type ComputeInstance --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+export COMPUTE_NAME=dscopcitest01
+az ml compute create --name ${COMPUTE_NAME} --size $COMPUTE_SIZE --type ComputeInstance --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 #todo: specify the script to run on creation to set up the copmpute instance for the tutorial, need to create a python script to populate a compute spec yaml file which specifies a creation script, which must first be uploaded
 
+az ml workspace update --name ${WORKSPACE_NAME} --resource-group ${RESOURCE_GROUP} --image-build-compute ${COMPUTE_NAME}
+
 #cluster
-az ml compute create --name dscopclustertest01 --size $COMPUTE_SIZE --min-instances 0 --max-instances 1 --type AmlCompute --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+#az ml compute create --name dscopclustertest01 --size $COMPUTE_SIZE --min-instances 0 --max-instances 1 --type AmlCompute --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 
 #=========================================
 # Create compute instances and clusters
-#python create_workspace_spec.py environment  --conda-file ../requirements_pytorch.yml --name dscop_pytorch --output env_dscop_pytorch_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies." --image  "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04"
-#
-#az ml environment create --file env_dscop_pytorch_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+python create_workspace_spec.py environment  --conda-file requirements_pytorch_aml.yml --name dscop_pytorch --output env_dscop_pytorch_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies." --image  "mcr.microsoft.com/azureml/openmpi4.1.0-ubuntu20.04"
+
+az ml environment create --file env_dscop_pytorch_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 

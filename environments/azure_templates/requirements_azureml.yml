@@ -1,0 +1,12 @@
+name: dscop_azureml
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip:
+    - mltable
+    - azure-ai-ml
+    - azureml-dataprep[pandas]
+    - azureml-fssspec
+    - azureml-mlflow
+
