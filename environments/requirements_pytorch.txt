@@ -6,6 +6,6 @@ zarr==3.1
 scitools-iris==3.12
 cartopy==0.25
 scikit-learn==1.8
-torch==2.12
+torch==2.13.0
 scores==2.5
 lightning
