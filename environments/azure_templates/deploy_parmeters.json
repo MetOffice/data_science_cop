@@ -1,0 +1,27 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "actionGroups_Application_Insights_Smart_Detection_name": {
+      "value": "appinsightsdscop"
+    },
+    "components_dscoptesinsightse4f6d08f_name": {
+      "value": "dscoptesinsights"
+    },
+    "smartdetectoralertrules_failure_anomalies___dscoptesinsightse4f6d08f_name": {
+      "value": "dscoptestfailureanoms"
+    },
+    "storageAccounts_dscoptesstorage724530594_name": {
+      "value": "dscopteststorage"
+    },
+    "vaults_dscopteskeyvault5ddcc54f_name": {
+      "value": "dscopteskeyvault"
+    },
+    "workspaces_dscopteslogalyticb4a688a_name": {
+      "value": "dscopteslogalytic"
+    },
+    "workspaces_dscoptest1_name": {
+      "value": "dscoptest1"
+    }
+  }
+}
