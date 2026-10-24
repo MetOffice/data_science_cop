@@ -90,6 +90,15 @@ export COMPUTE_SIZE=Standard_DS3_v2
 export FILE_STORE=$( python get_file_shares.py $STORAGE_ACCOUNT --prefix "code")
 azcopy copy aml_ci_setup.sh  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/aml_ci_setup.sh"
 
+#copy conda and artifactory files to the workspace. These files will subsequently be copied into the correct place
+# in the specific compute instance (VM) thrugh the "aml_ci_setup.sh" script.
+
+#the condarc file is copied from the azure_templates in the dscop repo.
+azcopy copy .conda.rc  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/condarc"
+# the netrc file is copied from the the users home directory, so that it uses the correct credentials
+azcopy copy ~/.netrc  "https://${STORAGE_ACCOUNT}.file.core.windows.net/${FILE_STORE}/Users/${USER_NAME}/netrc"
+
+
 export COMPUTE_NAME=dscopcitest01
 az ml compute create --name ${COMPUTE_NAME} --size $COMPUTE_SIZE --type ComputeInstance --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 #todo: specify the script to run on creation to set up the copmpute instance for the tutorial, need to create a python script to populate a compute spec yaml file which specifies a creation script, which must first be uploaded

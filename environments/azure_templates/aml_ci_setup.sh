@@ -2,7 +2,12 @@
 # This script is to run on a new compute instance to set it up for the DS CoP AzureML tutorials. It should be run on the compute instance.
 set -e
 
+#the script should be run fomm the user directory, which is the same one that it is copied to in the workspace set up script
 export PROG_ROOT_DIR=$PWD
+
+# copy the conda and artifactory setup files into place
+cp condarc ~/.condarc
+cp netrc ~/.netrc
 
 export ML_WEATHER_TUTORIAL_DIR=$PROG_ROOT_DIR/ml_weather_tutorial
 git clone https://github.com/MetOffice/ml_weather_tutorial/ ${ML_WEATHER_TUTORIAL_DIR}
@@ -18,9 +23,17 @@ git switch azure_pathways
 
 cd environments
 
-# conda doesn't seem to work until you accept the terms of service so adding these commands
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
-conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+## you need to copy across your .etc file for this to work
+#touch ~/.condarc
+#printf "channel_alias: https://metoffice.jfrog.io/metoffice/api/conda
+#channels:
+#  - conda-mo-internal
+#  - conda-forge
+#default_channels:
+#  - conda-main
+#  - conda-r
+#" > ~/.condarc
+
 conda init
 
 ./azure_templates/azure_conda_setup.sh $PWD/requirements_pytorch.yml dscop_pytorch
