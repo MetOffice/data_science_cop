@@ -4,12 +4,12 @@ import pathlib
 dataset = "reanalysis-cerra-pressure-levels"
 current_year = 2010
 var_list = [
+        "v_component_of_wind",
+        "geopotential",
         "relative_humidity",
         "temperature",
         "u_component_of_wind",
-        "v_component_of_wind"
-        "geopotential",
-]
+    ]
 
 request = {
     "data_type": ["reanalysis"],
