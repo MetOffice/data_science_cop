@@ -1,8 +1,8 @@
-name: dscop_pytorch
+name: dscop_pytorch_aml
 channels:
   - conda-forge
 dependencies:
-  - python=3.14
+  - python=3.13
   - jupyterlab
   - ipykernel
   - mlflow=3.9
@@ -16,8 +16,7 @@ dependencies:
   - scores=2.5
   - lightning
   - pip:
-    - mltable
     - azure-ai-ml
-    - azureml-dataprep[pandas]
+    - azureml-core
     - azureml-fssspec
     - azureml-mlflow
