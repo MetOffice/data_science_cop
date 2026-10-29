@@ -6,7 +6,7 @@ set -e
 export PROG_ROOT_DIR=$PWD
 
 # copy the conda and artifactory setup files into place
-cp condarc ~/.condarc
+#cp condarc ~/.condarc
 cp netrc ~/.netrc
 
 export ML_WEATHER_TUTORIAL_DIR=$PROG_ROOT_DIR/ml_weather_tutorial
@@ -24,19 +24,16 @@ git switch azure_pathways
 cd environments
 
 ## you need to copy across your .etc file for this to work
-#touch ~/.condarc
-#printf "channel_alias: https://metoffice.jfrog.io/metoffice/api/conda
-#channels:
-#  - conda-mo-internal
-#  - conda-forge
-#default_channels:
-#  - conda-main
-#  - conda-r
-#" > ~/.condarc
+touch ~/.condarc
+printf "channel_alias: https://metoffice.jfrog.io/metoffice/api/conda
+channels:
+  - conda-mo-internal
+  - conda-forge
+" > ~/.condarc
 
 conda init
 
-./azure_templates/azure_conda_setup.sh $PWD/requirements_pytorch.yml dscop_pytorch
+./azure_templates/azure_conda_setup.sh $PWD/azure_templates/requirements_pytorch_aml.yml dscop_pytorch_aml
 
 
 
