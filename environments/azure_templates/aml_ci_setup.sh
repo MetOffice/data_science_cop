@@ -31,6 +31,10 @@ channels:
   - conda-forge
 " > ~/.condarc
 
+# conda doesn't seem to work until you accept the terms of service so adding these commands
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+
 conda init
 
 ./azure_templates/azure_conda_setup.sh $PWD/azure_templates/requirements_pytorch_aml.yml dscop_pytorch_aml
