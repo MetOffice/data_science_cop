@@ -3,6 +3,8 @@
 # primarily just calls conda create, and then uses pip to install the AzureML SDK and other packages that are
 # not available through conda. It also sets up the kernel for use in Jupyter notebooks.
 
+set -e
+
 export CONDA_REQUIREMENTS_FILE=$1
 export CONDA_ENV_NAME=$2
 
