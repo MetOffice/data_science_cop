@@ -171,6 +171,10 @@ def create_job_yaml(
     environment: Optional[str],
     experiment_name: Optional[str],
     job_name: Optional[str],
+    subscription_id: Optional[str],
+    resource_group: Optional[str],
+    workspace_name: Optional[str],
+
 ) -> bool:
     """Create an Azure ML command job YAML specification file."""
     code_path = Path(code)
@@ -199,6 +203,11 @@ def create_job_yaml(
         job_spec["experiment_name"] = experiment_name
     if job_name:
         job_spec["name"] = job_name
+
+    job_spec["environment_variables"] = {"AZURE_SUBSCRIPTION_ID": subscription_id,
+                                         "AZURE_RESOURCE_GROUP": resource_group,
+                                         "AZUREML_WORKSPACE_NAME": workspace_name,
+                                         }
 
     return write_yaml_file(job_spec, output_path)
 
@@ -397,6 +406,9 @@ def add_job_subcommand(subparsers: argparse._SubParsersAction) -> None:
         default="job_spec.yaml",
         help="Output YAML path",
     )
+    job_parser.add_argument("--subscription-id", type=str, help="Optional subscription id")
+    job_parser.add_argument("--resource-group", type=str, help="Optional resource group")
+    job_parser.add_argument("--workspace-name", type=str, help="Optional workspace name")
     job_parser.set_defaults(func=handle_job_subcommand)
 
 
@@ -475,6 +487,9 @@ def handle_job_subcommand(args: argparse.Namespace) -> bool:
         environment=args.environment,
         experiment_name=args.experiment_name,
         job_name=args.job_name,
+        subscription_id=args.subscription_id,
+        resource_group=args.resource_group,
+        workspace_name=args.workspace_name,
     )
 
 

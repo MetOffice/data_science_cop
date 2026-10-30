@@ -56,9 +56,14 @@ export STORAGE_ACCOUNT=$(python get_storage_account.py $RESOURCE_GROUP --first-o
 export CONTAINER_NAME=azureml
 export CONTAINER_URL=https://${STORAGE_ACCOUNT}.blob.core.windows.net/${CONTAINER_NAME}
 
-azcopy copy "${XBT_DATA_PATH}" "${CONTAINER_URL}/xbt/xbt_1968.csv"
-azcopy copy "${CLIMATE_ZONES_DATA_PATH}" "${CONTAINER_URL}/climate_zones/climate_zones_1p0.csv"
-azcopy copy --recursive="true"  "${WEATHERBENCH_PATH}/*.nc" "${CONTAINER_URL}/weatherbench/5.625deg"
+export XBT_RELATIVE_PATH="xbt/xbt_1968.csv"
+azcopy copy "${XBT_DATA_PATH}" "${CONTAINER_URL}/${XBT_RELATIVE_PATH}"
+
+export CLIMATE_ZONES_RELATIVE_PATH="climate_zones/ml_ready/climate_zones_1p0.csv"
+azcopy copy "${CLIMATE_ZONES_DATA_PATH}" "${CONTAINER_URL}/${CLIMATE_ZONES_RELATIVE_PATH}"
+
+export WEATHERBENCH_RELATIVE_PATH="weatherbench/5.625deg"
+azcopy copy --recursive="true"  "${WEATHERBENCH_PATH}/*.nc" "${CONTAINER_URL}/${WEATHERBENCH_RELATIVE_PATH}/"
 
 
 export DSCOP_DATASTORE_NAME=dscopworkspacestore
@@ -67,15 +72,15 @@ python create_workspace_spec.py datastore --name $DSCOP_DATASTORE_NAME --account
 az ml datastore create --file datastore_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
 
-export XBT_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/xbt/xbt_1968.csv"
+export XBT_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/${XBT_RELATIVE_PATH}"
 python create_workspace_spec.py dataset --name xbt_sample --path $XBT_AML_URI --type uri_file --output dataset_xbt_spec.yaml
 az ml data create --file dataset_xbt_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
-export CLIMATE_ZONES_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/climate_zones/climate_zones_1p0.csv"
+export CLIMATE_ZONES_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/${CLIMATE_ZONES_RELATIVE_PATH}"
 python create_workspace_spec.py dataset --name climate_zones_1_0 --path $CLIMATE_ZONES_AML_URI --type uri_file --output dataset_cz_spec.yaml
 az ml data create --file dataset_cz_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
-export WEATHERBENCH_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/weatherbench/5.625deg/"
+export WEATHERBENCH_AML_URI="azureml://datastores/${DSCOP_DATASTORE_NAME}/paths/${WEATHERBENCH_RELATIVE_PATH}"
 python create_workspace_spec.py dataset --name weatherbench5625 --path $WEATHERBENCH_AML_URI --type uri_folder --output dataset_weatherbench_spec.yaml
 az ml data create --file dataset_weatherbench_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
 
