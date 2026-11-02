@@ -3,7 +3,8 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "actionGroups_Application_Insights_Smart_Detection_name": {
-      "type": "String"
+      "type": "String",
+      "defaultValue": "dscoptest1appinsights"
     },
     "components_dscoptesinsightse4f6d08f_name": {
       "type": "String",

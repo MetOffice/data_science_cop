@@ -1,21 +1,27 @@
-name: dscop_pytorch_aml
 channels:
   - conda-forge
 dependencies:
-  - python=3.13
-  - mlflow=3.9
-  - pandas=2.3
-  - xarray=2026
-  - zarr=3.1
-  - iris=3.12
-  - cartopy=0.25
-  - scikit-learn=1.8
-  - pytorch=2.10
-  - scores=2.5
-  - lightning
+  - python=3.12
   - pip
   - pip:
-    - azure-ai-ml
-    - azureml-core
-    - azureml-fssspec
-    - azureml-mlflow
+      - pandas==2.3
+      - mlflow==3.9
+      - ipykernel
+      - xarray==2026.1
+      - zarr==3.1
+      - cartopy==0.25
+      - scikit-learn==1.8
+      - torch==2.12
+      - scores==2.5
+      - lightning
+      - netCDF4
+      - h5netcdf
+      - h5py
+      - azure-ai-ml==1.35
+      - azureml-core==1.61
+      - azureml-fsspec==1.4
+      - azureml-mlflow==1.62
+      - netCDF4
+      - h5netcdf
+      - h5py
+name: torch_test_wb

@@ -2,6 +2,7 @@ import os
 
 import azure.ai.ml
 import azure.identity
+import azureml.fsspec
 
 import pandas
 

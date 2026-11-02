@@ -5,6 +5,7 @@ export DSCOP_REPO_ROOT=$(pwd)
 export DSCOP_DATA_DIR=/data/users/dscop/
 #
 # specify details of the dscop workspace
+export SUBSCRIPTION_ID=$(az account show --query id --output tsv)
 export RESOURCE_GROUP=rg-dscop-readiness-dscop-readiness-2h0pjp1nbi
 export WORKSPACE_NAME=mlw-2h0pjp1nbi-uksouth-01
 
@@ -59,6 +60,15 @@ az ml data create --file dataset_cz_1_0.yaml --resource-group $RESOURCE_GROUP --
 # tensorflow keras
 
 # pytorch
+export BASE_IMAGE_CPU="mcr.microsoft.com/azureml/openmpi5.0-ubuntu24.04:20261026.v1"
+export BASE_IMAGE_GPU="mcr.microsoft.com/azureml/openmpi5.0-cuda12.6-ubuntu24.04:20261026.v1"
+
+python create_workspace_spec.py environment  --conda-file requirements_pytorch_aml.yml --name dscop_pytorch_cpu --output env_dscop_pytorch_cpu_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies, built for cpu hosts." --image  ${BASE_IMAGE_CPU}
+az ml environment create --file env_dscop_pytorch_cpu_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+
+python create_workspace_spec.py environment  --conda-file requirements_pytorch_aml.yml --name dscop_pytorch_gpu --output env_dscop_pytorch_gpu_spec.yaml --description "Environment for DS CoP AzureML tutorials with PyTorch and other dependencies, built for GPU hosts." --image  ${BASE_IMAGE_GPU}
+az ml environment create --file env_dscop_pytorch_gpu_spec.yaml --resource-group $RESOURCE_GROUP --workspace-name $WORKSPACE_NAME
+
 
 # pyearthtools
 
