@@ -29,7 +29,9 @@ class TrainConfig:
     learning_rate: float
     batch_size: int
     num_epochs: int
-
+    starting_checkpoint: Path
+    start_epoch_num: int
+    output_dir: Path
 
 class ClimateZonesDataset(torch.utils.data.Dataset):
     """PyTorch dataset wrapper for climate-zone tabular data."""
@@ -104,13 +106,41 @@ def parse_args() -> TrainConfig:
         required=True,
         help="Number of training epochs",
     )
+    parser.add_argument(
+        "--starting-checkpoint",
+        type=Path,
+        help="Path to checkpoint to start training from. If not provided, then it is a cold start to train from randomised weights",
+        default=None,
+    )
+
+    parser.add_argument(
+        '--start-epoch-num',
+        type=int,
+        help='The number of the first epoch in this training job. This is only used if a starting checkpoint is provided',
+    )
+
+    parser.add_argument(
+        '--output-dir',
+        type=Path,
+        help='Directory to output the trained model',
+        default=Path.cwd(),
+    )
+
     args = parser.parse_args()
+
+    if args.starting_checkpoint is None:
+        start_epoch_num = 1
+    else:
+        start_epoch_num = args.start_epoch_num
 
     return TrainConfig(
         config_path=args.config_path,
         learning_rate=args.learning_rate,
         batch_size=args.batch_size,
         num_epochs=args.num_epochs,
+        starting_checkpoint=args.starting_checkpoint,
+        start_epoch_num = start_epoch_num,
+        output_dir=args.output_dir,
     )
 
 
@@ -243,11 +273,19 @@ def train_model(cfg: TrainConfig) -> None:
         shuffle=False,
         num_workers=1,
     )
+    start_epoch = cfg.start_epoch_num
+    max_epoch = start_epoch + cfg.num_epochs
 
-    model = ClimateZoneClassifier(
-        input_dim=len(predictors),
-        num_classes=len(label_encoder.classes_),
-    ).to(device)
+    # check if we are starting ffom random weights or loading a checkpoint to continue training (for exmaple in a cylc workflow)
+    if start_epoch == 0:
+        print("Starting training from scratch...")
+        model = ClimateZoneClassifier(
+            input_dim=len(predictors),
+            num_classes=len(label_encoder.classes_),
+        ).to(device)
+    else:
+        print(f'Loading model from checkpoint {cfg.starting_checkpoint}')
+        model = torch.load(cfg.starting_checkpoint, weights_only=False).to(device)
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
@@ -281,7 +319,7 @@ def train_model(cfg: TrainConfig) -> None:
         mlflow.log_params(training_params)
         mlflow.log_dict(scaler_stats, "stats.json")
 
-        for epoch in range(cfg.num_epochs):
+        for epoch in range(start_epoch, max_epoch):
             model.train()
             epoch_loss_train = 0.0
             for batch_x, batch_y in train_loader:
@@ -310,9 +348,12 @@ def train_model(cfg: TrainConfig) -> None:
                 step=epoch,
             )
             print(
-                f"Epoch {epoch + 1}/{cfg.num_epochs} - "
+                f"Epoch {epoch + 1}/{max_epoch} - "
                 f"train_loss={epoch_loss_train:.4f}, val_loss={epoch_loss_val:.4f}"
             )
+            model_path = cfg.output_dir / f'cz_checkpoint_{epoch}.pth'
+            torch.save(model, model_path)
+            mlflow.log_artifact(str(model_path))
 
         class_labels = [str(c) for c in label_encoder.classes_]
         train_metrics = get_classification_metrics(
@@ -330,7 +371,7 @@ def train_model(cfg: TrainConfig) -> None:
         )
         mlflow.log_table(metrics_df, "metrics.json")
 
-        model_path = Path("cz_model.pth")
+        model_path = cfg.output_dir / f'cz_model.pth'
         torch.save(model, model_path)
         mlflow.log_artifact(str(model_path))
 
