@@ -1,0 +1,58 @@
+[scheduling]
+    # The scheduling mode to use for the suite. Valid values are:
+    #   - 'periodic' (default): tasks are scheduled at regular intervals
+    #   - 'triggered': tasks are scheduled based on triggers from other tasks
+    mode = periodic
+
+    # The maximum number of cycles to schedule ahead. This controls how far
+    # into the future the scheduler will plan tasks. A value of 0 means no limit.
+    max_cycles_ahead = 5
+
+    # The maximum number of cycles to keep in memory. This controls how many
+    # past cycles the scheduler will retain. A value of 0 means no limit.
+    max_cycles_back = 10
+
+    # The time zone to use for scheduling. This can be set to any valid time zone
+    # string, such as 'UTC', 'America/New_York', etc.
+    timezone = UTC
+    [[graph]]
+        cycling_mode = integer
+        initial_cycle_point = 1
+        R1 = """
+        data_prep => train_model
+        """
+
+        P1 = """
+        train_model--1] => train_model => evaluate_model
+        """
+
+[runtime]
+    [[root]]
+
+    [[SPICE_CPU]]
+        platform = spice
+        [[[directives]]]
+        --partition = cpu
+        --mem = 16G
+        --ntasks = 4
+
+    [[SPICE_GPU]]
+        platform = slx
+        [[[directives]]]
+            --partition = gpu
+            --gres = gpu:1
+            --mem = 0
+            --ntasks = 40
+
+    [[data_prep]]
+    inherit = SPICE_CPU
+
+
+    [[train_model]]
+    inherit = SPICE_GPU
+
+    [[evaluate_model]]
+        inherit = SPICE
+
+
+
