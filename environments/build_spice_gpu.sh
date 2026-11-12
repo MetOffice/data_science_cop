@@ -2,14 +2,19 @@
 #SBATCH --mem=32G
 #SBATCH --ntasks=4
 #SBATCH --time=60
-#SBATCH --export=NONE
 #SBATCH --job-name=conda_build_spice
-#SBATCH --partition=gpu
-#SBATCH --gres=gpu:1
 
-echo $1
 export REQUIREMENTS_FILE=$1
 export ENV_NAME=$2
+export TARGET=$3
 
-conda env create --file $REQUIREMENTS_FILE --prefix /data/users/stephen.haddad/conda/${ENV_NAME}
+if [$TARGET == "gpu"]; then
+
+    echo targeting GPU, setting cuda override
+    export CONDA_CUDA_OVERRIDE=13.2
+else
+    echo targeting platform $TARGET
+fi
+
+conda env create --file $REQUIREMENTS_FILE --name ${ENV_NAME}
 
