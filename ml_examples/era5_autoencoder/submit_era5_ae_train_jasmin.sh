@@ -21,7 +21,7 @@ export JOBNAME=era5_ae_train_$(date '+%Y%m%d%H%M')
 
 echo Writing logs to $STD_OUT_PATH and $STD_ERR_PATH
 
-sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH -J ${JOBNAME} run_era5_ae_train.sh 
+sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH -J ${JOBNAME} run_era5_ae_train_jasmin.sh
 
 
 
