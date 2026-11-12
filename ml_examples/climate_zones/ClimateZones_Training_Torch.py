@@ -12,6 +12,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
+import datetime
 
 import mlflow
 import numpy as np
@@ -116,6 +117,7 @@ def parse_args() -> TrainConfig:
     parser.add_argument(
         '--start-epoch-num',
         type=int,
+        default=0,
         help='The number of the first epoch in this training job. This is only used if a starting checkpoint is provided',
     )
 
@@ -129,7 +131,7 @@ def parse_args() -> TrainConfig:
     args = parser.parse_args()
 
     if args.starting_checkpoint is None:
-        start_epoch_num = 1
+        start_epoch_num = 0
     else:
         start_epoch_num = args.start_epoch_num
 
@@ -379,8 +381,10 @@ def train_model(cfg: TrainConfig) -> None:
 def main() -> None:
     """Parse args and run training."""
     cfg = parse_args()
+    start_dt = datetime.datetime.now()
     train_model(cfg)
-
+    end_dt = datetime.datetime.now()
+    print(f"Training took {end_dt - start_dt}")
 
 if __name__ == "__main__":
     main()

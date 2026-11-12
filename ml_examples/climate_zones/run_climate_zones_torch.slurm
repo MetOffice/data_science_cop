@@ -17,7 +17,7 @@ export SCRIPT_DIR=${REPO_ROOT}/ml_examples/climate_zones
 
 export LEARNING_RATE="0.001"
 export BATCH_SIZE="16"
-export NUM_EPOCHS="5"
+export NUM_EPOCHS="10"
 
 export LOG_DIR=$2
 
@@ -51,8 +51,8 @@ python "${SCRIPT_DIR}/ClimateZones_Training_Torch.py" \
   --learning-rate "${LEARNING_RATE}" \
   --batch-size "${BATCH_SIZE}" \
   --num-epochs "${NUM_EPOCHS}" \
-  --output-dir "${MLFLOW_HOME}" \
-  --start-epoch-num 10 \
-  --starting-checkpoint /data/users/stephen.haddad/logs/climate_zones/artifacts/1/bb1b28d1ceff4130b84a0a529e52d270/artifacts/cz_model.pth
+  --output-dir "${MLFLOW_HOME}"
+#  --start-epoch-num 10 \
+#  --starting-checkpoint /data/users/stephen.haddad/logs/climate_zones/artifacts/1/bb1b28d1ceff4130b84a0a529e52d270/artifacts/cz_model.pth
 
 
