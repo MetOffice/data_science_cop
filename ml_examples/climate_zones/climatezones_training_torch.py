@@ -223,8 +223,8 @@ def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
     target_var = "climate_group"
 
     random_seed = config["random_seed"]
-    test_frac = 0.1
-    val_frac = 0.1
+    test_frac = config["test_fraction"]
+    val_frac = config["val_fraction"]
     val_frac_sub = val_frac / (1.0 - test_frac)
 
     test_df = zones_df.groupby(["period_start", "scenario"]).sample(

@@ -7,30 +7,36 @@
 #SBATCH --cpus-per-task=2
 #SBATCH --mem=16G
 #
-# Evaluate a trained climate zones model on the train/val/test splits.
+# Evaluate the PyTorch climate zones model trained by climatezones_training_torch.py
+# on the train/val/test splits.
 #
-# usage - sbatch run_climate_zones_evaluation.sh /path/to/repo/ /path/to/output/dir/ [/path/to/model.pkl] [/path/to/stats.json]
+# The model and stats.json are written to the MLflow artifacts of the training run,
+# e.g. ${LOG_DIR}/artifacts/<experiment_id>/<run_id>/artifacts/
+#
+# usage - sbatch run_climate_zones_evaluation.sh /path/to/repo/ /path/to/output/dir/ /path/to/training/run/artifacts/
 
 set -euo pipefail
 
 # -------- User-configurable arguments (passed to Python CLI) --------
 export REPO_ROOT=$1
 export OUTPUT_DIR=$2
+export ARTIFACTS_DIR=$3
 export SCRIPT_DIR=${REPO_ROOT}/ml_examples/climate_zones
 export CONFIG_PATH=${SCRIPT_DIR}/config.json
-export MODEL_PATH=${3:-${SCRIPT_DIR}/decision_tree.pkl}
-export STATS_PATH=${4:-${SCRIPT_DIR}/stats.json}
+export MODEL_PATH=${ARTIFACTS_DIR}/cz_model.pth
+export STATS_PATH=${ARTIFACTS_DIR}/stats.json
 
-export ALGORITHM_NAME="decision_tree"
+export ALGORITHM_NAME="torch_nn"
 export RESOLUTION="1.0"
 export TARGET_VAR="climate_group"
 export TEST_FRAC="0.1"
 export VAL_FRAC="0.1"
+export BATCH_SIZE="65536"
+export DEVICE="cpu"
 
 mkdir -p "${OUTPUT_DIR}"
 
-# At the Met Office use `module load scitools/community/ml` instead.
-conda activate ml-0.1.0
+conda activate dscop_pytorch
 
 python "${SCRIPT_DIR}/climatezones_evaluation.py" \
   --config-path "${CONFIG_PATH}" \
@@ -41,6 +47,6 @@ python "${SCRIPT_DIR}/climatezones_evaluation.py" \
   --target-var "${TARGET_VAR}" \
   --test-frac "${TEST_FRAC}" \
   --val-frac "${VAL_FRAC}" \
+  --batch-size "${BATCH_SIZE}" \
+  --device "${DEVICE}" \
   --output-dir "${OUTPUT_DIR}"
-# To train a fresh decision tree instead of loading MODEL_PATH, add:
-#  --train-new-model --max-depth 10 --min-samples-leaf 2 --min-samples-split 5

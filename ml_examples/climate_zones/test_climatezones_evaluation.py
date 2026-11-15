@@ -8,15 +8,15 @@ Run with::
 """
 
 import json
-import pickle
 from pathlib import Path
 
 import numpy
 import pandas
 import pytest
-import sklearn.tree
+import torch
 
 import climatezones_evaluation as cze
+from climatezones_training_torch import ClimateZoneClassifier
 
 CLASSES = ["A", "B", "C", "D", "E"]
 MONTHS = range(1, 13)
@@ -149,15 +149,58 @@ def test_calculate_confusion_matrix():
 
 def test_parse_args_defaults():
     cfg = cze.parse_args([])
-    assert cfg.model_path == Path("decision_tree.pkl")
+    assert cfg.model_path == Path("cz_model.pth")
+    assert cfg.algorithm_name == "torch_nn"
     assert cfg.target_var == "climate_group"
     assert cfg.resolution == 1.0
-    assert not cfg.train_new_model
+    assert cfg.device in ("cpu", "cuda:0")
 
 
-def test_parse_args_rejects_invalid_fractions():
+def test_parse_args_device_override():
+    assert cze.parse_args(["--device", "cpu"]).device == "cpu"
+
+
+@pytest.mark.parametrize(
+    "bad_args",
+    [["--test-frac", "0.6", "--val-frac", "0.5"], ["--batch-size", "0"], ["--train-new-model"]],
+)
+def test_parse_args_rejects_invalid_args(bad_args):
     with pytest.raises(SystemExit):
-        cze.parse_args(["--test-frac", "0.6", "--val-frac", "0.5"])
+        cze.parse_args(bad_args)
+
+
+class FixedLogits(torch.nn.Module):
+    """Model that returns the inputs as logits, so predictions are known."""
+
+    def forward(self, x):
+        return x
+
+
+def test_predict_takes_argmax_across_batches():
+    x = numpy.array([[0.1, 0.9, 0.0], [2.0, 1.0, 0.0], [0.0, 0.0, 5.0], [0.0, 3.0, 1.0], [1.0, 0.0, 0.0]])
+    y_pred = cze.predict(FixedLogits(), x, "cpu", batch_size=2)
+    numpy.testing.assert_array_equal(y_pred, [1, 0, 2, 1, 0])
+
+
+def test_predict_empty_input():
+    assert cze.predict(FixedLogits(), numpy.empty((0, 3)), "cpu", batch_size=2).shape == (0,)
+
+
+def save_model(model_path: Path, input_dim: int = 24) -> ClimateZoneClassifier:
+    """Save a randomly initialised model in the same way as the training script."""
+    torch.manual_seed(0)
+    model = ClimateZoneClassifier(input_dim=input_dim, num_classes=len(CLASSES))
+    torch.save(model, model_path)
+    return model
+
+
+def test_load_model_matches_saved_model(tmp_path):
+    model_path = tmp_path / "cz_model.pth"
+    saved_model = save_model(model_path)
+    loaded_model = cze.load_model(model_path, "cpu")
+    assert not loaded_model.training
+    x = torch.rand(5, 24)
+    torch.testing.assert_close(loaded_model(x), saved_model(x))
 
 
 def _write_inputs(tmp_path, zones_df, tutorial_config):
@@ -180,43 +223,28 @@ def _write_inputs(tmp_path, zones_df, tutorial_config):
     return config_path, stats_path
 
 
-def test_main_with_pretrained_model(tmp_path, zones_df, tutorial_config):
+def test_main_with_torch_model(tmp_path, zones_df, tutorial_config):
     config_path, stats_path = _write_inputs(tmp_path, zones_df, tutorial_config)
-    model_path = tmp_path / "decision_tree.pkl"
-    model = sklearn.tree.DecisionTreeClassifier(max_depth=3)
-    model.fit(numpy.random.default_rng(1).random((50, 24)), numpy.arange(50) % len(CLASSES))
-    with model_path.open("wb") as model_file:
-        pickle.dump(model, model_file)
+    model_path = tmp_path / "cz_model.pth"
+    save_model(model_path)
     out_dir = tmp_path / "out"
 
     cze.main([
         "--config-path", str(config_path),
         "--stats-path", str(stats_path),
         "--model-path", str(model_path),
+        "--device", "cpu",
+        "--batch-size", "64",
         "--output-dir", str(out_dir),
     ])
 
-    metrics_df = pandas.read_csv(out_dir / "decision_tree_climate_group_metrics.csv")
+    metrics_df = pandas.read_csv(out_dir / "torch_nn_climate_group_metrics.csv")
     assert list(metrics_df["climate_group"]) == CLASSES
-    assert (out_dir / "decision_tree_climate_group_metrics.png").is_file()
-    for split_name in cze.SPLIT_NAMES:
-        assert (out_dir / f"decision_tree_climate_group_confusion_{split_name}.png").is_file()
-
-
-def test_main_train_new_model(tmp_path, zones_df, tutorial_config):
-    config_path, stats_path = _write_inputs(tmp_path, zones_df, tutorial_config)
-    out_dir = tmp_path / "out"
-
-    cze.main([
-        "--config-path", str(config_path),
-        "--stats-path", str(stats_path),
-        "--train-new-model",
-        "--output-dir", str(out_dir),
-    ])
-
-    metrics_df = pandas.read_csv(out_dir / "decision_tree_climate_group_metrics.csv")
     scores = metrics_df.drop(columns="climate_group")
     assert ((scores >= 0) & (scores <= 1)).all().all()
+    assert (out_dir / "torch_nn_climate_group_metrics.png").is_file()
+    for split_name in cze.SPLIT_NAMES:
+        assert (out_dir / f"torch_nn_climate_group_confusion_{split_name}.png").is_file()
 
 
 def test_main_missing_data_raises(tmp_path, tutorial_config):

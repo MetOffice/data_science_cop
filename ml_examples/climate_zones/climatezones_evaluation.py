@@ -5,8 +5,8 @@
 
 Script version of the ``climatezones_evaluation.ipynb`` tutorial notebook.
 
-A previously trained model (by default a scikit-learn decision tree) is used to
-predict the climate zone of each land point from its climate means. The model
+The PyTorch neural network trained by ``climatezones_training_torch.py`` is used
+to predict the climate zone of each land point from its climate means. The model
 is evaluated on the train, validation and test splits using per-class
 precision, recall and F1 scores, plus confusion matrices.
 
@@ -16,24 +16,26 @@ precision, recall and F1 scores, plus confusion matrices.
   that are predicted as being in that class.
 
 The train/validation/test split uses the same random seed as the training
-pipeline, so the splits match those used to train the model.
+script, so the splits match those used to train the model. The normalisation
+stats and target classes are read from the ``stats.json`` file logged to MLflow
+by the training script.
 
 Example::
 
     python climatezones_evaluation.py \\
         --config-path config.json \\
         --stats-path stats.json \\
-        --model-path decision_tree.pkl \\
+        --model-path cz_model.pth \\
         --output-dir ./evaluation_output
 """
 
 from __future__ import annotations
 
+import __main__
 import argparse
 import datetime
 import json
 import os
-import pickle
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
@@ -46,7 +48,9 @@ import numpy  # noqa: E402
 import pandas  # noqa: E402
 import sklearn.metrics  # noqa: E402
 import sklearn.preprocessing  # noqa: E402
-import sklearn.tree  # noqa: E402
+import torch  # noqa: E402
+
+from climatezones_training_torch import ClimateZoneClassifier  # noqa: E402
 
 SPLIT_NAMES = ("train", "val", "test")
 TARGET_OPTIONS = ("climate_group", "climate_subgroup")
@@ -63,16 +67,8 @@ class EvaluationConfig:
 
     config_path: Path
     stats_path: Path
-    model_path: Optional[Path]
-    algorithm_name: str
+    model_path: Path
     resolution: float
-    target_var: str
-    test_frac: float
-    val_frac: float
-    train_new_model: bool
-    max_depth: int
-    min_samples_leaf: int
-    min_samples_split: int
     output_dir: Path
 
 
@@ -99,28 +95,19 @@ def parse_args(argv: Optional[List[str]] = None) -> EvaluationConfig:
         type=Path,
         default=Path("stats.json"),
         help="Path to JSON file of normalisation stats and target classes "
-        "calculated on the training set",
+        "calculated on the training set (logged to MLflow by the training script)",
     )
     parser.add_argument(
         "--model-path",
         type=Path,
-        default=None,
-        help="Path to the pickled pretrained model. "
-        "Defaults to '<algorithm-name>.pkl' in the current directory",
+        default=Path("cz_model.pth"),
+        help="Path to the PyTorch model saved by climatezones_training_torch.py",
     )
-
     parser.add_argument(
         "--resolution",
         type=float,
         default=1.0,
         help="Resolution of the ML-ready dataset in degrees (must be in config)",
-    )
-    parser.add_argument(
-        "--target-var",
-        choices=TARGET_OPTIONS,
-        default="climate_group",
-        help="Target variable: 'climate_group' (5 classes) or "
-        "'climate_subgroup' (30 classes)",
     )
     parser.add_argument(
         "--output-dir",
@@ -130,21 +117,12 @@ def parse_args(argv: Optional[List[str]] = None) -> EvaluationConfig:
     )
     args = parser.parse_args(argv)
 
-    if not 0.0 < args.test_frac + args.val_frac < 1.0:
-        parser.error("--test-frac + --val-frac must be between 0 and 1")
 
     return EvaluationConfig(
         config_path=args.config_path,
         stats_path=args.stats_path,
         model_path=args.model_path,
         resolution=args.resolution,
-        target_var=args.target_var,
-        test_frac=args.test_frac,
-        val_frac=args.val_frac,
-        train_new_model=args.train_new_model,
-        max_depth=args.max_depth,
-        min_samples_leaf=args.min_samples_leaf,
-        min_samples_split=args.min_samples_split,
         output_dir=args.output_dir,
     )
 
@@ -293,32 +271,59 @@ def prepare_splits(
     }
 
 
-def load_or_train_model(
-    cfg: EvaluationConfig,
-    x_train: numpy.ndarray,
-    y_train: numpy.ndarray,
-):
-    """Load a pretrained model from a pickle file, or train a new decision tree.
+def load_model(model_path: Path) -> Tuple[torch.nn.Module, torch.device]:
+    """Load the PyTorch model saved by ``climatezones_training_torch.py``.
+
+    The training script saves the whole model object with ``torch.save``. When
+    it is run as a script, the model class is pickled as
+    ``__main__.ClimateZoneClassifier``, so the class is registered in
+    ``__main__`` here to allow it to be unpickled.
 
     Args:
-        cfg: Evaluation configuration.
-        x_train: Scaled training inputs (only used when training a new model).
-        y_train: Encoded training targets (only used when training a new model).
+        model_path: Path to the saved model.
+        device: Torch device to load the model onto.
 
     Returns:
-        A fitted classifier with a ``predict`` method.
+        The model, in evaluation mode.
     """
-    if not cfg.train_new_model:
-        with cfg.model_path.open("rb") as model_file:
-            return pickle.load(model_file)
+    if not hasattr(__main__, "ClimateZoneClassifier"):
+        __main__.ClimateZoneClassifier = ClimateZoneClassifier
 
-    dt_clf = sklearn.tree.DecisionTreeClassifier(
-        max_depth=cfg.max_depth,
-        min_samples_leaf=cfg.min_samples_leaf,
-        min_samples_split=cfg.min_samples_split,
-    )
-    dt_clf.fit(x_train, y_train)
-    return dt_clf
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print(f"Using device: {device}")
+
+    model = torch.load(model_path,
+                       weights_only=False).to(device)
+    model.eval()
+    return model, device
+
+
+def predict(
+    model: torch.nn.Module,
+    x: numpy.ndarray,
+    device: str,
+    batch_size: int,
+) -> numpy.ndarray:
+    """Predict encoded classes, taking the class with the highest model output.
+
+    Args:
+        model: Trained classifier returning one logit per class.
+        x: Scaled inputs of shape ``(n_points, n_features)``.
+        device: Torch device to run inference on.
+        batch_size: Number of points per batch.
+
+    Returns:
+        Encoded class predictions of shape ``(n_points,)``.
+    """
+    x_tensor = torch.tensor(x, dtype=torch.float32)
+    predictions = []
+    with torch.no_grad():
+        for x_batch in torch.split(x_tensor, batch_size):
+            logits = model(x_batch.to(device))
+            predictions.append(torch.argmax(logits, dim=1).cpu())
+    if not predictions:
+        return numpy.empty(0, dtype=numpy.int64)
+    return torch.cat(predictions).numpy()
 
 
 def calculate_metrics(
@@ -437,9 +442,12 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
 
     predictors = get_predictors(list(zones_df.columns))
     train_df, val_df, test_df = split_data(
-        zones_df, cfg.test_frac, cfg.val_frac, tutorial_config["random_seed"]
+        zones_df,
+        tutorial_config["test_fraction"],
+        tutorial_config["val_fraction"],
+        tutorial_config["random_seed"],
     )
-    print(f"Train class counts:\n{train_df[cfg.target_var].value_counts()}")
+    print(f"Train class counts:\n{train_df[tutorial_config['target_var']].value_counts()}")
 
     # Apply the same transforms as were used on the training data.
     input_scaler = build_input_scaler(stats_dict)
@@ -448,34 +456,35 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
     xy_splits = prepare_splits(
         dict(zip(SPLIT_NAMES, (train_df, val_df, test_df))),
         predictors,
-        cfg.target_var,
+        tutorial_config['target_var'],
         input_scaler,
         target_encoder,
     )
 
-    model = load_or_train_model(cfg, *xy_splits["train"])
-    print(f"Using model: {model}")
+    model, device = load_model(cfg.model_path)
 
-    y_true_pred = {name: (y, model.predict(x)) for name, (x, y) in xy_splits.items()}
+    y_true_pred = {
+        name: (y, predict(model, x, device, cfg.batch_size))
+        for name, (x, y) in xy_splits.items()
+    }
 
     cfg.output_dir.mkdir(parents=True, exist_ok=True)
-    out_prefix = f"{cfg.algorithm_name}_{cfg.target_var}"
 
-    metrics_df = calculate_metrics(y_true_pred, class_labels, cfg.target_var)
-    metrics_path = cfg.output_dir / f"{out_prefix}_metrics.csv"
+    metrics_df = calculate_metrics(y_true_pred, class_labels, tutorial_config["target_var"])
+    metrics_path = cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.csv"
     metrics_df.to_csv(metrics_path, index=False)
     print(f"Metrics written to {metrics_path}\n{metrics_df}")
 
-    fig = plot_metrics(metrics_df, list(SPLIT_NAMES), cfg.target_var)
-    fig.savefig(cfg.output_dir / f"{out_prefix}_metrics.png")
+    fig = plot_metrics(metrics_df, list(SPLIT_NAMES), tutorial_config["target_var"])
+    fig.savefig(cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.png")
     matplotlib.pyplot.close(fig)
 
     for split_name, (y_true, y_pred) in y_true_pred.items():
         conf_matrix = calculate_confusion_matrix(y_true, y_pred, len(class_labels))
         fig = plot_confusion_matrix(
-            conf_matrix, class_labels, f"{cfg.algorithm_name} confusion matrix ({split_name})"
+            conf_matrix, class_labels, f"climatezones_confusion matrix ({split_name})"
         )
-        fig.savefig(cfg.output_dir / f"{out_prefix}_confusion_{split_name}.png")
+        fig.savefig(cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_{split_name}.png")
         matplotlib.pyplot.close(fig)
 
     return metrics_df
@@ -485,7 +494,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     """Parse arguments and run the evaluation."""
     cfg = parse_args(argv)
     start_dt = datetime.datetime.now()
-    evaluate(cfg)
+    metrics_df = evaluate(cfg)
     print(f"Evaluation took {datetime.datetime.now() - start_dt}")
 
 

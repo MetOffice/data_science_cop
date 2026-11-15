@@ -48,6 +48,7 @@
     inherit = SPICE_CPU
 
 
+
     [[train_model]]
     inherit = SPICE_GPU
 
