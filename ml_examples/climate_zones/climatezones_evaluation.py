@@ -302,7 +302,7 @@ def predict(
     model: torch.nn.Module,
     x: numpy.ndarray,
     device: str,
-    batch_size: int,
+    batch_size: int = 32,
 ) -> numpy.ndarray:
     """Predict encoded classes, taking the class with the highest model output.
 
@@ -310,7 +310,6 @@ def predict(
         model: Trained classifier returning one logit per class.
         x: Scaled inputs of shape ``(n_points, n_features)``.
         device: Torch device to run inference on.
-        batch_size: Number of points per batch.
 
     Returns:
         Encoded class predictions of shape ``(n_points,)``.
@@ -421,6 +420,27 @@ def plot_confusion_matrix(
     display.ax_.set_title(title)
     return display.figure_
 
+def _get_data_splits(args: EvaluationConfig, tutorial_config: Dict) -> Tuple[pandas.DataFrame, pandas.DataFrame, pandas.DataFrame, Dict, List[str]]:
+    """Load the ML-ready data and split into train/val/test sets."""
+
+    stats_dict = load_json(args.stats_path)
+    mlready_data_path = get_ml_ready_path(tutorial_config, resolution=args.resolution)
+
+    if not mlready_data_path.is_file():
+        raise FileNotFoundError(f"ML-ready CSV not found: {mlready_data_path}")
+    print(f"Loading data from {mlready_data_path}")
+    zones_df = pandas.read_csv(mlready_data_path)
+
+    train_df, val_df, test_df = split_data(
+        zones_df,
+        tutorial_config["test_fraction"],
+        tutorial_config["val_fraction"],
+        tutorial_config["random_seed"],
+    )
+    predictors = get_predictors(list(train_df.columns))
+
+    return train_df, val_df, test_df, stats_dict, predictors
+
 
 def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
     """Run the end-to-end evaluation and write metrics and plots to the output dir.
@@ -432,21 +452,9 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
         Dataframe of per-class metrics for each split.
     """
     tutorial_config = load_json(cfg.config_path)
-    stats_dict = load_json(cfg.stats_path)
 
-    mlready_data_path = get_ml_ready_path(tutorial_config, cfg.resolution)
-    if not mlready_data_path.is_file():
-        raise FileNotFoundError(f"ML-ready CSV not found: {mlready_data_path}")
-    print(f"Loading data from {mlready_data_path}")
-    zones_df = pandas.read_csv(mlready_data_path)
+    train_df, val_df, test_df, stats_dict, predictors = _get_data_splits(cfg, tutorial_config)
 
-    predictors = get_predictors(list(zones_df.columns))
-    train_df, val_df, test_df = split_data(
-        zones_df,
-        tutorial_config["test_fraction"],
-        tutorial_config["val_fraction"],
-        tutorial_config["random_seed"],
-    )
     print(f"Train class counts:\n{train_df[tutorial_config['target_var']].value_counts()}")
 
     # Apply the same transforms as were used on the training data.
@@ -464,7 +472,7 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
     model, device = load_model(cfg.model_path)
 
     y_true_pred = {
-        name: (y, predict(model, x, device, cfg.batch_size))
+        name: (y, predict(model, x, device))
         for name, (x, y) in xy_splits.items()
     }
 
@@ -493,8 +501,14 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
 def main(argv: Optional[List[str]] = None) -> None:
     """Parse arguments and run the evaluation."""
     cfg = parse_args(argv)
+
     start_dt = datetime.datetime.now()
     metrics_df = evaluate(cfg)
+
+    metrics_path = cfg.output_dir / 'cs_metrics.csv'
+    metrics_df.to_csv(metrics_path, index=False)
+    print(f"Metrics written to {metrics_path}")
+
     print(f"Evaluation took {datetime.datetime.now() - start_dt}")
 
 
