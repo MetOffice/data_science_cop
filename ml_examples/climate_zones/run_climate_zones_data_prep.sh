@@ -17,10 +17,11 @@ set -euo pipefail
 # -------- User-configurable arguments (passed to Python CLI) --------
 export REPO_ROOT=$1
 export OUTPUT_DIR=$2
+export CONDA_ENV_NAME=${CONDA_ENV_NAME:-"ml-0.1.0"}
 export SCRIPT_DIR=${REPO_ROOT}/ml_examples/climate_zones
 export CONFIG_PATH=${SCRIPT_DIR}/config.json
 
-export RESOLUTIONS="1.0 0.5 0.1"
+export RESOLUTIONS=${RESOLUTIONS:="1.0 0.5 0.1"}
 export NUM_PROCESSES=${SLURM_CPUS_PER_TASK:-4}
 export FILE_FORMAT="nc"
 
@@ -33,12 +34,12 @@ fi
 mkdir -p "${OUTPUT_DIR}"
 
 # At the Met Office use `module load scitools/community/ml` instead.
-conda activate ml-0.1.0
+conda activate ${CONDA_ENV_NAME}
+echo processing resolutions ${RESOLUTIONS} with ${NUM_PROCESSES} processes
 
 python "${SCRIPT_DIR}/climatezones_data_prep.py" \
   --config-path "${CONFIG_PATH}" \
   --output-dir "${OUTPUT_DIR}" \
   --resolutions ${RESOLUTIONS} \
   --num-processes "${NUM_PROCESSES}" \
-  --file-format "${FILE_FORMAT}" \
-  "${ROOT_DATA_ARGS[@]}"
+  --file-format "${FILE_FORMAT}"

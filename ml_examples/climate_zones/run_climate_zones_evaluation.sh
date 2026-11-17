@@ -18,18 +18,22 @@ set -euo pipefail
 
 # -------- User-configurable arguments (passed to Python CLI) --------
 export REPO_ROOT=$1
-export OUTPUT_DIR=$2
-export ARTIFACTS_DIR=$3
-export CONDA_ENV=$4
+export TRAINING_DATA_DIR=$2
+export MODEL_OUTPUT_DIR=$3
+export EVALUATION_DIR=$4
+export CONDA_ENV=$5
+
+export MODEL_FNAME=${MODEL_FNAME:-"cz_model.pth"}
 
 export SCRIPT_DIR=${REPO_ROOT}/ml_examples/climate_zones
 export CONFIG_PATH=${SCRIPT_DIR}/config.json
-export MODEL_PATH=${ARTIFACTS_DIR}/cz_model.pth
-export STATS_PATH=${ARTIFACTS_DIR}/stats.json
+export MODEL_PATH=${MODEL_OUTPUT_DIR}/${MODEL_FNAME}
+echo loading model from ${MODEL_PATH}
+export STATS_PATH=${MODEL_OUTPUT_DIR}/stats.json
 
 export RESOLUTION="1.0"
 
-mkdir -p "${OUTPUT_DIR}"
+mkdir -p "${EVALUATION_DIR}"
 
 conda activate "${CONDA_ENV}"
 
@@ -38,6 +42,7 @@ python "${SCRIPT_DIR}/climatezones_evaluation.py" \
   --stats-path "${STATS_PATH}" \
   --model-path "${MODEL_PATH}" \
   --resolution "${RESOLUTION}" \
-  --output-dir "${OUTPUT_DIR}"
+  --training-data-dir "${TRAINING_DATA_DIR}" \
+  --evaluation-dir "${EVALUATION_DIR}"
 
 

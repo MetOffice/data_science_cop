@@ -33,6 +33,7 @@ class TrainConfig:
     starting_checkpoint: Path
     start_epoch_num: int
     output_dir: Path
+    input_dir: Path
 
 class ClimateZonesDataset(torch.utils.data.Dataset):
     """PyTorch dataset wrapper for climate-zone tabular data."""
@@ -128,6 +129,13 @@ def parse_args() -> TrainConfig:
         default=Path.cwd(),
     )
 
+    parser.add_argument(
+        '--input-dir',
+        type=Path,
+        help='Directory to input the training data',
+        default=None,
+    )
+
     args = parser.parse_args()
 
     if args.starting_checkpoint is None:
@@ -143,6 +151,7 @@ def parse_args() -> TrainConfig:
         starting_checkpoint=args.starting_checkpoint,
         start_epoch_num = start_epoch_num,
         output_dir=args.output_dir,
+        input_dir=args.input_dir,
     )
 
 
@@ -193,15 +202,20 @@ def get_classification_metrics(
     )
 
 
-def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str], str]:
+def prepare_data(cmd_config: TrainConfig, tutorial_config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str], str]:
     """Load prepared CSV data and return train/val/test splits plus feature metadata."""
-    current_platform = config["platform"]
-    root_data_dir = get_platform_dir(current_platform, config)
-    ml_ready_dir = root_data_dir / "ml_ready"
+    current_platform = tutorial_config["platform"]
+    if cmd_config.input_dir is None:
+        root_data_dir = get_platform_dir(current_platform, tutorial_config)
+        ml_ready_dir = root_data_dir / "ml_ready"
+    else:
+        root_data_dir = cmd_config.input_dir
+        ml_ready_dir = root_data_dir
 
-    resolutions_dict = {float(k): v for k, v in config["resolutions_names"].items()}
+
+    resolutions_dict = {float(k): v for k, v in tutorial_config["resolutions_names"].items()}
     current_res = 1.0
-    ml_ready_fname_template = config["csv_out_template"]
+    ml_ready_fname_template = tutorial_config["csv_out_template"]
     mlready_data_path = ml_ready_dir / ml_ready_fname_template.format(
         resolution=resolutions_dict[current_res]
     )
@@ -222,9 +236,9 @@ def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
     predictors = predictors_dict["precip_mean"] + predictors_dict["temp_mean"]
     target_var = "climate_group"
 
-    random_seed = config["random_seed"]
-    test_frac = config["test_fraction"]
-    val_frac = config["val_fraction"]
+    random_seed = tutorial_config["random_seed"]
+    test_frac = tutorial_config["test_fraction"]
+    val_frac = tutorial_config["val_fraction"]
     val_frac_sub = val_frac / (1.0 - test_frac)
 
     test_df = zones_df.groupby(["period_start", "scenario"]).sample(
@@ -249,7 +263,7 @@ def train_model(cfg: TrainConfig) -> None:
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    train_df, val_df, test_df, predictors, target_var = prepare_data(tutorial_config)
+    train_df, val_df, test_df, predictors, target_var = prepare_data(cfg, tutorial_config)
 
     scaler = sklearn.preprocessing.StandardScaler()
     scaler.fit(train_df[predictors])
@@ -320,6 +334,8 @@ def train_model(cfg: TrainConfig) -> None:
         print(f"MLflow run id: {current_run.info.run_id}")
         mlflow.log_params(training_params)
         mlflow.log_dict(scaler_stats, "stats.json")
+        with open(cfg.output_dir / "stats.json", "w", encoding="utf-8") as fp:
+            json.dump(scaler_stats, fp, indent=4)
 
         for epoch in range(start_epoch, max_epoch):
             model.train()

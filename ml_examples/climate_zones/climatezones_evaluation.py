@@ -69,7 +69,8 @@ class EvaluationConfig:
     stats_path: Path
     model_path: Path
     resolution: float
-    output_dir: Path
+    training_data_dir: Path
+    evaluation_dir: Path
 
 
 def parse_args(argv: Optional[List[str]] = None) -> EvaluationConfig:
@@ -110,10 +111,16 @@ def parse_args(argv: Optional[List[str]] = None) -> EvaluationConfig:
         help="Resolution of the ML-ready dataset in degrees (must be in config)",
     )
     parser.add_argument(
-        "--output-dir",
+        "--training-data-dir",
         type=Path,
         default=Path.cwd(),
-        help="Directory to write metrics and plots to",
+        help="Directory containing the training data",
+    )
+    parser.add_argument(
+        "--evaluation-dir",
+        type=Path,
+        default=Path.cwd(),
+        help="Directory to write evaluation metrics and plots to",
     )
     args = parser.parse_args(argv)
 
@@ -123,7 +130,8 @@ def parse_args(argv: Optional[List[str]] = None) -> EvaluationConfig:
         stats_path=args.stats_path,
         model_path=args.model_path,
         resolution=args.resolution,
-        output_dir=args.output_dir,
+        training_data_dir=args.training_data_dir,
+        evaluation_dir=args.evaluation_dir,
     )
 
 
@@ -293,7 +301,9 @@ def load_model(model_path: Path) -> Tuple[torch.nn.Module, torch.device]:
     print(f"Using device: {device}")
 
     model = torch.load(model_path,
-                       weights_only=False).to(device)
+                       weights_only=False,
+                       map_location=torch.device('cpu'),
+                       )
     model.eval()
     return model, device
 
@@ -476,15 +486,15 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
         for name, (x, y) in xy_splits.items()
     }
 
-    cfg.output_dir.mkdir(parents=True, exist_ok=True)
+    cfg.evaluation_dir.mkdir(parents=True, exist_ok=True)
 
     metrics_df = calculate_metrics(y_true_pred, class_labels, tutorial_config["target_var"])
-    metrics_path = cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.csv"
+    metrics_path = cfg.evaluation_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.csv"
     metrics_df.to_csv(metrics_path, index=False)
     print(f"Metrics written to {metrics_path}\n{metrics_df}")
 
     fig = plot_metrics(metrics_df, list(SPLIT_NAMES), tutorial_config["target_var"])
-    fig.savefig(cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.png")
+    fig.savefig(cfg.evaluation_dir / f"climate_zones_{tutorial_config['target_var']}_metrics.png")
     matplotlib.pyplot.close(fig)
 
     for split_name, (y_true, y_pred) in y_true_pred.items():
@@ -492,7 +502,7 @@ def evaluate(cfg: EvaluationConfig) -> pandas.DataFrame:
         fig = plot_confusion_matrix(
             conf_matrix, class_labels, f"climatezones_confusion matrix ({split_name})"
         )
-        fig.savefig(cfg.output_dir / f"climate_zones_{tutorial_config['target_var']}_{split_name}.png")
+        fig.savefig(cfg.evaluation_dir / f"climate_zones_{tutorial_config['target_var']}_{split_name}.png")
         matplotlib.pyplot.close(fig)
 
     return metrics_df
@@ -505,7 +515,7 @@ def main(argv: Optional[List[str]] = None) -> None:
     start_dt = datetime.datetime.now()
     metrics_df = evaluate(cfg)
 
-    metrics_path = cfg.output_dir / 'cs_metrics.csv'
+    metrics_path = cfg.evaluation_dir / 'cs_metrics.csv'
     metrics_df.to_csv(metrics_path, index=False)
     print(f"Metrics written to {metrics_path}")
 
