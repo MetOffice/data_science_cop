@@ -1,0 +1,12 @@
+REPO_ROOT="$HOME/prog/data_science_cop"
+SCRIPT_REL_DIR="ml_examples/era5_autoencoder"
+TRAINING_DATA_DIR="$CYLC_WORKFLOW_SHARE_DIR/era5_autoencoder/ml_ready"
+MODEL_OUTPUT_DIR="$CYLC_WORKFLOW_SHARE_DIR/era5_autoencoder/model_output"
+EVALUATION_DIR="$CYLC_WORKFLOW_SHARE_DIR/era5_autoencoder/evaluation"
+CONDA_ENV_NAME="dscop_pytorch_gpu"
+ARTIFACTS_DIR="$CYLC_WORKFLOW_SHARE_DIR/logs/era5_autoencoder/"
+NUM_EPOCHS="10"
+LEARNING_RATE="0.001"
+BATCH_SIZE="16"
+
+
