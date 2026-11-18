@@ -1,0 +1,13 @@
+name: dscop_stac
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - jupyterlab
+  - xarray=2025
+  - pandas=2.3
+  - intake
+  - intake-stac
+  - aiohttp
+  - requests
+  
