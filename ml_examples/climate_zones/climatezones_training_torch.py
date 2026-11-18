@@ -333,9 +333,11 @@ def train_model(cfg: TrainConfig) -> None:
     with mlflow.start_run(experiment_id=exp.experiment_id) as current_run:
         print(f"MLflow run id: {current_run.info.run_id}")
         mlflow.log_params(training_params)
-        mlflow.log_dict(scaler_stats, "stats.json")
-        with open(cfg.output_dir / "stats.json", "w", encoding="utf-8") as fp:
-            json.dump(scaler_stats, fp, indent=4)
+        if start_epoch == 0:
+            mlflow.log_dict(scaler_stats, "stats.json")
+            with open(cfg.output_dir / "stats.json", "w", encoding="utf-8") as fp:
+                json.dump(scaler_stats, fp, indent=4)
+
 
         for epoch in range(start_epoch, max_epoch):
             model.train()
