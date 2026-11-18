@@ -63,6 +63,7 @@ if [[ "$START_EPOCH_NUM" == "0" ]]; then
     --input-dir "${TRAINING_DATA_DIR}" \
     --output-dir "${MODEL_OUTPUT_DIR}"
 else
+  export STARTING_CHECKPOINT="${STARTING_CHECKPOINT:=${MODEL_OUTPUT_DIR}/cz_checkpoint_$((START_EPOCH_NUM-1)).pth}"
   echo "Starting training from epoch ${START_EPOCH_NUM} using checkpoint ${STARTING_CHECKPOINT}"
   python "${SCRIPT_DIR}/climatezones_training_torch.py" \
   --config-path "${CONFIG_PATH}" \

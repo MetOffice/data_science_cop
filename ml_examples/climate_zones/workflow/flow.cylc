@@ -1,29 +1,20 @@
+#!jinja2
+# to run this workflow, use the following command:
+# cylc vip --set-file flow.opt
+
+
 [scheduling]
-    # The scheduling mode to use for the suite. Valid values are:
-    #   - 'periodic' (default): tasks are scheduled at regular intervals
-    #   - 'triggered': tasks are scheduled based on triggers from other tasks
-    mode = periodic
-
-    # The maximum number of cycles to schedule ahead. This controls how far
-    # into the future the scheduler will plan tasks. A value of 0 means no limit.
-    max_cycles_ahead = 5
-
-    # The maximum number of cycles to keep in memory. This controls how many
-    # past cycles the scheduler will retain. A value of 0 means no limit.
-    max_cycles_back = 10
-
-    # The time zone to use for scheduling. This can be set to any valid time zone
-    # string, such as 'UTC', 'America/New_York', etc.
-    timezone = UTC
+    cycling mode = integer
+    initial cycle point = 1
+    final cycle point = {{ NUM_EPOCHS }}
+    #final cycle point = 10
     [[graph]]
-        cycling_mode = integer
-        initial_cycle_point = 1
         R1 = """
-        data_prep => train_model
+        init_tasks => data_prep => train_model
         """
 
         P1 = """
-        train_model--1] => train_model => evaluate_model
+        train_model[-P1] => train_model => evaluate_model
         """
 
 [runtime]
@@ -33,8 +24,8 @@
         platform = spice
         [[[directives]]]
         --partition = cpu
-        --mem = 16G
-        --ntasks = 4
+        --mem = 8G
+        --ntasks = 1
 
     [[SPICE_GPU]]
         platform = slx
@@ -44,16 +35,63 @@
             --mem = 0
             --ntasks = 40
 
+    [[init_tasks]]
+        inherit = SPICE_CPU
+        script = """
+        echo Create shared directories for training data, model output, and evaluation results
+        mkdir -p {{TRAINING_DATA_DIR}}
+        mkdir -p {{MODEL_OUTPUT_DIR}}
+        mkdir -p {{EVALUATION_DIR}}
+        """
+        execution time limit = PT5M
+
+
     [[data_prep]]
     inherit = SPICE_CPU
+    script = """{{REPO_ROOT}}/{{SCRIPT_REL_DIR}}/run_climate_zones_data_prep.sh {{REPO_ROOT}} {{TRAINING_DATA_DIR}} {{CONDA_ENV_NAME}}"""
+    execution time limit = PT1H
+        [[[directives]]]
+            --ntasks = 8
+            --mem = 64G
+        [[[environment]]]
+            RESOLUTIONS="{{RESOLUTIONS}}"
 
 
 
     [[train_model]]
-    inherit = SPICE_GPU
+        inherit = SPICE_GPU
+        execution time limit = PT20M
+        # need to specify the output file for each epoch explicitly
+        script = """{{REPO_ROOT}}/{{SCRIPT_REL_DIR}}/run_climate_zones_training.sh {{REPO_ROOT}} {{ARTIFACTS_DIR}} {{TRAINING_DATA_DIR}} {{MODEL_OUTPUT_DIR}} {{CONDA_ENV_NAME}} """
+        [[[directives]]]
+            --ntasks = 4
+            --mem = 32G
+
+        [[[environment]]]
+            LEARNING_RATE = {{LEARNING_RATE}}
+            BATCH_SIZE = {{BATCH_SIZE}}
+            START_EPOCH_NUM = $((CYLC_TASK_CYCLE_POINT-1))
+            NUM_EPOCHS = 1 # do 1 epoch to split up training into smaller jobs for better scheduling and reduced queue times
 
     [[evaluate_model]]
-        inherit = SPICE
+        inherit = SPICE_CPU
+        script = """{{REPO_ROOT}}/{{SCRIPT_REL_DIR}}/run_climate_zones_evaluation.sh {{REPO_ROOT}} {{TRAINING_DATA_DIR}} {{MODEL_OUTPUT_DIR}} {{EVALUATION_DIR}} {{CONDA_ENV_NAME}}"""
+        execution time limit = PT20M
+        # need to specify the output file for each epoch explicitly
+        [[[directives]]]
+            --ntasks = 4
+            --mem = 16G
+
+
+# workflow TODO:
+# ensure the same run is used for all training tasks in the workflow
+# separate out evaluation outputs by epoch and final
+# add a final evaluation task that runs after all training tasks are complete to evaluate the final model
+# also compare metrics for each of the checkpoints to see which is the best model on the validation set
+
+
+
+
 
 
 
