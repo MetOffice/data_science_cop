@@ -7,16 +7,17 @@ import azureml.fsspec
 import pandas
 
 print('getting credentials')
-credential=azure.identity.DefaultAzureCredential()
+credential = azure.identity.DefaultAzureCredential()
 
-
-# ml_client = azure.ai.ml.MLClient.from_config(credential=credential)
-ml_client = azure.ai.ml.MLClient(
-    credential=credential,
-    subscription_id=os.environ["AZURE_SUBSCRIPTION_ID"],
-    resource_group_name=os.environ["AZURE_RESOURCE_GROUP"],
-    workspace_name=os.environ["AZUREML_WORKSPACE_NAME"],
-)
+try:
+    ml_client = azure.ai.ml.MLClient(
+        credential=credential,
+        subscription_id=os.environ["AZURE_SUBSCRIPTION_ID"],
+        resource_group_name=os.environ["AZURE_RESOURCE_GROUP"],
+        workspace_name=os.environ["AZUREML_WORKSPACE_NAME"],
+    )
+except KeyError:
+    ml_client = azure.ai.ml.MLClient.from_config(credential=credential)
 
 print('retieved client credentials')
 print(ml_client)

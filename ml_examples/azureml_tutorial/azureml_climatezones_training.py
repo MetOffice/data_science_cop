@@ -22,9 +22,6 @@ import torch
 
 from azure.ai.ml import MLClient
 from azure.identity import DefaultAzureCredential
-import azureml.core
-import azureml.fsspec
-
 
 @dataclass
 class TrainConfig:
@@ -106,6 +103,10 @@ def parse_args() -> TrainConfig:
     )
     parser.add_argument(
         "--num-epochs",
+
+
+
+
         type=int,
         required=True,
         help="Number of training epochs",
@@ -129,13 +130,26 @@ def parse_args() -> TrainConfig:
         num_samples=args.num_samples,
     )
 
+def get_azureml_client():
+    credential = azure.identity.DefaultAzureCredential()
+
+    try:
+        ml_client = azure.ai.ml.MLClient(
+            credential=credential,
+            subscription_id=os.environ["AZURE_SUBSCRIPTION_ID"],
+            resource_group_name=os.environ["AZURE_RESOURCE_GROUP"],
+            workspace_name=os.environ["AZUREML_WORKSPACE_NAME"],
+        )
+    except KeyError:
+        ml_client = azure.ai.ml.MLClient.from_config(credential=credential)
+
+    return ml_client
 
 def get_platform_dir(datastore_name='dscopworkspacestore') -> Path:
     """Resolve root data directory from config platform mapping."""
-    ml_client = MLClient.from_config(credential=DefaultAzureCredential())
+    ml_client = get_azureml_client()
+    print(ml_client)
 
-    aml_workspace = azureml.core.Workspace(ml_client.subscription_id, ml_client.resource_group_name, ml_client.workspace_name)
-    
     datastore_uri = f'azureml://subscriptions/{ml_client.subscription_id}/resourcegroups/{ml_client.resource_group_name}/workspaces/{ml_client.workspace_name}/datastores/{datastore_name}/paths'
     climate_zones_uri = datastore_uri + '/climate_zones' 
 
@@ -183,10 +197,8 @@ def get_classification_metrics(
 def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str], str]:
     """Load prepared CSV data and return train/val/test splits plus feature metadata."""
     current_platform = config["platform"]
-    root_data_dir = get_platform_dir(current_platform, config)
-    # ml_ready_dir = root_data_dir / "ml_ready"
-    ml_ready_dir = root_data_dir
-    cz_1p0_file = ml_ready_dir + '/climate_zones_1p0.csv'
+    root_data_dir = get_platform_dir(current_platform)
+    ml_ready_dir = root_data_dir / "ml_ready"
 
     resolutions_dict = {float(k): v for k, v in config["resolutions_names"].items()}
     current_res = 1.0
