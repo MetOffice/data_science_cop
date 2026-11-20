@@ -12,6 +12,7 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Tuple
+import datetime
 
 import mlflow
 import numpy as np
@@ -29,7 +30,10 @@ class TrainConfig:
     learning_rate: float
     batch_size: int
     num_epochs: int
-
+    starting_checkpoint: Path
+    start_epoch_num: int
+    output_dir: Path
+    input_dir: Path
 
 class ClimateZonesDataset(torch.utils.data.Dataset):
     """PyTorch dataset wrapper for climate-zone tabular data."""
@@ -104,13 +108,50 @@ def parse_args() -> TrainConfig:
         required=True,
         help="Number of training epochs",
     )
+    parser.add_argument(
+        "--starting-checkpoint",
+        type=Path,
+        help="Path to checkpoint to start training from. If not provided, then it is a cold start to train from randomised weights",
+        default=None,
+    )
+
+    parser.add_argument(
+        '--start-epoch-num',
+        type=int,
+        default=0,
+        help='The number of the first epoch in this training job. This is only used if a starting checkpoint is provided',
+    )
+
+    parser.add_argument(
+        '--output-dir',
+        type=Path,
+        help='Directory to output the trained model',
+        default=Path.cwd(),
+    )
+
+    parser.add_argument(
+        '--input-dir',
+        type=Path,
+        help='Directory to input the training data',
+        default=None,
+    )
+
     args = parser.parse_args()
+
+    if args.starting_checkpoint is None:
+        start_epoch_num = 0
+    else:
+        start_epoch_num = args.start_epoch_num
 
     return TrainConfig(
         config_path=args.config_path,
         learning_rate=args.learning_rate,
         batch_size=args.batch_size,
         num_epochs=args.num_epochs,
+        starting_checkpoint=args.starting_checkpoint,
+        start_epoch_num = start_epoch_num,
+        output_dir=args.output_dir,
+        input_dir=args.input_dir,
     )
 
 
@@ -161,15 +202,20 @@ def get_classification_metrics(
     )
 
 
-def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str], str]:
+def prepare_data(cmd_config: TrainConfig, tutorial_config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, List[str], str]:
     """Load prepared CSV data and return train/val/test splits plus feature metadata."""
-    current_platform = config["platform"]
-    root_data_dir = get_platform_dir(current_platform, config)
-    ml_ready_dir = root_data_dir / "ml_ready"
+    current_platform = tutorial_config["platform"]
+    if cmd_config.input_dir is None:
+        root_data_dir = get_platform_dir(current_platform, tutorial_config)
+        ml_ready_dir = root_data_dir / "ml_ready"
+    else:
+        root_data_dir = cmd_config.input_dir
+        ml_ready_dir = root_data_dir
 
-    resolutions_dict = {float(k): v for k, v in config["resolutions_names"].items()}
+
+    resolutions_dict = {float(k): v for k, v in tutorial_config["resolutions_names"].items()}
     current_res = 1.0
-    ml_ready_fname_template = config["csv_out_template"]
+    ml_ready_fname_template = tutorial_config["csv_out_template"]
     mlready_data_path = ml_ready_dir / ml_ready_fname_template.format(
         resolution=resolutions_dict[current_res]
     )
@@ -190,9 +236,9 @@ def prepare_data(config: Dict) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame
     predictors = predictors_dict["precip_mean"] + predictors_dict["temp_mean"]
     target_var = "climate_group"
 
-    random_seed = config["random_seed"]
-    test_frac = 0.1
-    val_frac = 0.1
+    random_seed = tutorial_config["random_seed"]
+    test_frac = tutorial_config["test_fraction"]
+    val_frac = tutorial_config["val_fraction"]
     val_frac_sub = val_frac / (1.0 - test_frac)
 
     test_df = zones_df.groupby(["period_start", "scenario"]).sample(
@@ -217,7 +263,7 @@ def train_model(cfg: TrainConfig) -> None:
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print(f"Using device: {device}")
 
-    train_df, val_df, test_df, predictors, target_var = prepare_data(tutorial_config)
+    train_df, val_df, test_df, predictors, target_var = prepare_data(cfg, tutorial_config)
 
     scaler = sklearn.preprocessing.StandardScaler()
     scaler.fit(train_df[predictors])
@@ -243,11 +289,19 @@ def train_model(cfg: TrainConfig) -> None:
         shuffle=False,
         num_workers=1,
     )
+    start_epoch = cfg.start_epoch_num
+    max_epoch = start_epoch + cfg.num_epochs
 
-    model = ClimateZoneClassifier(
-        input_dim=len(predictors),
-        num_classes=len(label_encoder.classes_),
-    ).to(device)
+    # check if we are starting ffom random weights or loading a checkpoint to continue training (for exmaple in a cylc workflow)
+    if start_epoch == 0:
+        print("Starting training from scratch...")
+        model = ClimateZoneClassifier(
+            input_dim=len(predictors),
+            num_classes=len(label_encoder.classes_),
+        ).to(device)
+    else:
+        print(f'Loading model from checkpoint {cfg.starting_checkpoint}')
+        model = torch.load(cfg.starting_checkpoint, weights_only=False).to(device)
 
     loss_fn = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
@@ -279,9 +333,13 @@ def train_model(cfg: TrainConfig) -> None:
     with mlflow.start_run(experiment_id=exp.experiment_id) as current_run:
         print(f"MLflow run id: {current_run.info.run_id}")
         mlflow.log_params(training_params)
-        mlflow.log_dict(scaler_stats, "stats.json")
+        if start_epoch == 0:
+            mlflow.log_dict(scaler_stats, "stats.json")
+            with open(cfg.output_dir / "stats.json", "w", encoding="utf-8") as fp:
+                json.dump(scaler_stats, fp, indent=4)
 
-        for epoch in range(cfg.num_epochs):
+
+        for epoch in range(start_epoch, max_epoch):
             model.train()
             epoch_loss_train = 0.0
             for batch_x, batch_y in train_loader:
@@ -310,9 +368,12 @@ def train_model(cfg: TrainConfig) -> None:
                 step=epoch,
             )
             print(
-                f"Epoch {epoch + 1}/{cfg.num_epochs} - "
+                f"Epoch {epoch + 1}/{max_epoch} - "
                 f"train_loss={epoch_loss_train:.4f}, val_loss={epoch_loss_val:.4f}"
             )
+            model_path = cfg.output_dir / f'cz_checkpoint_{epoch}.pth'
+            torch.save(model, model_path)
+            mlflow.log_artifact(str(model_path))
 
         class_labels = [str(c) for c in label_encoder.classes_]
         train_metrics = get_classification_metrics(
@@ -330,7 +391,7 @@ def train_model(cfg: TrainConfig) -> None:
         )
         mlflow.log_table(metrics_df, "metrics.json")
 
-        model_path = Path("cz_model.pth")
+        model_path = cfg.output_dir / f'cz_model.pth'
         torch.save(model, model_path)
         mlflow.log_artifact(str(model_path))
 
@@ -338,8 +399,10 @@ def train_model(cfg: TrainConfig) -> None:
 def main() -> None:
     """Parse args and run training."""
     cfg = parse_args()
+    start_dt = datetime.datetime.now()
     train_model(cfg)
-
+    end_dt = datetime.datetime.now()
+    print(f"Training took {end_dt - start_dt}")
 
 if __name__ == "__main__":
     main()

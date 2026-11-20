@@ -23,19 +23,29 @@ This tutorial has been tested on the scitools ml community environment, which ca
   - In Jupyterhub - select the `ml-0.1.0 Python` kernel for the each of the notebooks.
 - Other platforms: Create a conda environment based on the [scitools ml yaml file](https://github.com/MetOffice/ssstack/blob/main/environments/ml-0.1.0.yml)
 
-## Climate Zones PyTorch Training CLI
+# Climate Zones CLI
 
-In addition to the notebooks that make up the tutorial, there is also python script version, to demonstrate how the training can be run as a script. There is also a batch wraper script to demomstrate how it can be submit to a  compute cluster through the slurm batch scheduler. In this example it is configured for the [ORCHID GPU cluster on the JASMIN compute infrastructure](https://help.jasmin.ac.uk/docs/batch-computing/orchid-gpu-cluster/).
+In addition to the notebooks that make up the tutorial, there are also python script versions, to demonstrate how the training can be run as a script. There is also a batch wrapper script to demonstrate how it can be submitted to a  compute cluster through the slurm batch scheduler, or run as part of a cylc workflow. 
+In this example it is configured for the [ORCHID GPU cluster on the JASMIN compute infrastructure](https://help.jasmin.ac.uk/docs/batch-computing/orchid-gpu-cluster/) or on SPICE.
 
 ### Files
 
-- `ClimateZones_Training_Torch.py`: refactored Python script with `main()` and CLI arguments.
-- `run_climate_zones_torch.slurm`: batch script for `sbatch` that activates `dscop-pytorch`, starts MLflow, and runs training.
+- Python Scripts
+  - `climatezones_data_prep.py`: Python script for preparing the training data from the downloaded climate zones netcdf files.
+  - `climatezones_training_torch.py`: refactored Python script with `main()` and CLI arguments.
+  - `climatezones_evaluation.py`: Python script for evaluating the output of the training script.
+- Batch Scripts
+- `run_climatezones_data_prep.sh`: batch script for `sbatch` that activates takes the downloaded climate zones netcdf files and creates the tabular ML-ready data for training.
+- `run_climatezones_training.sh`: batch script for `sbatch` that starts MLflow, and runs training.
+- `run_climatezones_evaluation.sh`: batch script for `sbatch` that evaluates the output of the training script.
+- Cylc Workflow
+  - `workflow/flow.cylc`: workflow for running the training script as a cylc workflow.
+  - `workflow/flow.opt`: workflow options for running the cylc workflow.
 
 ### Python CLI arguments
 
 ```bash
-python ClimateZones_Training_Torch.py \
+python climatezones_training_torch.py \
   --config-path /path/to/config.json \
   --learning-rate 0.001 \
   --batch-size 16 \
@@ -43,11 +53,22 @@ python ClimateZones_Training_Torch.py \
 ```
 
 ### Submit to SLURM
-
-Edit environment variables at the top of `run_climate_zones_torch.slurm`, then submit:
+Edit environment variables at the top of `run_climatezones_training.sh`, then submit:
 
 ```bash
-sbatch run_climate_zones_torch.slurm
+sbatch run_climatezones_training.sh /path/to/repo /path/tyo/log/dir /path/to/input/dir/ /pat5h/to/data/output/dir $CONDA_ENV_NAME
 ```
+With suitable arguments given to the sbatch command, it can be run on different SLURM platforms, for example SPICE or JASMIN.
+
+### Cylc workflow
+A [cylc workflow](https://cylc.github.io/cylc-doc/latest/html/) orchestrates the running of batch jobs in the correct order and with the correct configuration.
+
+The configuration is done the `flow.opt` file, which is supplied as an argument to the cylc commands. The cylc workflow can be run as follows:
+
+```bash
+cd workflow
+cylc vip --workflow-name my_training_demo --set-file flow.opt   
+``` 
+
 
 

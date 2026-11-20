@@ -1,0 +1,13 @@
+REPO_ROOT="$HOME/prog/dscop_spice_test"
+SCRIPT_REL_DIR="ml_examples/climate_zones"
+TRAINING_DATA_DIR="$CYLC_WORKFLOW_SHARE_DIR/climate_zones/ml_ready"
+MODEL_OUTPUT_DIR="$CYLC_WORKFLOW_SHARE_DIR/climate_zones/model_output"
+EVALUATION_DIR="$CYLC_WORKFLOW_SHARE_DIR/climate_zones/evaluation"
+CONDA_ENV_NAME="dscop_pytorch_gpu"
+ARTIFACTS_DIR="$CYLC_WORKFLOW_SHARE_DIR/logs/climate_zones/"
+NUM_EPOCHS="10"
+LEARNING_RATE="0.001"
+BATCH_SIZE="16"
+RESOLUTIONS="1.0"
+
+
