@@ -48,6 +48,9 @@ def tutorial_config(tmp_path: Path) -> dict:
         "random_seed": 12345,
         "resolutions_names": {"0.5": "0p5", "1.0": "1p0"},
         "csv_out_template": "climate_zones_{resolution}.csv",
+        "test_fraction": 0.1,
+        "val_fraction": 0.1,
+        "target_var": "climate_group",
     }
 
 
@@ -62,7 +65,7 @@ def test_get_platform_dir_unknown_platform_falls_back_to_home(tutorial_config, m
 
 
 def test_get_ml_ready_path(tutorial_config):
-    path = cze.get_ml_ready_path(tutorial_config, 1.0)
+    path = cze.get_ml_ready_path(tutorial_config, 1.0, training_data_dir=None)
     expected = (
         Path(tutorial_config["default_dirs"]["test"])
         / "climate_zones"
@@ -71,6 +74,15 @@ def test_get_ml_ready_path(tutorial_config):
     )
     assert path == expected
 
+
+def test_get_ml_ready_path_argument(tutorial_config):
+    arg_data_path = Path('/path/to/training/data')
+    path = cze.get_ml_ready_path(tutorial_config, 1.0, training_data_dir=arg_data_path)
+    expected = (
+        arg_data_path
+        / "climate_zones_1p0.csv"
+    )
+    assert path == expected
 
 def test_get_predictors_selects_precip_then_temp_means(zones_df):
     predictors = cze.get_predictors(list(zones_df.columns))
@@ -150,14 +162,9 @@ def test_calculate_confusion_matrix():
 def test_parse_args_defaults():
     cfg = cze.parse_args([])
     assert cfg.model_path == Path("cz_model.pth")
-    assert cfg.algorithm_name == "torch_nn"
-    assert cfg.target_var == "climate_group"
     assert cfg.resolution == 1.0
-    assert cfg.device in ("cpu", "cuda:0")
 
 
-def test_parse_args_device_override():
-    assert cze.parse_args(["--device", "cpu"]).device == "cpu"
 
 
 @pytest.mark.parametrize(
@@ -197,15 +204,15 @@ def save_model(model_path: Path, input_dim: int = 24) -> ClimateZoneClassifier:
 def test_load_model_matches_saved_model(tmp_path):
     model_path = tmp_path / "cz_model.pth"
     saved_model = save_model(model_path)
-    loaded_model = cze.load_model(model_path, "cpu")
+    loaded_model, device = cze.load_model(model_path)
     assert not loaded_model.training
     x = torch.rand(5, 24)
     torch.testing.assert_close(loaded_model(x), saved_model(x))
 
 
-def _write_inputs(tmp_path, zones_df, tutorial_config):
+def _write_inputs(tmp_path, zones_df, tutorial_config, training_data_dir):
     """Write config, stats and ML-ready CSV files for an end-to-end run."""
-    csv_path = cze.get_ml_ready_path(tutorial_config, 1.0)
+    csv_path = cze.get_ml_ready_path(tutorial_config, resolution=1.0, training_data_dir=training_data_dir)
     csv_path.parent.mkdir(parents=True)
     zones_df.to_csv(csv_path, index=False)
 
@@ -224,27 +231,28 @@ def _write_inputs(tmp_path, zones_df, tutorial_config):
 
 
 def test_main_with_torch_model(tmp_path, zones_df, tutorial_config):
-    config_path, stats_path = _write_inputs(tmp_path, zones_df, tutorial_config)
     model_path = tmp_path / "cz_model.pth"
     save_model(model_path)
-    out_dir = tmp_path / "out"
+    eval_dir = tmp_path / "eval"
+    train_data_dir = tmp_path / "ml_ready"
+    config_path, stats_path = _write_inputs(tmp_path, zones_df, tutorial_config, train_data_dir)
 
     cze.main([
         "--config-path", str(config_path),
         "--stats-path", str(stats_path),
         "--model-path", str(model_path),
-        "--device", "cpu",
-        "--batch-size", "64",
-        "--output-dir", str(out_dir),
+        "--training-data-dir", str(train_data_dir),
+        "--evaluation-dir", str(eval_dir),
     ])
 
-    metrics_df = pandas.read_csv(out_dir / "torch_nn_climate_group_metrics.csv")
+    metrics_path = eval_dir / "climate_zones_climate_group_metrics.csv"
+    assert metrics_path.is_file()
+    metrics_df = pandas.read_csv(metrics_path)
     assert list(metrics_df["climate_group"]) == CLASSES
     scores = metrics_df.drop(columns="climate_group")
     assert ((scores >= 0) & (scores <= 1)).all().all()
-    assert (out_dir / "torch_nn_climate_group_metrics.png").is_file()
     for split_name in cze.SPLIT_NAMES:
-        assert (out_dir / f"torch_nn_climate_group_confusion_{split_name}.png").is_file()
+        assert (eval_dir / f"climate_zones_climate_group_{split_name}.png").is_file()
 
 
 def test_main_missing_data_raises(tmp_path, tutorial_config):

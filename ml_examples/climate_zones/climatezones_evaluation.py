@@ -160,7 +160,7 @@ def get_platform_dir(select_platform: str, config: Dict) -> Path:
     return root_path
 
 
-def get_ml_ready_path(config: Dict, resolution: float) -> Path:
+def get_ml_ready_path(config: Dict, resolution: float, training_data_dir: Path) -> Path:
     """Build the path to the ML-ready CSV file for a given resolution.
 
     Args:
@@ -171,9 +171,14 @@ def get_ml_ready_path(config: Dict, resolution: float) -> Path:
         Path to the ML-ready CSV file.
     """
     resolutions_dict = {float(k): v for k, v in config["resolutions_names"].items()}
-    root_data_dir = get_platform_dir(config["platform"], config)
+    if training_data_dir is None:
+        root_data_dir = get_platform_dir(config["platform"], config)
+        ml_ready_dir = root_data_dir / "ml_ready"
+    else:
+        ml_ready_dir = training_data_dir
     fname = config["csv_out_template"].format(resolution=resolutions_dict[resolution])
-    return root_data_dir / "ml_ready" / fname
+    mlready_path = ml_ready_dir / fname
+    return mlready_path
 
 
 def get_predictors(columns: List[str]) -> List[str]:
@@ -434,7 +439,9 @@ def _get_data_splits(args: EvaluationConfig, tutorial_config: Dict) -> Tuple[pan
     """Load the ML-ready data and split into train/val/test sets."""
 
     stats_dict = load_json(args.stats_path)
-    mlready_data_path = get_ml_ready_path(tutorial_config, resolution=args.resolution)
+    mlready_data_path = get_ml_ready_path(tutorial_config,
+                                          training_data_dir=args.training_data_dir,
+                                          resolution=args.resolution)
 
     if not mlready_data_path.is_file():
         raise FileNotFoundError(f"ML-ready CSV not found: {mlready_data_path}")
@@ -515,9 +522,8 @@ def main(argv: Optional[List[str]] = None) -> None:
     start_dt = datetime.datetime.now()
     metrics_df = evaluate(cfg)
 
-    metrics_path = cfg.evaluation_dir / 'cs_metrics.csv'
-    metrics_df.to_csv(metrics_path, index=False)
-    print(f"Metrics written to {metrics_path}")
+    # metrics_path = cfg.evaluation_dir / 'cz_metrics.csv'
+    # metrics_df.to_csv(metrics_path, index=False)
 
     print(f"Evaluation took {datetime.datetime.now() - start_dt}")
 
