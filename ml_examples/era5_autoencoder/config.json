@@ -2,7 +2,7 @@
     "platform": "jasmin",
     "default_dirs": {
         "mo_linux": "/data/users/dscop/ml_tutorial/",
-        "jasmin": "/gws/ssde/j25a/mmh_storage/ai4c_data/"
+        "jasmin": "/gws/ssde/j25b/mohc_shared/dscop/"
     },
     "random_seed": 12345,
     "climate_subgroups": {
