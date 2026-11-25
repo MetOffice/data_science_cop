@@ -26,7 +26,7 @@ export JOBNAME=era5_autoencoder_train_$(date '+%Y%m%d%H%M')
 
 echo Writing logs to $STD_OUT_PATH and $STD_ERR_PATH
 
-sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH -J ${JOBNAME} run_era5_ae_train_spice.sh ${REPO_ROOT} ${USER_LOG_DIR} ${EXPERIMENT_INPUT_DIR} ${EXPERIMENT_OUTPUT_DIR} ${CONDA_ENV}
+sbatch -o $STD_OUT_PATH -e $STD_ERR_PATH -J ${JOBNAME} run_era5_ae_train.sh ${REPO_ROOT} ${USER_LOG_DIR} ${EXPERIMENT_INPUT_DIR} ${EXPERIMENT_OUTPUT_DIR} ${CONDA_ENV}
 
 
 
